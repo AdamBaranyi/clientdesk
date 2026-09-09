@@ -1,6 +1,6 @@
 # Tests und Prüfungen
 
-Stand: Meilenstein 1.
+Stand: Meilenstein 2.
 
 ## Ausgeführt
 
@@ -9,8 +9,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 09.09.2026: **28 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in allen
-vier Paketen sauber, 64 Code-Dateien unter der 400-Zeilen-Grenze (längste: 202 Zeilen).
+Ergebnis vom 09.09.2026: **57 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in allen
+vier Paketen sauber, 104 Code-Dateien unter der 400-Zeilen-Grenze (längste: 331 Zeilen).
 
 ### Was geprüft wird
 
@@ -35,10 +35,27 @@ PostgreSQL-Testdatenbank, mit zwei Workspaces und zwei Ownern:
 **Rate-Limit** (`tests/integration/login-rate-limit.test.ts`) — nach der konfigurierten Anzahl
 Fehlversuche kommt 429 mit `Retry-After`.
 
+**Kunden** (`tests/integration/customers.test.ts`) — anlegen und erneut lesen, Pflichtfeld Name,
+leere Formularfelder werden null statt Leerzeichenkette, Suche, Zähler der laufenden Projekte,
+fremder Kunde liefert 404, ein Kundenbenutzer bekommt auf dem internen Bereich 404, veraltete
+Version liefert 409 ohne die erste Änderung zu überschreiben, Archivieren mit und ohne
+Hinderungsgründe, Zurückholen, Standardliste ohne archivierte Einträge.
+
+**Projekte** (`tests/integration/projects.test.ts`) — Zuordnung bleibt nach erneutem Laden
+bestehen, ein Kunde aus einem fremden Workspace wird abgewiesen, kein Projekt für archivierte
+Kunden, Zieltermin vor dem Start wird abgewiesen, Fortschritt aus Meilensteinen (ohne Meilensteine
+kein Wert), Überfälligkeit und ihr Wegfall nach Erledigung, Abschluss mit und ohne Begründung,
+Versionskonflikt.
+
+**Aktivitätsprotokoll** (`apps/api/src/lib/activity.test.ts`) — die Metadaten-Whitelist lässt
+interne Notizen und Begründungstexte nicht durch und gibt bei unbekannten Aktionstypen gar nichts
+zurück.
+
 ## Prüfbreiten
 
-Geprüft am 09.09.2026 im Chromium der Browser-Vorschau, angemeldet auf `/app/:workspaceId/dashboard`.
-Gemessen wurde `document.documentElement.scrollWidth` gegen `window.innerWidth`.
+Geprüft am 09.09.2026 im Chromium der Browser-Vorschau, angemeldet, auf Dashboard, Kundenliste und
+Projektdetail. Gemessen wurde `document.documentElement.scrollWidth` gegen `window.innerWidth`
+sowie jedes Element, dessen rechte Kante über den Viewport ragt.
 
 | Breite | Waagerechter Überlauf | Bemerkung                                                         |
 | ------ | --------------------- | ----------------------------------------------------------------- |
@@ -53,6 +70,10 @@ Weiter geprüft: Fliesstext bleibt bei 16 CSS-Pixeln, keine pauschale Verkleiner
 sichtbare Bedienelement ist 44 Pixel hoch — die Segmente der Erscheinungsbild-Umschaltung waren
 zunächst 32 Pixel hoch und wurden auf 44 angehoben, ab 640 Pixeln Breite auf die kompakte Variante
 aus dem Entwurf.
+
+Auf 320 Pixeln zusätzlich geprüft: Kunden- und Projektlisten erscheinen als Karten statt als
+Tabelle, der Dialog „Kunde anlegen" ist genau 320 Pixel breit, passt vollständig ins Bild und
+seine Schliessen-Aktion bleibt erreichbar.
 
 Erscheinungsbild in Hell und Dunkel geprüft, Umschaltung wirkt sofort.
 

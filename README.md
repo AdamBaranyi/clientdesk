@@ -6,9 +6,10 @@ getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
 Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
 
-> **Stand: Meilenstein 1 von 6.** Anmeldung, Workspace-Kontext, Datenmodell und Prüfpipeline
-> stehen. Kunden, Projekte, Verträge, Anfragen, Dokumente und das Kundenportal folgen in den
-> nächsten Schritten. Der genaue Stand steht in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+> **Stand: Meilenstein 2 von 6.** Anmeldung, Kunden, Projekte und Meilensteine funktionieren,
+> mit Vorführdaten zum Durchklicken. Verträge, Anfragen, Dokumente und das Kundenportal folgen in
+> den nächsten Schritten. Der genaue Stand steht in
+> [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
 
@@ -52,6 +53,16 @@ bun run admin:create -- --email dein@konto.test --name "Vor Nachname" --workspac
 
 Der Befehl gibt ein zufälliges Passwort einmalig aus. Es gibt bewusst keine öffentliche
 Registrierung — interne Konten entstehen über diesen Befehl, weitere später über Einladungslinks.
+
+Alternativ einen Workspace mit Vorführdaten anlegen — acht erfundene Kunden, zwölf Projekte,
+Meilensteine mit sinnvollen Fristen:
+
+```bash
+bun run seed:demo -- --email demo@clientdesk.test --password Dein-Passwort
+```
+
+Alle Termine liegen relativ zum Ausführungstag, damit der Stand auch später noch stimmig aussieht.
+Firmen und Personen sind erfunden.
 
 Anwendung starten:
 
