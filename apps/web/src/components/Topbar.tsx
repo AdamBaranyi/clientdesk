@@ -1,4 +1,5 @@
 import { LogOut, Menu } from 'lucide-react';
+import { useLocation } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
 import { ThemeToggle } from './ThemeToggle.tsx';
 
@@ -10,7 +11,17 @@ interface TopbarProps {
   loggingOut: boolean;
 }
 
+const SECTION_LABELS: Record<string, string> = {
+  dashboard: 'Dashboard',
+  customers: 'Kunden',
+  projects: 'Projekte',
+};
+
 export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut }: TopbarProps) {
+  const location = useLocation();
+  const section = location.pathname.split('/')[3] ?? 'dashboard';
+  const label = SECTION_LABELS[section] ?? 'Übersicht';
+
   return (
     <header className="flex h-[var(--topbar-height)] shrink-0 items-center justify-between gap-3 border-b border-line bg-surface px-3 sm:px-6">
       <div className="flex min-w-0 items-center gap-2">
@@ -29,7 +40,7 @@ export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut
           <span className="hidden text-faint sm:inline" aria-hidden="true">
             /
           </span>
-          <span className="truncate font-medium">Dashboard</span>
+          <span className="truncate font-medium">{label}</span>
         </nav>
       </div>
 

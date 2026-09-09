@@ -1,9 +1,14 @@
 import { Navigate, Route, Routes, useParams } from 'react-router';
 import type { SessionUser } from '@clientdesk/contracts';
 import { AppShell } from './components/AppShell.tsx';
+import { CustomerDetailPage } from './features/customers/CustomerDetailPage.tsx';
+import { CustomerListPage } from './features/customers/CustomerListPage.tsx';
 import { DashboardPage } from './features/dashboard/DashboardPage.tsx';
+import { ProjectDetailPage } from './features/projects/ProjectDetailPage.tsx';
+import { ProjectListPage } from './features/projects/ProjectListPage.tsx';
 import { LoginPage } from './features/auth/LoginPage.tsx';
 import { useSession } from './features/auth/use-session.ts';
+import { workspacePath } from './lib/paths.ts';
 
 export function App() {
   const session = useSession();
@@ -49,7 +54,17 @@ function WorkspaceRoutes({ user }: { user: SessionUser }) {
     <Routes>
       <Route element={<AppShell user={user} workspace={workspace} />}>
         <Route path="dashboard" element={<DashboardPage workspace={workspace} />} />
-        <Route path="*" element={<Navigate to="dashboard" replace />} />
+        <Route path="customers" element={<CustomerListPage workspace={workspace} />} />
+        <Route
+          path="customers/:customerId"
+          element={<CustomerDetailPage workspace={workspace} />}
+        />
+        <Route path="projects" element={<ProjectListPage workspace={workspace} />} />
+        <Route path="projects/:projectId" element={<ProjectDetailPage workspace={workspace} />} />
+        <Route
+          path="*"
+          element={<Navigate to={workspacePath(workspace.id, 'dashboard')} replace />}
+        />
       </Route>
     </Routes>
   );

@@ -1,13 +1,18 @@
-import { LayoutGrid, Layers } from 'lucide-react';
+import { FolderKanban, LayoutGrid, Layers, Users } from 'lucide-react';
 import { NavLink } from 'react-router';
 import type { WorkspaceSummary } from '@clientdesk/contracts';
+import { workspacePath } from '../lib/paths.ts';
 
 /**
  * Es stehen nur Einträge in der Navigation, deren Seite es tatsächlich gibt.
  * Weitere kommen mit den nächsten Meilensteinen dazu — ein Menüpunkt ohne
  * Funktion wäre ein Versprechen, das die Anwendung nicht hält.
  */
-const NAV_ITEMS = [{ to: 'dashboard', label: 'Dashboard', icon: LayoutGrid }] as const;
+const NAV_ITEMS = [
+  { to: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
+  { to: 'customers', label: 'Kunden', icon: Users },
+  { to: 'projects', label: 'Projekte', icon: FolderKanban },
+] as const;
 
 interface SidebarProps {
   workspace: WorkspaceSummary;
@@ -39,7 +44,7 @@ export function Sidebar({ workspace, onNavigate }: SidebarProps) {
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
-            to={item.to}
+            to={workspacePath(workspace.id, item.to)}
             onClick={onNavigate}
             className={({ isActive }) =>
               [
