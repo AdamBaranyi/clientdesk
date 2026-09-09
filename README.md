@@ -6,9 +6,9 @@ getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
 Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
 
-> **Stand: Meilenstein 2 von 6.** Anmeldung, Kunden, Projekte und Meilensteine funktionieren,
-> mit Vorführdaten zum Durchklicken. Verträge, Anfragen, Dokumente und das Kundenportal folgen in
-> den nächsten Schritten. Der genaue Stand steht in
+> **Stand: Meilenstein 3 von 6.** Anmeldung, Kunden, Projekte, Meilensteine, Serviceverträge mit
+> Preisversionen und das Dashboard mit echten Kennzahlen funktionieren. Anfragen, Dokumente und
+> das Kundenportal folgen in den nächsten Schritten. Der genaue Stand steht in
 > [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
@@ -93,6 +93,19 @@ bun run test     # Unit- und Integrationstests
 ```
 
 `bun run test` braucht die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.
+
+### Performance messen
+
+Nur lokal. Erzeugt einen eigenen Workspace mit 1'000 Kunden, 3'000 Projekten, 1'500 Verträgen und
+10'000 Anfragen und misst danach die API:
+
+```bash
+bun run seed:load
+bun run measure
+```
+
+Ohne diesen Seed gibt es nichts zu messen — eine genannte Laufzeit wäre erfunden. Die Ergebnisse
+stehen in [docs/TESTING.md](docs/TESTING.md).
 
 ## Projektregeln
 

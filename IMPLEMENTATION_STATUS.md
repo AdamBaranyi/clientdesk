@@ -1,6 +1,6 @@
 # Umsetzungsstand
 
-Stand: 09.09.2026 · Meilenstein 2 von 6 abgeschlossen
+Stand: 09.09.2026 · Meilenstein 3 von 6 abgeschlossen
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
 
@@ -54,7 +54,8 @@ Stand: 09.09.2026 · Meilenstein 2 von 6 abgeschlossen
 
 **Meilenstein 3** _(als Nächstes)_ — Verträge, Preisversionen, Dashboard-Aggregationen,
 Lastdaten-Seed, erste Messung
-**Meilenstein 4** — Rollen, Anfragen, Kommentar-Sichtbarkeit, MinIO, Dokumentfreigabe, Einladungen
+**Meilenstein 4** _(als Nächstes)_ — Rollen, Anfragen, Kommentar-Sichtbarkeit, MinIO,
+Dokumentfreigabe, Einladungen
 **Meilenstein 5** — Demo-Workspaces, Rollenwechsel, Limits, Cleanup, Feinschliff
 **Meilenstein 6** — Deployment auf FSIT-KVM-Server, Caddy, End-to-End-Tests, Scans, Case Study
 

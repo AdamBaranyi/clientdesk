@@ -69,6 +69,24 @@ nichts zu suchen.
 **Preisversionen statt Preisänderung.** `contract_rates` speichert je Vertrag Wirksamkeitsdaten.
 Eine Anpassung oder Beendigung verändert historische Monatswerte damit nicht rückwirkend.
 
+### Die Kennzahlenregel, ausgeschrieben
+
+Ein Vertrag zählt am Datum D, wenn er **bestätigt** ist, `start_date <= D` gilt und `end_date`
+leer ist oder `D < end_date` — das Enddatum ist **exklusiv**. Sein Betrag ist die letzte
+Preisversion mit `effective_from <= D`. Der monatliche Vertragswert ist die Summe dieser Beträge.
+
+Umgesetzt in `apps/api/src/modules/contracts/metrics.ts` als LATERAL-Join: er liefert je Vertrag
+genau eine Preiszeile. Ein gewöhnlicher Join auf `contract_rates` würde jeden Vertrag mit mehreren
+Preisversionen mehrfach zählen — dafür gibt es einen eigenen Test.
+
+Ein Vertrag ohne gültige Preisversion wird von der Summe **ausgeschlossen**, nicht als null
+gezählt. Entstehen kann das nicht, weil beim Anlegen eine Preisversion ab Vertragsbeginn Pflicht
+ist; `contractsWithoutRate` macht den Fall trotzdem sichtbar, statt ihn zu verschlucken.
+
+Der Verlauf rechnet zu Monatsenddaten, für den laufenden Monat zum heutigen Datum — und
+beschriftet ihn entsprechend. Es ist der vertraglich vereinbarte Monatswert, kein Zahlungseingang
+und kein buchhalterischer Umsatz; die Oberfläche sagt das an jeder Stelle dazu.
+
 **Optimistic Locking.** Kernobjekte tragen `version`. Zwei gleichzeitige Bearbeitungen
 überschreiben sich nicht unbemerkt, die zweite bekommt 409.
 
