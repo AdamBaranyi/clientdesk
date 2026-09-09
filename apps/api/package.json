@@ -1,0 +1,30 @@
+{
+  "name": "@clientdesk/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --env-file=../../.env --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clientdesk/contracts": "workspace:*",
+    "@clientdesk/db": "workspace:*",
+    "connect-pg-simple": "10.0.0",
+    "drizzle-orm": "0.45.2",
+    "express": "5.2.1",
+    "express-session": "1.19.0",
+    "helmet": "8.3.0",
+    "pino": "10.3.1",
+    "pino-http": "11.0.0",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/connect-pg-simple": "7.0.3",
+    "@types/express": "5.0.6",
+    "@types/express-session": "1.19.0",
+    "pino-pretty": "13.1.3"
+  }
+}
