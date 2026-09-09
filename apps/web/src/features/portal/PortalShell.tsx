@@ -15,6 +15,7 @@ import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useLogout } from '../auth/use-session.ts';
+import { DemoBanner } from '../demo/DemoBanner.tsx';
 
 /**
  * Reduzierte Navigation. Es gibt hier bewusst keinen Workspace-Umschalter:
@@ -145,6 +146,7 @@ export function PortalShell({ user, workspace }: Props) {
           </div>
         </header>
 
+        <DemoBanner workspace={workspace} />
         <main id="portal-inhalt" className="flex-1 px-3 py-5 sm:px-6 sm:py-6">
           <Outlet />
         </main>

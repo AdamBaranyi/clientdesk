@@ -57,7 +57,10 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
         <CardHeader
           title="Ihre offenen Anfragen"
           action={
-            <Link to={portalPath(workspace.id, 'requests')} className="text-xs font-medium">
+            <Link
+              to={portalPath(workspace.id, 'requests')}
+              className="-my-2 inline-flex min-h-11 items-center px-1 text-xs font-medium"
+            >
               Alle Anfragen
             </Link>
           }

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Download, Eye, EyeOff, Trash2, Upload } from 'lucide-react';
+import { Download, Eye, EyeOff, FilePlus2, Trash2, Upload } from 'lucide-react';
 import { MAX_DOCUMENT_BYTES, type WorkspaceSummary } from '@clientdesk/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { Card } from '../../components/base/Card.tsx';
@@ -9,6 +9,7 @@ import { formatDate } from '../../lib/format.ts';
 import { useCustomers } from '../customers/api.ts';
 import {
   documentDownloadUrl,
+  useAddSampleDocument,
   useDeleteDocument,
   useDocuments,
   useSetDocumentVisibility,
@@ -30,6 +31,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
   const upload = useUploadDocument(workspace.id);
   const setVisibility = useSetDocumentVisibility(workspace.id);
   const remove = useDeleteDocument(workspace.id);
+  const addSample = useAddSampleDocument(workspace.id);
 
   const available = customers.data?.data ?? [];
   const uploadTarget = customerId || available[0]?.id || '';
@@ -58,15 +60,31 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-[-0.02em]">Dokumente</h1>
-          <p className="mt-1 text-sm text-muted">
-            PDF bis {MAX_DOCUMENT_BYTES / (1024 * 1024)} MiB. Neu hochgeladene Dateien sind intern,
-            bis sie ausdrücklich freigegeben werden.
+          <p className="mt-1 max-w-[62ch] text-sm text-muted">
+            {workspace.isDemo
+              ? 'In der Demo werden keine eigenen Dateien angenommen. Das enthaltene Beispieldokument zeigt den Ablauf.'
+              : `PDF bis ${MAX_DOCUMENT_BYTES / (1024 * 1024)} MiB. Neu hochgeladene Dateien sind intern, bis sie ausdrücklich freigegeben werden.`}
           </p>
         </div>
-        <Button variant="primary" disabled={!uploadTarget || upload.isPending} onClick={chooseFile}>
-          <Upload size={16} strokeWidth={2} aria-hidden="true" />
-          {upload.isPending ? 'Wird hochgeladen …' : 'PDF hochladen'}
-        </Button>
+        {workspace.isDemo ? (
+          <Button
+            variant="primary"
+            disabled={!uploadTarget || addSample.isPending}
+            onClick={() => addSample.mutate(uploadTarget)}
+          >
+            <FilePlus2 size={16} strokeWidth={2} aria-hidden="true" />
+            {addSample.isPending ? 'Wird angelegt …' : 'Beispieldokument anlegen'}
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            disabled={!uploadTarget || upload.isPending}
+            onClick={chooseFile}
+          >
+            <Upload size={16} strokeWidth={2} aria-hidden="true" />
+            {upload.isPending ? 'Wird hochgeladen …' : 'PDF hochladen'}
+          </Button>
+        )}
         <input
           ref={fileInput}
           type="file"

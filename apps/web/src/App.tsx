@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useParams } from 'react-router';
 import type { SessionUser } from '@clientdesk/contracts';
 import { AppShell } from './components/AppShell.tsx';
 import { JoinPage } from './features/auth/JoinPage.tsx';
+import { LandingPage } from './features/landing/LandingPage.tsx';
 import { ContractDetailPage } from './features/contracts/ContractDetailPage.tsx';
 import { ContractListPage } from './features/contracts/ContractListPage.tsx';
 import { CustomerDetailPage } from './features/customers/CustomerDetailPage.tsx';
@@ -45,6 +46,7 @@ export function App() {
 
   return (
     <Routes>
+      <Route path="/" element={user ? <FirstWorkspaceRedirect user={user} /> : <LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/join/:token" element={<JoinPage />} />
       <Route
@@ -57,7 +59,7 @@ export function App() {
       />
       <Route path="/portal" element={<FirstWorkspaceRedirect user={user} />} />
       <Route path="/app" element={<FirstWorkspaceRedirect user={user} />} />
-      <Route path="*" element={<Navigate to={user ? '/app' : '/login'} replace />} />
+      <Route path="*" element={<Navigate to={user ? '/app' : '/'} replace />} />
     </Routes>
   );
 }

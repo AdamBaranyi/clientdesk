@@ -50,6 +50,19 @@ export function useUploadDocument(workspaceId: string) {
   });
 }
 
+/** In der Demo der einzige Weg, ein Dokument anzulegen. */
+export function useAddSampleDocument(workspaceId: string) {
+  const invalidate = useInvalidate(workspaceId);
+  return useMutation({
+    mutationFn: (customerId: string) =>
+      apiRequest<ClientDeskDocument>(
+        `/workspaces/${workspaceId}/documents/sample?customerId=${customerId}`,
+        { method: 'POST' },
+      ),
+    onSuccess: invalidate,
+  });
+}
+
 export function useSetDocumentVisibility(workspaceId: string) {
   const invalidate = useInvalidate(workspaceId);
   return useMutation({

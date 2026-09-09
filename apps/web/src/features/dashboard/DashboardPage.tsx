@@ -107,7 +107,10 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
           <h2 className="text-sm font-semibold">Projekte mit überfälligen Meilensteinen</h2>
-          <Link to={`${base}/projects`} className="text-xs font-medium">
+          <Link
+            to={`${base}/projects`}
+            className="-my-2 inline-flex min-h-11 items-center px-1 text-xs font-medium"
+          >
             Alle Projekte
           </Link>
         </div>

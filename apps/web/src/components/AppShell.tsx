@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Outlet, useNavigate } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
 import { useLogout } from '../features/auth/use-session.ts';
+import { DemoBanner } from '../features/demo/DemoBanner.tsx';
 import { Sidebar } from './Sidebar.tsx';
 import { Topbar } from './Topbar.tsx';
 
@@ -71,6 +72,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
           loggingOut={logout.isPending}
           onLogout={() => logout.mutate(undefined, { onSuccess: () => void navigate('/login') })}
         />
+        <DemoBanner workspace={workspace} />
         <main id="inhalt" className="flex-1 px-3 py-5 sm:px-6 sm:py-6">
           <Outlet />
         </main>
