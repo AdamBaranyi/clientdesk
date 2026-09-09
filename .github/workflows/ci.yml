@@ -69,8 +69,17 @@ jobs:
 
       # Migrationen laufen im Testlauf selbst; hier wird nur geprüft, dass die
       # Datenbank erreichbar ist, bevor die Suite startet.
+      # Blockskalar, weil der Einzeiler ein ": " enthält und YAML das sonst
+      # als Zuordnung liest.
       - name: Datenbank erreichbar
-        run: bun --eval "const { createPool } = await import('@clientdesk/db'); const pool = createPool({ connectionString: process.env.TEST_DATABASE_URL }); await pool.query('SELECT 1'); await pool.end(); console.log('Datenbank erreichbar.');"
+        run: |
+          bun --eval "
+            const { createPool } = await import('@clientdesk/db');
+            const pool = createPool({ connectionString: process.env.TEST_DATABASE_URL });
+            await pool.query('SELECT 1');
+            await pool.end();
+            console.log('Datenbank erreichbar.');
+          "
 
       - name: Tests
         run: bun run test
