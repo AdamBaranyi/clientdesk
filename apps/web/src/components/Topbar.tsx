@@ -15,6 +15,7 @@ const SECTION_LABELS: Record<string, string> = {
   dashboard: 'Dashboard',
   customers: 'Kunden',
   projects: 'Projekte',
+  contracts: 'Verträge',
 };
 
 export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut }: TopbarProps) {

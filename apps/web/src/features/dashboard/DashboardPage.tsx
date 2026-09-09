@@ -1,60 +1,113 @@
-import { Link } from 'react-router';
-import type { WorkspaceSummary } from '@clientdesk/contracts';
-import { Card } from '../../components/base/Card.tsx';
+import { Link, useSearchParams } from 'react-router';
+import { formatAmountMinor, type WorkspaceSummary } from '@clientdesk/contracts';
+import { Card, CardHeader } from '../../components/base/Card.tsx';
+import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
+import { formatDate } from '../../lib/format.ts';
 import { workspacePath } from '../../lib/paths.ts';
-import { ErrorState } from '../../components/base/EmptyState.tsx';
-import { useCustomers } from '../customers/api.ts';
+import { useDashboard } from '../contracts/api.ts';
 import { ProjectRows } from '../projects/ProjectRows.tsx';
 import { useProjects } from '../projects/api.ts';
+import { ContractValueChart } from './ContractValueChart.tsx';
+import { MetricCard } from './MetricCard.tsx';
 
-/**
- * Meilenstein 2: die Kennzahlen, für die es echte Daten gibt. Monatlicher
- * Vertragswert und offene Anfragen kommen mit den Verträgen und Anfragen —
- * hier steht bewusst keine Platzhalterzahl.
- */
 export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
-  const customers = useCustomers(workspace.id, { status: 'active', pageSize: 1 });
-  const activeProjects = useProjects(workspace.id, { status: 'active', pageSize: 1 });
-  const attention = useProjects(workspace.id, { sort: 'targetDate', direction: 'asc' });
+  const [params, setParams] = useSearchParams();
+  const contractDate = params.get('contractDate') ?? undefined;
 
+  const board = useDashboard(workspace.id, contractDate);
+  const attention = useProjects(workspace.id, { sort: 'targetDate', direction: 'asc' });
   const needsAttention = (attention.data?.data ?? []).filter(
     (project) => project.overdueMilestones > 0,
   );
 
-  if (customers.isError || activeProjects.isError) {
+  if (board.isError) {
     return (
       <ErrorState detail="Die Übersicht konnte nicht geladen werden. Bitte Seite neu laden." />
     );
   }
+  if (board.isPending) return <LoadingState label="Übersicht wird geladen …" />;
+
+  const data = board.data;
+  const base = workspacePath(workspace.id);
 
   return (
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-5">
-      <div>
-        <h1 className="text-xl font-semibold tracking-[-0.02em]">Dashboard</h1>
-        <p className="mt-1 text-sm text-muted">
-          {workspace.name} · Zeitzone {workspace.timezone}
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold tracking-[-0.02em]">Dashboard</h1>
+          <p className="mt-1 text-sm text-muted">
+            {workspace.name} · Zeitzone {workspace.timezone}
+          </p>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="dashboard-stichtag" className="text-xs font-medium text-faint">
+            Stichtag für Vertragskennzahlen
+          </label>
+          <input
+            id="dashboard-stichtag"
+            type="date"
+            value={contractDate ?? data.contractDate}
+            onChange={(event) => {
+              const next = new URLSearchParams(params);
+              if (event.target.value) next.set('contractDate', event.target.value);
+              else next.delete('contractDate');
+              setParams(next, { replace: true });
+            }}
+            className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+          />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Metric
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard
           label="Aktive Kunden"
-          value={customers.data?.pagination.totalItems}
-          to={workspacePath(workspace.id, 'customers')}
-          hint="Nicht archivierte Kundendatensätze"
+          value={String(data.activeCustomers)}
+          hint="Nicht archiviert · aktueller Stand"
+          to={`${base}/customers`}
         />
-        <Metric
+        <MetricCard
           label="Laufende Projekte"
-          value={activeProjects.data?.pagination.totalItems}
-          to={`${workspacePath(workspace.id, 'projects')}?status=active`}
-          hint="Projekte im Status Aktiv"
+          value={String(data.runningProjects)}
+          hint={
+            data.pausedProjects === 1
+              ? '1 pausiert · aktueller Stand'
+              : `${data.pausedProjects} pausiert · aktueller Stand`
+          }
+          to={`${base}/projects?status=active`}
+        />
+        <MetricCard
+          label="Monatlicher Vertragswert"
+          value={`CHF ${formatAmountMinor(data.monthlyContractValueMinor)}`}
+          hint={`Am ${formatDate(data.contractDate)} · vereinbart, kein Zahlungseingang`}
+          to={`${base}/contracts?status=active`}
+          highlight
+        />
+        <MetricCard
+          label="Bestätigte Verträge"
+          value={String(data.confirmedContracts)}
+          hint={`Zählen am ${formatDate(data.contractDate)}`}
+          to={`${base}/contracts`}
         />
       </div>
 
       <Card>
+        <CardHeader
+          title="Monatlicher Vertragswert"
+          action={<span className="text-xs text-faint">Letzte sechs Monate</span>}
+        />
+        <div className="px-4 pb-5 sm:px-5">
+          <p className="mb-3 text-xs text-faint">
+            Zu Monatsenddaten berechnet; der laufende Monat zum heutigen Datum. Vertraglich
+            vereinbarter Wert, kein Zahlungseingang und kein buchhalterischer Umsatz.
+          </p>
+          <ContractValueChart history={data.history} />
+        </div>
+      </Card>
+
+      <Card>
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
           <h2 className="text-sm font-semibold">Projekte mit überfälligen Meilensteinen</h2>
-          <Link to={workspacePath(workspace.id, 'projects')} className="text-xs font-medium">
+          <Link to={`${base}/projects`} className="text-xs font-medium">
             Alle Projekte
           </Link>
         </div>
@@ -62,52 +115,19 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
         {attention.isPending && (
           <p className="px-4 pb-5 text-sm text-muted sm:px-5">Wird geladen …</p>
         )}
-
         {attention.data && needsAttention.length === 0 && (
           <p className="px-4 pb-5 text-sm text-muted sm:px-5">
             Kein Projekt hat überfällige Meilensteine. Nichts liegen geblieben.
           </p>
         )}
-
         {needsAttention.length > 0 && (
-          <ProjectRows
-            projects={needsAttention}
-            basePath={workspacePath(workspace.id, 'projects')}
-          />
+          <ProjectRows projects={needsAttention} basePath={`${base}/projects`} />
         )}
       </Card>
 
       <p className="text-xs text-faint">
-        Monatlicher Vertragswert und offene Anfragen erscheinen hier, sobald es Verträge und
-        Anfragen gibt.
+        Offene Anfragen erscheinen hier, sobald es Anfragen gibt.
       </p>
     </div>
-  );
-}
-
-function Metric({
-  label,
-  value,
-  to,
-  hint,
-}: {
-  label: string;
-  value: number | undefined;
-  to: string;
-  hint: string;
-}) {
-  return (
-    <Link
-      to={to}
-      className="rounded-lg border border-line bg-surface p-5 no-underline shadow-[var(--shadow-card)] transition-colors hover:border-faint"
-    >
-      <span className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
-        {label}
-      </span>
-      <span className="mt-3 block font-mono text-3xl leading-none font-medium text-ink">
-        {value === undefined ? '—' : value}
-      </span>
-      <span className="mt-2 block text-xs text-faint">{hint}</span>
-    </Link>
   );
 }

@@ -1,4 +1,4 @@
-import { FolderKanban, LayoutGrid, Layers, Users } from 'lucide-react';
+import { FileText, FolderKanban, LayoutGrid, Layers, Users } from 'lucide-react';
 import { NavLink } from 'react-router';
 import type { WorkspaceSummary } from '@clientdesk/contracts';
 import { workspacePath } from '../lib/paths.ts';
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { to: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
   { to: 'customers', label: 'Kunden', icon: Users },
   { to: 'projects', label: 'Projekte', icon: FolderKanban },
+  { to: 'contracts', label: 'Verträge', icon: FileText },
 ] as const;
 
 interface SidebarProps {
