@@ -1,0 +1,45 @@
+name: clientdesk
+
+# Ports 5440/5441 statt der Standard-5432: auf diesem Rechner laufen weitere
+# Postgres-Container anderer Projekte. Postgres 18 erwartet den Mount auf
+# /var/lib/postgresql, nicht mehr auf dem data-Unterverzeichnis.
+
+services:
+  postgres:
+    image: postgres:18.1-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: clientdesk
+      POSTGRES_PASSWORD: clientdesk_local
+      POSTGRES_DB: clientdesk
+    ports:
+      - '127.0.0.1:5440:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U clientdesk -d clientdesk']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Eigene Instanz für Integrationstests. tmpfs, damit jeder Lauf sauber startet
+  # und Testdaten nie neben den Entwicklungsdaten landen.
+  postgres_test:
+    image: postgres:18.1-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: clientdesk
+      POSTGRES_PASSWORD: clientdesk_local
+      POSTGRES_DB: clientdesk_test
+    ports:
+      - '127.0.0.1:5441:5432'
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U clientdesk -d clientdesk_test']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_data:
