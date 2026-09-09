@@ -1,6 +1,6 @@
 # Umsetzungsstand
 
-Stand: 09.09.2026 · Meilenstein 4 von 6 abgeschlossen
+Stand: 09.09.2026 · Meilenstein 5 von 6 abgeschlossen
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
 
@@ -82,6 +82,38 @@ Stand: 09.09.2026 · Meilenstein 4 von 6 abgeschlossen
 - Eine rekursive Suche über jede Portal-Antwort belegt, dass interne Notizen nirgends auftauchen
 - Im Browser gegengeprüft: dieselbe Anfrage zeigt dem Team einen internen Kommentar, der
   Kundenansicht nicht
+
+## Erledigt — Meilenstein 5: Demo und Feinschliff
+
+**Isolierte Demo je Besucher**
+
+- Eigener Workspace mit Ablaufdatum, fünf eigenen Identitäten und vollständigem Datenbestand
+- Keine gemeinsam beschreibbare Demo: zwei Besucher sehen einander nicht
+- Fünf Demos je IP und Viertelstunde, höchstens 50 gleichzeitig
+- `DEMO_ENABLED=false` lässt den Bereich verschwinden
+
+**Rollenwechsel**
+
+- Drei interne Identitäten und zwei Kundenzugänge, umschaltbar im Banner
+- Nur innerhalb der eigenen Demo; Konten fremder Demos werden abgewiesen
+- Kein Impersonation-Endpunkt für gewöhnliche Konten
+- Der Wechsel erneuert die Sitzungs-ID und lädt die Oberfläche vollständig neu
+
+**Grenzen und Aufräumen**
+
+- 30 Kunden, 50 Projekte, 50 Verträge, 100 Anfragen — nur in Demo-Workspaces
+- Keine fremden Dateien; stattdessen ein enthaltenes Beispieldokument
+- Aufräumlauf alle fünf Minuten entfernt Daten, Sitzungen und Dateien
+
+**Startseite**
+
+- Produktvorstellung mit „Demo starten" und „Anmelden", ohne erfundene Zahlen oder Kundenstimmen
+
+**Nachweise**
+
+- 153 Tests grün, davon 12 für die Demo
+- Ablauf im Browser durchgespielt: Demo starten, in die Kundenansicht wechseln, zurück
+- Zwei Kartenlinks waren 16 Pixel hoch und liegen jetzt bei 44
 
 ## Offen — nächste Schritte
 

@@ -6,10 +6,8 @@ getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
 Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
 
-> **Stand: Meilenstein 4 von 6.** Alle Pflichtfunktionen stehen: Anmeldung, Kunden, Projekte,
-> Verträge mit Preisversionen, Anfragen mit interner und öffentlicher Kommentarsichtbarkeit,
-> Dokumente mit Freigabe, Einladungslinks und das Kundenportal. Es fehlen die isolierte
-> Besucher-Demo und das Deployment. Der genaue Stand steht in
+> **Stand: Meilenstein 5 von 6.** Alle Pflichtfunktionen stehen, samt isolierter Besucher-Demo
+> mit Rollenwechsel. Es fehlt das Deployment. Der genaue Stand steht in
 > [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
@@ -115,6 +113,19 @@ bun run measure
 
 Ohne diesen Seed gibt es nichts zu messen — eine genannte Laufzeit wäre erfunden. Die Ergebnisse
 stehen in [docs/TESTING.md](docs/TESTING.md).
+
+## Die Demo
+
+Auf der Startseite legt „Demo starten" einen eigenen Workspace nur für diesen Besucher an — mit
+vollständigem Beispieldatenbestand, fünf Identitäten und 60 Minuten Laufzeit. Danach räumt ein
+Lauf alles weg: Daten, Sitzungen und Dateien.
+
+Ein Banner kennzeichnet die Demo durchgehend und trägt den Rollenwechsel: drei interne
+Identitäten und zwei Kundenzugänge. Der Wechsel wirkt nur innerhalb der eigenen Demo.
+
+Grenzen in der Demo: 30 Kunden, 50 Projekte, 50 Verträge, 100 Anfragen. Eigene Dateien werden
+nicht angenommen — für den Testupload gibt es ein enthaltenes Beispieldokument. Abschalten lässt
+sich das Ganze über `DEMO_ENABLED=false`; dann existiert der Bereich nicht.
 
 ## Projektregeln
 

@@ -1,6 +1,6 @@
 # Tests und Prüfungen
 
-Stand: Meilenstein 4.
+Stand: Meilenstein 5.
 
 ## Ausgeführt
 
@@ -9,8 +9,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 09.09.2026: **141 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
-allen vier Paketen sauber, 181 Code-Dateien unter der 400-Zeilen-Grenze (längste: 311 Zeilen).
+Ergebnis vom 09.09.2026: **153 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+allen vier Paketen sauber, 193 Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
 
 ### Was geprüft wird
 
@@ -95,6 +95,15 @@ gleichem Inhalt liefert dieselbe Anfrage, mit anderem Inhalt einen Konflikt; das
 im Portal. Statusübergänge, erneutes Öffnen, Versionskonflikt, und eine Projektzuordnung zu einem
 fremden Kunden wird abgewiesen.
 
+**Demo** (`tests/integration/demo.test.ts`) — jede Demo bekommt eine eigene Datenkopie; eine
+Änderung in der einen erscheint in der anderen nicht, und ein fremder Demo-Workspace liefert 404.
+Der Rollenwechsel wirkt nur innerhalb der eigenen Demo: eine Identität aus einer fremden Demo wird
+abgewiesen, ein gewöhnlicher Workspace kennt die Route gar nicht, und beim Wechsel wechselt die
+Sitzungs-ID. Abgelaufene Demos lassen sich nicht weiterverwenden und werden samt Dateien, Konten
+und Sitzungen entfernt — ein danach vorgelegtes Cookie liefert 401. Eine laufende Demo bleibt vom
+Aufräumlauf unberührt. Die Kundengrenze greift, fremde Dateien werden abgewiesen, und das
+enthaltene Beispieldokument liegt wie jedes andere zuerst intern.
+
 **Aktivitätsprotokoll** (`apps/api/src/lib/activity.test.ts`) — die Metadaten-Whitelist lässt
 interne Notizen und Begründungstexte nicht durch und gibt bei unbekannten Aktionstypen gar nichts
 zurück.
@@ -123,8 +132,9 @@ Auf 320 Pixeln zusätzlich geprüft: Kunden- und Projektlisten erscheinen als Ka
 Tabelle, der Dialog „Kunde anlegen" ist genau 320 Pixel breit, passt vollständig ins Bild und
 seine Schliessen-Aktion bleibt erreichbar.
 
-Das Kundenportal wurde auf 320 Pixeln gesondert geprüft: kein Überlauf, kleinstes sichtbares
-Bedienelement 44 Pixel hoch.
+Das Kundenportal und das Demo-Banner wurden auf 320 Pixeln gesondert geprüft: kein Überlauf,
+Banner und Rollenwechsel brechen sinnvoll um. Dabei fielen zwei Kartenlinks mit 16 Pixeln Höhe
+auf — unter dem WCAG-Mindestziel von 24. Sie liegen jetzt bei 44, ohne dass die Schrift wächst.
 
 Erscheinungsbild in Hell und Dunkel geprüft, Umschaltung wirkt sofort.
 
