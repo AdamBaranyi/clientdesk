@@ -62,6 +62,18 @@ bun run dev
 Weboberfläche auf <http://localhost:5173>, API auf <http://localhost:4000>. Der Vite-Server leitet
 `/api` an die API weiter, damit Sitzungscookie und CSRF-Herkunftsprüfung ohne CORS funktionieren.
 
+### Wenn der Start scheitert
+
+`Port 5173 is already in use` heisst, dass dort noch etwas läuft. Der Port ist bewusst fest
+gesetzt: wiche Vite auf 5174 aus, passte die Herkunft nicht mehr zur CSRF-Prüfung und die
+Anmeldung schlüge ohne verständliche Meldung fehl.
+
+```bash
+lsof -nP -iTCP:5173 -sTCP:LISTEN   # zeigt, welcher Prozess den Port hält
+```
+
+Denselben Weg gibt es für die API auf Port 4000.
+
 ## Prüfbefehle
 
 ```bash
