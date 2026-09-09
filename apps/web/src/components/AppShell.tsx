@@ -1,0 +1,80 @@
+import { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
+import { Outlet, useNavigate } from 'react-router';
+import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
+import { useLogout } from '../features/auth/use-session.ts';
+import { Sidebar } from './Sidebar.tsx';
+import { Topbar } from './Topbar.tsx';
+
+interface AppShellProps {
+  user: SessionUser;
+  workspace: WorkspaceSummary;
+}
+
+/**
+ * Ab 1024 Pixeln steht die Seitenleiste fest, darunter wird sie zu einem
+ * Panel über dem Inhalt. Bei 320 Pixeln bleibt damit die volle Breite für
+ * Inhalte, ohne dass Navigation verloren geht.
+ */
+export function AppShell({ user, workspace }: AppShellProps) {
+  const [navigationOpen, setNavigationOpen] = useState(false);
+  const navigate = useNavigate();
+  const logout = useLogout();
+
+  // Escape schliesst das Panel, damit es per Tastatur wieder verlassen werden kann.
+  useEffect(() => {
+    if (!navigationOpen) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setNavigationOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [navigationOpen]);
+
+  return (
+    <div className="flex min-h-dvh">
+      <a href="#inhalt" className="skip-link">
+        Zum Inhalt springen
+      </a>
+
+      <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line lg:block">
+        <Sidebar workspace={workspace} />
+      </aside>
+
+      {navigationOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <button
+            type="button"
+            aria-label="Navigation schliessen"
+            onClick={() => setNavigationOpen(false)}
+            className="absolute inset-0 bg-black/50"
+          />
+          <div className="absolute inset-y-0 left-0 flex w-[min(272px,85vw)] flex-col border-r border-line shadow-[var(--shadow-raised)]">
+            <button
+              type="button"
+              onClick={() => setNavigationOpen(false)}
+              className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-md text-muted hover:text-ink"
+            >
+              <X size={18} strokeWidth={1.8} aria-hidden="true" />
+              <span className="sr-only">Navigation schliessen</span>
+            </button>
+            <Sidebar workspace={workspace} onNavigate={() => setNavigationOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Topbar
+          user={user}
+          workspace={workspace}
+          onOpenNavigation={() => setNavigationOpen(true)}
+          loggingOut={logout.isPending}
+          onLogout={() => logout.mutate(undefined, { onSuccess: () => void navigate('/login') })}
+        />
+        <main id="inhalt" className="flex-1 px-3 py-5 sm:px-6 sm:py-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}

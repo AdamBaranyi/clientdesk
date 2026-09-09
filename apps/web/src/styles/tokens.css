@@ -1,0 +1,107 @@
+/*
+ * Design-Tokens. Eine Datei, zwei Wertesätze.
+ *
+ * Der helle Satz steht auf :root und ist damit immer definiert. Der dunkle
+ * Satz greift zweimal: über prefers-color-scheme für die Gerätewahl und über
+ * [data-theme="dark"] für die ausdrückliche Wahl. Kein Wert wird
+ * ausschliesslich in einem Media-Block definiert — sonst fehlt er, sobald ein
+ * Nutzer ausdrücklich umschaltet.
+ */
+
+:root {
+  color-scheme: light;
+
+  --bg: #f3f4f7;
+  --surface: #ffffff;
+  --raised: #f7f7fb;
+  --line: #e3e5eb;
+  --line-soft: #eeeff3;
+
+  --ink: #11141a;
+  --muted: #59616f;
+  --faint: #88909f;
+
+  --accent: #5b47e0;
+  --accent-soft: rgba(91, 71, 224, 0.1);
+  --on-accent: #ffffff;
+
+  --positive: #1f8a5b;
+  --warning: #8a5e12;
+  --warning-mark: #c89020;
+  --danger: #a83a30;
+  --danger-mark: #c4453a;
+
+  --sidebar-bg: #eceef2;
+  --shadow-card: 0 1px 2px rgba(17, 20, 26, 0.04);
+  --shadow-raised: 0 1px 3px rgba(17, 20, 26, 0.08);
+
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-sm: 5px;
+  --radius: 8px;
+  --radius-lg: 10px;
+
+  --sidebar-width: 244px;
+  --topbar-height: 60px;
+}
+
+/* Gerätewahl: dunkel, solange nicht ausdrücklich hell gewählt wurde. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --bg: #0b0e13;
+    --surface: #12161d;
+    --raised: #181d26;
+    --line: #232936;
+    --line-soft: #1b212b;
+
+    --ink: #eaedf3;
+    --muted: #98a1b2;
+    --faint: #6a7385;
+
+    --accent: #7c6bff;
+    --accent-soft: rgba(124, 107, 255, 0.14);
+    --on-accent: #0b0e13;
+
+    --positive: #43d392;
+    --warning: #f0b44a;
+    --warning-mark: #f0b44a;
+    --danger: #ff7a6b;
+    --danger-mark: #ff7a6b;
+
+    --sidebar-bg: #080a0e;
+    --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    --shadow-raised: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+}
+
+/* Ausdrückliche Wahl „Dunkel" gewinnt in beiden Richtungen. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0b0e13;
+  --surface: #12161d;
+  --raised: #181d26;
+  --line: #232936;
+  --line-soft: #1b212b;
+
+  --ink: #eaedf3;
+  --muted: #98a1b2;
+  --faint: #6a7385;
+
+  --accent: #7c6bff;
+  --accent-soft: rgba(124, 107, 255, 0.14);
+  --on-accent: #0b0e13;
+
+  --positive: #43d392;
+  --warning: #f0b44a;
+  --warning-mark: #f0b44a;
+  --danger: #ff7a6b;
+  --danger-mark: #ff7a6b;
+
+  --sidebar-bg: #080a0e;
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  --shadow-raised: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
