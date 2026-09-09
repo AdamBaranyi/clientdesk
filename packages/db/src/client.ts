@@ -5,6 +5,13 @@ import * as schema from './schema/index.ts';
 export type Database = ReturnType<typeof createDatabase>;
 
 /**
+ * Der Transaktionshandle ist nicht dasselbe wie die Datenbank — ihm fehlt der
+ * Verbindungspool. Funktionen, die in beiden laufen sollen, nehmen Executor.
+ */
+export type Transaction = Parameters<Parameters<Database['transaction']>[0]>[0];
+export type Executor = Database | Transaction;
+
+/**
  * Postgres liefert numeric-Werte als String zurück. Das Projekt rechnet Geld
  * in Rappen als Ganzzahl, deshalb wird der Zähltyp bigint auf number gestellt.
  */
