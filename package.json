@@ -23,7 +23,8 @@
     "test:watch": "vitest",
     "db:generate": "bun run --filter '@clientdesk/db' generate",
     "db:migrate": "bun run --filter '@clientdesk/db' migrate",
-    "admin:create": "bun run --filter '@clientdesk/db' admin:create"
+    "admin:create": "bun run --filter '@clientdesk/db' admin:create",
+    "seed:demo": "bun run --filter '@clientdesk/db' seed:demo"
   },
   "devDependencies": {
     "@clientdesk/contracts": "workspace:*",
