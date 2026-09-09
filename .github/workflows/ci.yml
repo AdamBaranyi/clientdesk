@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TEST_DATABASE_URL: postgresql://clientdesk:clientdesk_local@localhost:5432/clientdesk_test
+
+jobs:
+  qualitaet:
+    name: Format, Dateilänge, Lint, Typen
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - name: Formatprüfung
+        run: bun run format:check
+
+      # Feste Projektregel: keine projekteigene Code-Datei über 400 Zeilen.
+      - name: Dateilängenprüfung
+        run: bun run check:file-length
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Typecheck
+        run: bun run typecheck
+
+  tests:
+    name: Tests gegen echte Datenbank
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:18.1-alpine
+        env:
+          POSTGRES_USER: clientdesk
+          POSTGRES_PASSWORD: clientdesk_local
+          POSTGRES_DB: clientdesk_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U clientdesk -d clientdesk_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      # Migrationen laufen im Testlauf selbst; hier wird nur geprüft, dass die
+      # Datenbank erreichbar ist, bevor die Suite startet.
+      - name: Datenbank erreichbar
+        run: bun --eval "const { createPool } = await import('@clientdesk/db'); const pool = createPool({ connectionString: process.env.TEST_DATABASE_URL }); await pool.query('SELECT 1'); await pool.end(); console.log('Datenbank erreichbar.');"
+
+      - name: Tests
+        run: bun run test
+
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - name: Weboberfläche bauen
+        run: bun run --filter '@clientdesk/web' build
