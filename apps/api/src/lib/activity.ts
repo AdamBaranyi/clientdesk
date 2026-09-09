@@ -16,6 +16,10 @@ const ALLOWED_KEYS: Record<string, readonly string[]> = {
   'milestone.created': ['title'],
   'milestone.completed': ['title'],
   'milestone.reopened': ['title'],
+  'contract.created': ['name', 'customerId'],
+  'contract.updated': ['changedFields'],
+  // Bewusst nur das Datum, nie der Betrag — das Protokoll ist kein Preisarchiv.
+  'contract.rate_added': ['effectiveFrom'],
 };
 
 export type ActivityAction = keyof typeof ALLOWED_KEYS;

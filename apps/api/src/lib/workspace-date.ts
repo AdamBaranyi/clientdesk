@@ -18,3 +18,63 @@ export function todayInTimezone(timezone: string, now: Date = new Date()): strin
 export function isBefore(date: string, reference: string): boolean {
   return date < reference;
 }
+
+const MONTH_LABELS = [
+  'Jan',
+  'Feb',
+  'Mär',
+  'Apr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Okt',
+  'Nov',
+  'Dez',
+] as const;
+
+export interface MonthPoint {
+  /** Datum, zu dem gerechnet wird. */
+  date: string;
+  label: string;
+  isCurrentMonth: boolean;
+}
+
+function pad(value: number): string {
+  return String(value).padStart(2, '0');
+}
+
+/** Letzter Kalendertag des Monats, rein rechnerisch ohne Zeitzonenbezug. */
+export function lastDayOfMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month, 0)).getUTCDate();
+}
+
+/**
+ * Die Stichtage für den Verlauf: je Monat das Monatsende, für den laufenden
+ * Monat das heutige Datum. Der laufende Monat ist noch nicht abgeschlossen und
+ * wird deshalb als solcher gekennzeichnet — ihn wie einen vollen Monat
+ * darzustellen wäre irreführend.
+ */
+export function monthEndPoints(today: string, count: number): MonthPoint[] {
+  const [yearPart, monthPart] = today.split('-');
+  const year = Number(yearPart);
+  const month = Number(monthPart);
+
+  const points: MonthPoint[] = [];
+  for (let offset = count - 1; offset >= 0; offset -= 1) {
+    const absolute = year * 12 + (month - 1) - offset;
+    const pointYear = Math.floor(absolute / 12);
+    const pointMonth = (absolute % 12) + 1;
+    const isCurrentMonth = offset === 0;
+
+    points.push({
+      date: isCurrentMonth
+        ? today
+        : `${pointYear}-${pad(pointMonth)}-${pad(lastDayOfMonth(pointYear, pointMonth))}`,
+      label: MONTH_LABELS[pointMonth - 1] ?? '?',
+      isCurrentMonth,
+    });
+  }
+  return points;
+}

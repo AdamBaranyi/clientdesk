@@ -14,6 +14,11 @@ import { createAuthService } from './modules/auth/service.ts';
 import { createCustomerRepository } from './modules/customers/repository.ts';
 import { createCustomerRouter } from './modules/customers/routes.ts';
 import { createCustomerService } from './modules/customers/service.ts';
+import { createContractRepository } from './modules/contracts/repository.ts';
+import { createContractRouter } from './modules/contracts/routes.ts';
+import { createContractService } from './modules/contracts/service.ts';
+import { createDashboardRouter } from './modules/dashboard/routes.ts';
+import { createDashboardService } from './modules/dashboard/service.ts';
 import { createHealthRouter } from './modules/health/routes.ts';
 import { createMilestoneService } from './modules/projects/milestone-service.ts';
 import { createProjectRepository } from './modules/projects/repository.ts';
@@ -51,6 +56,10 @@ export function createApp({ env, db, pool, logger }: AppDependencies): Express {
   const customerRepository = createCustomerRepository(db);
   const customerService = createCustomerService(db, customerRepository);
 
+  const contractRepository = createContractRepository(db);
+  const contractService = createContractService(db, contractRepository);
+  const dashboardService = createDashboardService(db);
+
   const projectRepository = createProjectRepository(db);
   const projectService = createProjectService(db, projectRepository);
   const milestoneService = createMilestoneService(db, projectRepository);
@@ -73,6 +82,14 @@ export function createApp({ env, db, pool, logger }: AppDependencies): Express {
   app.use(
     '/api/v1/workspaces/:workspaceId/projects',
     createProjectRouter(projectService, milestoneService, authRepository),
+  );
+  app.use(
+    '/api/v1/workspaces/:workspaceId/contracts',
+    createContractRouter(contractService, authRepository),
+  );
+  app.use(
+    '/api/v1/workspaces/:workspaceId/dashboard',
+    createDashboardRouter(dashboardService, authRepository),
   );
 
   app.use(notFoundHandler);
