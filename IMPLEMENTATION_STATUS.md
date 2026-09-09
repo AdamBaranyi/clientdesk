@@ -1,6 +1,6 @@
 # Umsetzungsstand
 
-Stand: 09.09.2026 · Meilenstein 3 von 6 abgeschlossen
+Stand: 09.09.2026 · Meilenstein 4 von 6 abgeschlossen
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
 
@@ -41,6 +41,47 @@ Stand: 09.09.2026 · Meilenstein 3 von 6 abgeschlossen
 
 - 28 Tests grün, Lint ohne Fehler und Warnungen, Typecheck in allen Paketen sauber
 - Anmeldung im Browser durchgespielt: Login, Weiterleitung, Dashboard, Themenwechsel
+
+## Erledigt — Meilenstein 4: Portal und Dokumente
+
+**Anfragen**
+
+- Anlegen, zuweisen, Priorität, Statusfolge mit erlaubten Übergängen; erneutes Öffnen zulässig
+- Idempotency-Key beim Erstellen — ein Doppelklick erzeugt keine zweite Anfrage; derselbe
+  Schlüssel mit anderem Inhalt ist ein Konflikt
+- Kommentare intern oder öffentlich, im Verlauf deutlich unterschieden
+
+**Dokumente**
+
+- PDF bis 10 MiB, Typ und tatsächlicher Dateianfang serverseitig geprüft
+- Zufälliger Objektschlüssel, Originalname nur als Metadatum, privater Bucket
+- Standardmässig intern; Freigabe ist eine eigene Handlung
+- Download über die autorisierte API, als Anhang und mit Ausführungssperre
+- Löschen nimmt die Sichtbarkeit sofort; ein fehlgeschlagener Speicherlauf bleibt als
+  `pending_deletion` sichtbar, das Dokument ist aber für jeden Zugriff weg
+
+**Einladungen**
+
+- Einmalig, sieben Tage gültig, nur gehasht gespeichert; der Link erscheint genau einmal
+- Rolle und Kundenbezug hängen an der Einladung, nicht am Request des Beitretenden
+- Bei bestehendem Konto muss die Identität zur eingeladenen Adresse passen
+
+**Kundenportal**
+
+- Eigene Oberfläche unter `/portal/:workspaceId` mit reduzierter Navigation, ohne
+  Workspace-Umschalter
+- Eigene Datenzugriffsschicht: jede Abfrage ist fest auf Workspace und Kunde eingeschränkt und
+  liefert nur Freigegebenes
+- Client-DTOs führen interne Felder gar nicht — ein öffentlicher Kommentar hat kein
+  Sichtbarkeitsfeld, weil es nichts zu unterscheiden gibt
+- Eine Kundenantwort auf eine wartende Anfrage öffnet sie in derselben Transaktion wieder
+
+**Nachweise**
+
+- 141 Tests grün, davon 16 allein für die Isolation der Kundenansicht
+- Eine rekursive Suche über jede Portal-Antwort belegt, dass interne Notizen nirgends auftauchen
+- Im Browser gegengeprüft: dieselbe Anfrage zeigt dem Team einen internen Kommentar, der
+  Kundenansicht nicht
 
 ## Offen — nächste Schritte
 

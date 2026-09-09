@@ -1,6 +1,6 @@
 # Sicherheit
 
-Stand: Meilenstein 1. Was hier steht, ist implementiert und geprüft. Was fehlt, steht unter
+Stand: Meilenstein 4. Was hier steht, ist implementiert und geprüft. Was fehlt, steht unter
 "Offene Grenzen" — nicht als stillschweigende Lücke.
 
 Keine Aussage in diesem Dokument bedeutet "vollständig sicher", "OWASP-zertifiziert" oder
@@ -58,6 +58,26 @@ CSRF-Header sowie Passwortfelder werden entfernt.
 
 **Geheimnisse.** Nur Platzhalter in `.env.example`, `.env` ist ignoriert.
 
+**Kundenansicht.** Das Portal hat eine eigene Zugriffsschicht. Jede Abfrage dort ist fest auf
+einen Workspace und einen Kunden eingeschränkt und liefert nur freigegebene Inhalte — die
+Einschränkung ist kein Parameter, den ein Aufrufer mitgibt. Client-DTOs blenden interne Felder
+nicht aus, sie führen sie nicht: ein öffentlicher Kommentar hat kein Sichtbarkeitsfeld, weil
+interne Kommentare die Servergrenze nie überschreiten. Ein Kundenzugang bekommt auf internen
+Routen 404 statt 403 — ein 403 würde bestätigen, dass es den Bereich gibt.
+
+**Dokumente.** Privater Bucket, keine öffentlichen URLs, keine vorsignierten Links. Beim Upload
+werden Content-Type, tatsächlicher Dateianfang, Grösse und die Zugehörigkeit von Kunde und Projekt
+serverseitig geprüft. Der Objektschlüssel ist zufällig und wird nie aus dem Dateinamen abgeleitet;
+der Originalname ist Metadatum und wird von Pfadanteilen und Steuerzeichen befreit. Downloads
+laufen über die autorisierte API, antworten als Anhang und tragen eine Richtlinie, die jede
+Ausführung im Dokument unterbindet. Löschen nimmt die Sichtbarkeit sofort — auch wenn der
+Objektspeicher gerade nicht erreichbar ist.
+
+**Einladungen.** Nur der Hash des Tokens wird gespeichert; der Link erscheint genau einmal beim
+Anlegen. Rolle und Kundenbezug hängen an der Einladung, nicht am Request des Beitretenden. Die
+Annahme entwertet die Einladung in derselben Transaktion, in der die Mitgliedschaft entsteht. Bei
+einem bestehenden Konto muss die angemeldete Identität zur eingeladenen Adresse passen.
+
 ## Offene Grenzen
 
 Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
@@ -69,16 +89,26 @@ Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
   selbst ausgeliefert werden — offen für Meilenstein 5.
 - **Rate-Limit** liegt im Prozessspeicher und trägt nur eine API-Instanz.
 - **Mehrfaktor-Authentisierung** ist bewusst nicht Teil des Umfangs.
-- **Dokumenten-Sicherheit** (Typprüfung, Grössenlimit, geschützter Download) entsteht mit den
-  Dokumenten selbst in Meilenstein 4.
-- **Kundenportal-Isolation** — dass interne Kommentare und Notizen auch über direkte API-Aufrufe
-  nicht bei Clients landen — ist ab Meilenstein 4 prüfbar, sobald es diese Daten gibt.
+- **Wiederholungslauf für fehlgeschlagene Speicherlöschungen** ist nicht gebaut. Betroffene
+  Datensätze stehen auf `pending_deletion` und sind für jeden Zugriff bereits weg, die Datei
+  bleibt aber im Objektspeicher liegen.
+- **Rate-Limit auf Uploads** fehlt; begrenzt wird bisher nur die Anmeldung und die Einladung.
 
 ## Prüfprotokoll
 
-| Datum      | Umfang                                                                       | Ergebnis      |
-| ---------- | ---------------------------------------------------------------------------- | ------------- |
-| 09.09.2026 | Meilenstein 1: Mandantentrennung, Sitzung, CSRF, Fehlerantworten, Rate-Limit | 28 Tests grün |
+| Datum      | Umfang                                                                       | Ergebnis       |
+| ---------- | ---------------------------------------------------------------------------- | -------------- |
+| 09.09.2026 | Meilenstein 1: Mandantentrennung, Sitzung, CSRF, Fehlerantworten, Rate-Limit | 28 Tests grün  |
+| 09.09.2026 | Meilenstein 4: Kundenansicht, Uploads, Einladungen, Idempotenz               | 141 Tests grün |
+
+Drei Befunde aus Meilenstein 4, alle behoben:
+
+1. Ein zu grosser Upload antwortete mit 500. body-parser wirft einen eigenen Fehlertyp, der ohne
+   Zuordnung als Serverfehler durchlief — für etwas, das der Aufrufer falsch gemacht hat.
+2. Ein Dokument, dessen Löschung im Speicher fehlschlug, blieb abrufbar. Jetzt ist alles ausser
+   `active` für jeden Zugriff verschwunden.
+3. Ein Kundenzugang bekam auf dem Einladungsbereich 403 statt 404 und erfuhr damit, dass es ihn
+   gibt.
 
 Reproduzieren:
 

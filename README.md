@@ -6,9 +6,10 @@ getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
 Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
 
-> **Stand: Meilenstein 3 von 6.** Anmeldung, Kunden, Projekte, Meilensteine, Serviceverträge mit
-> Preisversionen und das Dashboard mit echten Kennzahlen funktionieren. Anfragen, Dokumente und
-> das Kundenportal folgen in den nächsten Schritten. Der genaue Stand steht in
+> **Stand: Meilenstein 4 von 6.** Alle Pflichtfunktionen stehen: Anmeldung, Kunden, Projekte,
+> Verträge mit Preisversionen, Anfragen mit interner und öffentlicher Kommentarsichtbarkeit,
+> Dokumente mit Freigabe, Einladungslinks und das Kundenportal. Es fehlen die isolierte
+> Besucher-Demo und das Deployment. Der genaue Stand steht in
 > [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
@@ -38,11 +39,15 @@ cp .env.example .env
 openssl rand -base64 48
 ```
 
-Datenbanken starten (Entwicklung auf Port 5440, Tests auf 5441):
+Datenbanken und Objektspeicher starten (Postgres auf 5440, Testdatenbank auf 5441, MinIO auf
+9000 mit Konsole auf 9001):
 
 ```bash
 docker compose -f infra/docker-compose.yml up -d
 ```
+
+Der Bucket wird beim ersten Start angelegt und ist privat. Dokumente sind ausschliesslich über
+die autorisierte API erreichbar — es gibt keine öffentliche URL und keine vorsignierten Links.
 
 Migrationen anwenden und ein internes Konto anlegen:
 
@@ -60,6 +65,10 @@ Meilensteine mit sinnvollen Fristen:
 ```bash
 bun run seed:demo -- --email demo@clientdesk.test --password Dein-Passwort
 ```
+
+Der Befehl legt zusätzlich zwei Kundenzugänge an und nennt sie am Ende. Damit lässt sich der
+Unterschied zwischen Teamansicht und Kundenportal an denselben Daten vorführen: dieselbe Anfrage
+zeigt dem Team einen internen Kommentar, den die Kundenansicht nicht kennt.
 
 Alle Termine liegen relativ zum Ausführungstag, damit der Stand auch später noch stimmig aussieht.
 Firmen und Personen sind erfunden.

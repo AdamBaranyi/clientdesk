@@ -1,7 +1,7 @@
 import { LogOut, Menu } from 'lucide-react';
 import { useLocation } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
-import { ThemeToggle } from './ThemeToggle.tsx';
+import { ThemeToggle } from './base/ThemeToggle.tsx';
 
 interface TopbarProps {
   user: SessionUser;
@@ -16,6 +16,9 @@ const SECTION_LABELS: Record<string, string> = {
   customers: 'Kunden',
   projects: 'Projekte',
   contracts: 'Verträge',
+  requests: 'Anfragen',
+  documents: 'Dokumente',
+  settings: 'Einstellungen',
 };
 
 export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut }: TopbarProps) {

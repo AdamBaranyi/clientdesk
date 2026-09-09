@@ -44,6 +44,11 @@ interface RequestOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   body?: unknown;
   signal?: AbortSignal;
+  /** Schützt gegen doppelt abgeschickte Formulare. */
+  idempotencyKey?: string;
+  /** Für Uploads: roher Inhalt statt JSON. */
+  rawBody?: BodyInit;
+  contentType?: string;
 }
 
 async function toError(response: Response): Promise<ApiRequestError> {
@@ -67,13 +72,18 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   const headers: Record<string, string> = {};
 
   if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+  if (options.contentType) headers['Content-Type'] = options.contentType;
+  if (options.idempotencyKey) headers['Idempotency-Key'] = options.idempotencyKey;
   if (method !== 'GET') headers['X-CSRF-Token'] = await getCsrfToken();
+
+  const body =
+    options.rawBody ?? (options.body !== undefined ? JSON.stringify(options.body) : undefined);
 
   const response = await fetch(`${BASE}${path}`, {
     method,
     headers,
     credentials: 'same-origin',
-    ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
+    ...(body !== undefined ? { body } : {}),
     ...(options.signal ? { signal: options.signal } : {}),
   });
 

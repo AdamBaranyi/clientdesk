@@ -1,6 +1,6 @@
 # Tests und Prüfungen
 
-Stand: Meilenstein 3.
+Stand: Meilenstein 4.
 
 ## Ausgeführt
 
@@ -9,8 +9,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 09.09.2026: **94 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in allen
-vier Paketen sauber, 132 Code-Dateien unter der 400-Zeilen-Grenze (längste: 311 Zeilen).
+Ergebnis vom 09.09.2026: **141 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+allen vier Paketen sauber, 181 Code-Dateien unter der 400-Zeilen-Grenze (längste: 311 Zeilen).
 
 ### Was geprüft wird
 
@@ -68,6 +68,33 @@ statt still zu null zu werden.
 Workspace-Zeitzone und nicht aus der des Servers, inklusive Sommerzeit; die sechs Stichtage des
 Verlaufs stimmen über den Jahreswechsel hinweg.
 
+**Isolation der Kundenansicht** (`tests/integration/portal-isolation.test.ts`) — das Abnahmetor
+dieses Meilensteins. Nur freigegebene Projekte des eigenen Kunden; eine rekursive Suche über jede
+Portal-Antwort belegt, dass die interne Notiz nirgends auftaucht, auch nicht in einem
+verschachtelten Feld; eine Anfrage eines anderen Kunden ist auch mit bekannter ID nicht erreichbar;
+ein Kundenzugang bekommt auf allen internen Routen 404, ein internes Konto auf dem Portal
+ebenfalls; interne Kommentare fehlen in der Kundenansicht vollständig, und das Feld `visibility`
+existiert dort gar nicht; ein Kundenkommentar wird öffentlich, auch wenn der Request etwas anderes
+behauptet; eine Kundenantwort öffnet eine wartende Anfrage wieder; nicht freigegebene Dokumente
+sind weder gelistet noch herunterladbar.
+
+**Uploads** (`tests/integration/documents.test.ts`) — fremder Content-Type, als PDF deklarierter
+HTML-Inhalt, leere und zu grosse Datei, fremder Kunde, unpassendes Projekt und Pfadanteile im
+Dateinamen werden abgewiesen. Der Download antwortet als Anhang mit Ausführungssperre; eine fremde
+Objekt-ID und ein interner Download durch einen Kundenzugang liefern 404. Löschen entfernt die
+Datei aus dem Speicher — und nimmt die Sichtbarkeit auch dann, wenn der Speicher nicht erreichbar
+ist.
+
+**Einladungen** (`tests/integration/invitations.test.ts`) — der Link erscheint genau einmal und
+steht danach in keiner Liste; gespeichert ist nur ein 64-stelliger Hash. Eine Einladung gilt
+einmal, läuft ab, und Rolle wie Kundenbezug stammen aus ihr und nicht aus dem Request des
+Beitretenden. Bei bestehendem Konto wird ohne passende Anmeldung abgelehnt.
+
+**Anfragen und Idempotenz** (`tests/integration/requests.test.ts`) — derselbe Idempotency-Key mit
+gleichem Inhalt liefert dieselbe Anfrage, mit anderem Inhalt einen Konflikt; das gilt intern wie
+im Portal. Statusübergänge, erneutes Öffnen, Versionskonflikt, und eine Projektzuordnung zu einem
+fremden Kunden wird abgewiesen.
+
 **Aktivitätsprotokoll** (`apps/api/src/lib/activity.test.ts`) — die Metadaten-Whitelist lässt
 interne Notizen und Begründungstexte nicht durch und gibt bei unbekannten Aktionstypen gar nichts
 zurück.
@@ -95,6 +122,9 @@ aus dem Entwurf.
 Auf 320 Pixeln zusätzlich geprüft: Kunden- und Projektlisten erscheinen als Karten statt als
 Tabelle, der Dialog „Kunde anlegen" ist genau 320 Pixel breit, passt vollständig ins Bild und
 seine Schliessen-Aktion bleibt erreichbar.
+
+Das Kundenportal wurde auf 320 Pixeln gesondert geprüft: kein Überlauf, kleinstes sichtbares
+Bedienelement 44 Pixel hoch.
 
 Erscheinungsbild in Hell und Dunkel geprüft, Umschaltung wirkt sofort.
 

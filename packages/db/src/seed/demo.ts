@@ -6,6 +6,7 @@ import { milestones, projects } from '../schema/projects.ts';
 import { users } from '../schema/users.ts';
 import { workspaces } from '../schema/workspaces.ts';
 import { contractRates, serviceContracts } from '../schema/service-contracts.ts';
+import { insertDocuments, insertRequests, type SeedStorage } from './attachments.ts';
 import { SEED_CONTRACTS } from './contract-data.ts';
 import { SEED_CUSTOMERS, type SeedCustomer } from './data.ts';
 
@@ -145,12 +146,25 @@ async function insertContracts(
   return count;
 }
 
+/**
+ * Zwei Kundenzugänge, damit sich das Portal vorführen lässt und sichtbar
+ * wird, dass jeder nur seinen eigenen Kunden sieht.
+ */
+const CLIENT_ACCOUNTS = [
+  { customerName: 'Alpenblick Studio', email: 'rahel@alpenblick.example', name: 'Rahel Steiner' },
+  { customerName: 'Seeblick Digital', email: 'marina@seeblick.example', name: 'Marina Hug' },
+] as const;
+
 export interface SeedOptions {
   email: string;
   password: string;
   displayName: string;
+  /** Passwort der beiden Kundenzugänge. */
+  clientPassword: string;
   /** Bezugsdatum für alle relativen Termine. */
   reference?: Date;
+  /** Objektspeicher für die Beispieldokumente. */
+  storage: SeedStorage;
 }
 
 export async function seedDemoWorkspace(
@@ -158,7 +172,14 @@ export async function seedDemoWorkspace(
   options: SeedOptions,
 ): Promise<{
   workspaceId: string;
-  counts: { customers: number; projects: number; contracts: number };
+  counts: {
+    customers: number;
+    projects: number;
+    contracts: number;
+    requests: number;
+    documents: number;
+  };
+  clientLogins: { email: string; customerName: string }[];
 }> {
   const pool = createPool({ connectionString, maxConnections: 1 });
   const db = createDatabase(pool);
@@ -195,13 +216,55 @@ export async function seedDemoWorkspace(
 
       const contracts = await insertContracts(tx, workspace.id, reference, customerIds);
 
+      // Kundenzugänge: eine Mitgliedschaft mit Rolle client, fest an genau
+      // einen Kundendatensatz gebunden.
+      const clientUserIds = new Map<string, string>();
+      const clientPasswordHash = await hashPassword(options.clientPassword);
+      for (const account of CLIENT_ACCOUNTS) {
+        const customerId = customerIds.get(account.customerName);
+        if (!customerId) throw new Error(`Kunde ${account.customerName} fehlt für den Zugang.`);
+
+        const [clientUser] = await tx
+          .insert(users)
+          .values({
+            normalizedEmail: normalizeEmail(account.email),
+            displayName: account.name,
+            passwordHash: clientPasswordHash,
+          })
+          .returning({ id: users.id });
+        if (!clientUser) throw new Error('Kundenzugang konnte nicht angelegt werden.');
+
+        await tx.insert(memberships).values({
+          workspaceId: workspace.id,
+          userId: clientUser.id,
+          role: 'client',
+          customerId,
+        });
+        clientUserIds.set(account.customerName, clientUser.id);
+      }
+
+      const requests = await insertRequests(tx, workspace.id, user.id, clientUserIds, customerIds);
+      const documentCount = await insertDocuments(
+        tx,
+        workspace.id,
+        user.id,
+        customerIds,
+        options.storage,
+      );
+
       return {
         workspaceId: workspace.id,
         counts: {
           customers: SEED_CUSTOMERS.length,
           projects: SEED_CUSTOMERS.reduce((sum, c) => sum + c.projects.length, 0),
           contracts,
+          requests,
+          documents: documentCount,
         },
+        clientLogins: CLIENT_ACCOUNTS.map((account) => ({
+          email: account.email,
+          customerName: account.customerName,
+        })),
       };
     });
   } finally {

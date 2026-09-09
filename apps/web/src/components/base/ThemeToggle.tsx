@@ -1,6 +1,6 @@
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { THEME_CHOICES, type ThemeChoice } from '@clientdesk/contracts';
-import { useTheme } from '../lib/theme-context.ts';
+import { useTheme } from '../../lib/theme-context.ts';
 
 const LABELS: Record<ThemeChoice, string> = {
   system: 'Gerät',

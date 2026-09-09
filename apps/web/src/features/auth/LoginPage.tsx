@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router';
 import { loginSchema, type LoginInput } from '@clientdesk/contracts';
 import { ApiRequestError } from '../../lib/api.ts';
-import { ThemeToggle } from '../../components/ThemeToggle.tsx';
+import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { useLogin, useSession } from './use-session.ts';
 
 export function LoginPage() {
