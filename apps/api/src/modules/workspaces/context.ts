@@ -7,6 +7,8 @@ import type { AuthRepository } from '../auth/repository.ts';
 export interface WorkspaceContext {
   userId: string;
   workspaceId: string;
+  /** Fachliche Kalenderdaten werden in dieser Zeitzone bewertet, nicht in der des Servers. */
+  timezone: string;
   role: MembershipRole;
   /** Nur bei Rolle client gesetzt; begrenzt jeden Zugriff auf diesen Kunden. */
   customerId: string | null;
@@ -50,6 +52,7 @@ export function requireWorkspace(repository: AuthRepository) {
     req.workspace = {
       userId,
       workspaceId: membership.workspaceId,
+      timezone: membership.timezone,
       role: membership.role,
       customerId: membership.customerId,
     };

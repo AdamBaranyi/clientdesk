@@ -25,6 +25,7 @@ declare global {
       workspace?: {
         userId: string;
         workspaceId: string;
+        timezone: string;
         role: MembershipRole;
         customerId: string | null;
       };
