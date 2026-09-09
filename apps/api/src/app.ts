@@ -4,6 +4,8 @@ import { pinoHttp } from 'pino-http';
 import type { Database, Pool } from '@clientdesk/db';
 import type { Env } from './config/env.ts';
 import { createLogger, type Logger } from './lib/logger.ts';
+import { createS3Storage } from './storage/s3.ts';
+import type { DocumentStorage } from './storage/types.ts';
 import { csrfProtection } from './middleware/csrf.ts';
 import { errorHandler, notFoundHandler } from './middleware/error-handler.ts';
 import { requestContext } from './middleware/request-context.ts';
@@ -19,7 +21,21 @@ import { createContractRouter } from './modules/contracts/routes.ts';
 import { createContractService } from './modules/contracts/service.ts';
 import { createDashboardRouter } from './modules/dashboard/routes.ts';
 import { createDashboardService } from './modules/dashboard/service.ts';
+import { createDocumentRepository } from './modules/documents/repository.ts';
+import { createDocumentRouter } from './modules/documents/routes.ts';
+import { createDocumentService } from './modules/documents/service.ts';
 import { createHealthRouter } from './modules/health/routes.ts';
+import {
+  createInvitationAdminRouter,
+  createInvitationPublicRouter,
+} from './modules/invitations/routes.ts';
+import { createInvitationService } from './modules/invitations/service.ts';
+import { createPortalRepository } from './modules/portal/repository.ts';
+import { createPortalRouter } from './modules/portal/routes.ts';
+import { createPortalService } from './modules/portal/service.ts';
+import { createRequestRepository } from './modules/requests/repository.ts';
+import { createRequestRouter } from './modules/requests/routes.ts';
+import { createRequestService } from './modules/requests/service.ts';
 import { createMilestoneService } from './modules/projects/milestone-service.ts';
 import { createProjectRepository } from './modules/projects/repository.ts';
 import { createProjectRouter } from './modules/projects/routes.ts';
@@ -31,9 +47,11 @@ export interface AppDependencies {
   db: Database;
   pool: Pool;
   logger?: Logger;
+  /** Im Test der Speicher im Prozess, sonst der S3-kompatible Objektspeicher. */
+  storage?: DocumentStorage;
 }
 
-export function createApp({ env, db, pool, logger }: AppDependencies): Express {
+export function createApp({ env, db, pool, logger, storage }: AppDependencies): Express {
   const log = logger ?? createLogger(env);
   const app = express();
 
@@ -59,6 +77,27 @@ export function createApp({ env, db, pool, logger }: AppDependencies): Express {
   const contractRepository = createContractRepository(db);
   const contractService = createContractService(db, contractRepository);
   const dashboardService = createDashboardService(db);
+
+  const documentStorage =
+    storage ??
+    createS3Storage({
+      endpoint: env.S3_ENDPOINT,
+      region: env.S3_REGION,
+      bucket: env.S3_BUCKET,
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+    });
+
+  const requestRepository = createRequestRepository(db);
+  const requestService = createRequestService(db, requestRepository);
+
+  const documentRepository = createDocumentRepository(db);
+  const documentService = createDocumentService(db, documentRepository, documentStorage);
+
+  const invitationService = createInvitationService(db, env.APP_ORIGIN);
+
+  const portalRepository = createPortalRepository(db);
+  const portalService = createPortalService(db, portalRepository, documentStorage);
 
   const projectRepository = createProjectRepository(db);
   const projectService = createProjectService(db, projectRepository);
@@ -91,6 +130,20 @@ export function createApp({ env, db, pool, logger }: AppDependencies): Express {
     '/api/v1/workspaces/:workspaceId/dashboard',
     createDashboardRouter(dashboardService, authRepository),
   );
+  app.use(
+    '/api/v1/workspaces/:workspaceId/requests',
+    createRequestRouter(requestService, authRepository),
+  );
+  app.use(
+    '/api/v1/workspaces/:workspaceId/documents',
+    createDocumentRouter(documentService, authRepository),
+  );
+  app.use(
+    '/api/v1/workspaces/:workspaceId/invitations',
+    createInvitationAdminRouter(invitationService, authRepository),
+  );
+  app.use('/api/v1/invitations', createInvitationPublicRouter(invitationService));
+  app.use('/api/v1/portal/:workspaceId', createPortalRouter(portalService, authRepository));
 
   app.use(notFoundHandler);
   app.use(errorHandler);

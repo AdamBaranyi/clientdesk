@@ -34,6 +34,21 @@ export function errorHandler(
     return;
   }
 
+  // body-parser wirft bei überschrittener Grösse oder unlesbarem Body einen
+  // eigenen Fehler. Ohne Zuordnung landete er als INTERNAL — ein Serverfehler
+  // für etwas, das der Aufrufer falsch gemacht hat.
+  const parserType = (error as { type?: string } | null)?.type;
+  if (parserType === 'entity.too.large') {
+    respond(res, req, 'VALIDATION_FAILED', 413, 'Die Datei ist zu gross.', {
+      file: ['Grössengrenze überschritten'],
+    });
+    return;
+  }
+  if (parserType === 'entity.parse.failed' || parserType === 'encoding.unsupported') {
+    respond(res, req, 'VALIDATION_FAILED', 422, 'Der Anfrageinhalt ist unlesbar.', undefined);
+    return;
+  }
+
   if (error instanceof ZodError) {
     respond(res, req, 'VALIDATION_FAILED', 422, 'Eingabe ungültig.', fieldErrorsFromZod(error));
     return;

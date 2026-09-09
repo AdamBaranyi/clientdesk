@@ -29,6 +29,17 @@ declare global {
         role: MembershipRole;
         customerId: string | null;
       };
+      /**
+       * Nur im Kundenportal gesetzt, ausschliesslich von requirePortalClient
+       * und ausschliesslich aus einer Mitgliedschaft mit Rolle client.
+       */
+      portal?: {
+        workspaceId: string;
+        workspaceName: string;
+        customerId: string;
+        userId: string;
+        timezone: string;
+      };
     }
   }
 }

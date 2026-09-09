@@ -4,6 +4,7 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { sql } from 'drizzle-orm';
 import { createDatabase, createPool, type Database, type Pool } from '@clientdesk/db';
 import { createApp } from '../../apps/api/src/app.ts';
+import { createMemoryStorage } from '../../apps/api/src/storage/memory.ts';
 import { loadEnv } from '../../apps/api/src/config/env.ts';
 
 const APP_ORIGIN = 'http://localhost:5173';
@@ -12,6 +13,8 @@ export interface TestServer {
   baseUrl: string;
   db: Database;
   pool: Pool;
+  /** Speicher im Prozess: die Tests prüfen die Regeln, nicht die S3-Anbindung. */
+  storage: ReturnType<typeof createMemoryStorage>;
   /** Eigener Cookie-Speicher je Client, damit zwei Sitzungen sich nicht mischen. */
   client: () => TestClient;
   reset: () => Promise<void>;
@@ -50,6 +53,10 @@ export async function startTestServer(options: TestServerOptions = {}): Promise<
     APP_ORIGIN,
     TRUST_PROXY_HOPS: '0',
     LOGIN_RATE_LIMIT_MAX: String(options.loginRateLimitMax ?? 1000),
+    S3_ENDPOINT: 'http://localhost:9000',
+    S3_BUCKET: 'test',
+    S3_ACCESS_KEY_ID: 'test',
+    S3_SECRET_ACCESS_KEY: 'test',
   } as NodeJS.ProcessEnv);
 
   const pool = createPool({ connectionString: connectionString(), maxConnections: 5 });
@@ -59,7 +66,8 @@ export async function startTestServer(options: TestServerOptions = {}): Promise<
     migrationsFolder: fileURLToPath(new URL('../../packages/db/migrations', import.meta.url)),
   });
 
-  const app = createApp({ env, db, pool });
+  const storage = createMemoryStorage();
+  const app = createApp({ env, db, pool, storage });
   const server: Server = createServer(app);
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
 
@@ -71,8 +79,11 @@ export async function startTestServer(options: TestServerOptions = {}): Promise<
     baseUrl,
     db,
     pool,
+    storage,
     client: () => createClient(baseUrl),
     async reset() {
+      // Der Speicher gehört zum Zustand des Servers und wird mit zurückgesetzt.
+      storage.clear();
       await db.execute(sql`
         TRUNCATE TABLE
           activity_events, idempotency_keys, request_comments, service_requests,

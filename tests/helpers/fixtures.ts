@@ -80,3 +80,23 @@ export async function seedClientUser(
     };
   });
 }
+
+/** Eine minimale, gültige PDF-Datei für Upload-Tests. */
+export function makePdfBytes(marker = 'Testdokument'): Uint8Array {
+  const content = `%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n% ${marker}\ntrailer\n<< /Root 1 0 R >>\n%%EOF\n`;
+  return new TextEncoder().encode(content);
+}
+
+/**
+ * Durchsucht eine beliebige API-Antwort rekursiv nach einer Zeichenfolge.
+ * Damit lässt sich prüfen, dass ein interner Text nirgends auftaucht — auch
+ * nicht in einem verschachtelten Feld, an das beim Schreiben niemand dachte.
+ */
+export function containsText(value: unknown, needle: string): boolean {
+  if (typeof value === 'string') return value.includes(needle);
+  if (Array.isArray(value)) return value.some((entry) => containsText(entry, needle));
+  if (value && typeof value === 'object') {
+    return Object.values(value).some((entry) => containsText(entry, needle));
+  }
+  return false;
+}

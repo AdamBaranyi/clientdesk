@@ -20,6 +20,17 @@ const ALLOWED_KEYS: Record<string, readonly string[]> = {
   'contract.updated': ['changedFields'],
   // Bewusst nur das Datum, nie der Betrag — das Protokoll ist kein Preisarchiv.
   'contract.rate_added': ['effectiveFrom'],
+  'request.created': ['customerId', 'priority'],
+  'request.updated': ['changedFields'],
+  'request.status_changed': ['from', 'to'],
+  // Nur die Sichtbarkeit, niemals der Kommentartext.
+  'request.commented': ['visibility'],
+  'document.uploaded': ['originalName', 'customerId'],
+  'document.visibility_changed': ['clientVisible'],
+  'document.deleted': ['originalName'],
+  'invitation.created': ['role'],
+  'invitation.accepted': ['role'],
+  'membership.created': ['role'],
 };
 
 export type ActivityAction = keyof typeof ALLOWED_KEYS;
