@@ -22,6 +22,7 @@ async function main(): Promise<void> {
   console.log(`Workspace:  ${result.workspaceId}`);
   console.log(`Kunden:     ${result.counts.customers}`);
   console.log(`Projekte:   ${result.counts.projects}`);
+  console.log(`Verträge:   ${result.counts.contracts}`);
   console.log(`\nAnmeldung:  ${email}`);
   console.log(`Passwort:   ${password}`);
   console.log('\nAlle Firmen und Personen sind erfunden.');

@@ -74,7 +74,12 @@ export default tseslint.config(
   {
     // Befehlszeilenwerkzeuge geben ihr Ergebnis auf der Konsole aus —
     // das ist dort die Ausgabe und kein vergessenes Debug-Log.
-    files: ['scripts/**/*.mjs', 'packages/db/src/cli/**/*.ts', 'packages/db/src/migrate.ts'],
+    files: [
+      'scripts/**/*.mjs',
+      'scripts/**/*.ts',
+      'packages/db/src/cli/**/*.ts',
+      'packages/db/src/migrate.ts',
+    ],
     rules: { 'no-console': 'off' },
   },
 );

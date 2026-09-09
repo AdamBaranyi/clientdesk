@@ -24,7 +24,9 @@
     "db:generate": "bun run --filter '@clientdesk/db' generate",
     "db:migrate": "bun run --filter '@clientdesk/db' migrate",
     "admin:create": "bun run --filter '@clientdesk/db' admin:create",
-    "seed:demo": "bun run --filter '@clientdesk/db' seed:demo"
+    "seed:demo": "bun run --filter '@clientdesk/db' seed:demo",
+    "seed:load": "bun run --filter '@clientdesk/db' seed:load",
+    "measure": "bun --env-file=.env scripts/measure-performance.ts"
   },
   "devDependencies": {
     "@clientdesk/contracts": "workspace:*",

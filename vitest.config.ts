@@ -2,7 +2,12 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    include: ['scripts/**/*.test.mjs', 'tests/**/*.test.ts', 'apps/**/*.test.ts'],
+    include: [
+      'scripts/**/*.test.mjs',
+      'tests/**/*.test.ts',
+      'apps/**/*.test.ts',
+      'packages/**/*.test.ts',
+    ],
     environment: 'node',
     passWithNoTests: false,
     // Integrationstests teilen sich eine Datenbank und laufen deshalb nacheinander.

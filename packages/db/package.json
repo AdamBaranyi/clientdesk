@@ -17,7 +17,8 @@
     "migrate": "bun --env-file=../../.env src/migrate.ts",
     "studio": "drizzle-kit studio",
     "admin:create": "bun --env-file=../../.env src/cli/create-admin.ts",
-    "seed:demo": "bun --env-file=../../.env src/cli/seed-demo.ts"
+    "seed:demo": "bun --env-file=../../.env src/cli/seed-demo.ts",
+    "seed:load": "bun --env-file=../../.env src/cli/seed-load.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "2.2.0",

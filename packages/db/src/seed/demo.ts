@@ -5,6 +5,8 @@ import { memberships } from '../schema/memberships.ts';
 import { milestones, projects } from '../schema/projects.ts';
 import { users } from '../schema/users.ts';
 import { workspaces } from '../schema/workspaces.ts';
+import { contractRates, serviceContracts } from '../schema/service-contracts.ts';
+import { SEED_CONTRACTS } from './contract-data.ts';
 import { SEED_CUSTOMERS, type SeedCustomer } from './data.ts';
 
 /**
@@ -34,7 +36,7 @@ async function insertCustomer(
   ownerUserId: string,
   reference: Date,
   seed: SeedCustomer,
-): Promise<void> {
+): Promise<string> {
   const [customer] = await tx
     .insert(customers)
     .values({
@@ -85,6 +87,62 @@ async function insertCustomer(
       sortOrder += 1;
     }
   }
+
+  return customer.id;
+}
+
+/**
+ * Verträge werden nach dem Anlegen der Kunden eingefügt, weil sie über den
+ * Kundennamen zugeordnet sind. Jeder Vertrag bekommt eine Preisversion ab
+ * Vertragsbeginn — ohne sie würde er in der Kennzahl stillschweigend fehlen.
+ */
+async function insertContracts(
+  tx: Transaction,
+  workspaceId: string,
+  reference: Date,
+  customerIds: Map<string, string>,
+): Promise<number> {
+  let count = 0;
+  for (const seed of SEED_CONTRACTS) {
+    const customerId = customerIds.get(seed.customerName);
+    if (!customerId) throw new Error(`Kunde ${seed.customerName} fehlt für den Vertrag.`);
+
+    const startDate = isoDate(reference, seed.startsInDays);
+    const [contract] = await tx
+      .insert(serviceContracts)
+      .values({
+        workspaceId,
+        customerId,
+        name: seed.name,
+        startDate,
+        endDate: seed.endsInDays === null ? null : isoDate(reference, seed.endsInDays),
+        confirmationStatus: seed.confirmed ? 'confirmed' : 'draft',
+        publicDescription: seed.publicDescription,
+        internalNote: seed.internalNote,
+        clientVisible: seed.clientVisible,
+      })
+      .returning({ id: serviceContracts.id });
+
+    if (!contract) throw new Error(`Vertrag ${seed.name} konnte nicht angelegt werden.`);
+
+    await tx.insert(contractRates).values({
+      workspaceId,
+      contractId: contract.id,
+      effectiveFrom: startDate,
+      monthlyAmountMinor: seed.amountMinor,
+    });
+
+    for (const rate of seed.laterRates) {
+      await tx.insert(contractRates).values({
+        workspaceId,
+        contractId: contract.id,
+        effectiveFrom: isoDate(reference, rate.effectiveInDays),
+        monthlyAmountMinor: rate.amountMinor,
+      });
+    }
+    count += 1;
+  }
+  return count;
 }
 
 export interface SeedOptions {
@@ -98,7 +156,10 @@ export interface SeedOptions {
 export async function seedDemoWorkspace(
   connectionString: string,
   options: SeedOptions,
-): Promise<{ workspaceId: string; counts: { customers: number; projects: number } }> {
+): Promise<{
+  workspaceId: string;
+  counts: { customers: number; projects: number; contracts: number };
+}> {
   const pool = createPool({ connectionString, maxConnections: 1 });
   const db = createDatabase(pool);
   const reference = options.reference ?? new Date();
@@ -126,15 +187,20 @@ export async function seedDemoWorkspace(
         .insert(memberships)
         .values({ workspaceId: workspace.id, userId: user.id, role: 'owner' });
 
+      const customerIds = new Map<string, string>();
       for (const seed of SEED_CUSTOMERS) {
-        await insertCustomer(tx, workspace.id, user.id, reference, seed);
+        const id = await insertCustomer(tx, workspace.id, user.id, reference, seed);
+        customerIds.set(seed.name, id);
       }
+
+      const contracts = await insertContracts(tx, workspace.id, reference, customerIds);
 
       return {
         workspaceId: workspace.id,
         counts: {
           customers: SEED_CUSTOMERS.length,
           projects: SEED_CUSTOMERS.reduce((sum, c) => sum + c.projects.length, 0),
+          contracts,
         },
       };
     });
