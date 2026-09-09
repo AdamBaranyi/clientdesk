@@ -43,6 +43,10 @@ export interface TestServerOptions {
   /** Standard ist hoch, damit die Anmeldung in Tests nicht am Limiter scheitert.
       Für den Limiter-Test wird bewusst ein kleiner Wert übergeben. */
   loginRateLimitMax?: number;
+  /** Für den Test, dass eine abgeschaltete Demo gar nicht existiert. */
+  demoEnabled?: boolean;
+  /** Standard hoch, damit der Limiter nicht andere Tests stört. */
+  demoRateLimitMax?: number;
 }
 
 export async function startTestServer(options: TestServerOptions = {}): Promise<TestServer> {
@@ -53,6 +57,8 @@ export async function startTestServer(options: TestServerOptions = {}): Promise<
     APP_ORIGIN,
     TRUST_PROXY_HOPS: '0',
     LOGIN_RATE_LIMIT_MAX: String(options.loginRateLimitMax ?? 1000),
+    DEMO_ENABLED: options.demoEnabled === false ? 'false' : 'true',
+    DEMO_RATE_LIMIT_MAX: String(options.demoRateLimitMax ?? 500),
     S3_ENDPOINT: 'http://localhost:9000',
     S3_BUCKET: 'test',
     S3_ACCESS_KEY_ID: 'test',

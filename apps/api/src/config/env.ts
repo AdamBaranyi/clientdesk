@@ -30,6 +30,8 @@ const envSchema = z.object({
   S3_BUCKET: z.string().min(1),
   S3_ACCESS_KEY_ID: z.string().min(1),
   S3_SECRET_ACCESS_KEY: z.string().min(1),
+  /** Wie viele Demos je IP und Zeitfenster gestartet werden dürfen. */
+  DEMO_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(5),
   DEMO_ENABLED: z
     .enum(['true', 'false'])
     .default('true')

@@ -11,6 +11,7 @@ import type {
 } from '@clientdesk/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
+import type { DemoLimits } from '../demo/limits.ts';
 import { findExistingResult, hashRequest, recordResult } from '../../lib/idempotency.ts';
 import { todayInTimezone } from '../../lib/workspace-date.ts';
 import type { DocumentStorage } from '../../storage/types.ts';
@@ -28,6 +29,7 @@ export function createPortalService(
   db: Database,
   repository: PortalRepository,
   storage: DocumentStorage,
+  demoLimits: DemoLimits,
 ) {
   async function projectsWithMilestones(scope: PortalScope): Promise<ClientProject[]> {
     const rows = await repository.projects(scope.workspaceId, scope.customerId);
@@ -153,6 +155,8 @@ export function createPortalService(
       input: ClientRequestInput,
       idempotencyKey?: string,
     ): Promise<ClientRequest> {
+      await demoLimits.assertBelowLimit(scope.workspaceId, 'requests');
+
       if (input.projectId) {
         const allowed = await repository.assignableProjects(scope.workspaceId, scope.customerId);
         if (!allowed.some((project) => project.id === input.projectId)) {

@@ -9,6 +9,8 @@ import {
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
 import type { DocumentStorage } from '../../storage/types.ts';
+import type { DemoLimits } from '../demo/limits.ts';
+import { makeSimplePdf } from '@clientdesk/db/seed';
 import { assertAcceptablePdf, sanitizeFileName } from './pdf.ts';
 import type { DocumentRepository } from './repository.ts';
 
@@ -54,6 +56,7 @@ export function createDocumentService(
   db: Database,
   repository: DocumentRepository,
   storage: DocumentStorage,
+  demoLimits: DemoLimits,
 ) {
   /**
    * Nur aktive Dokumente sind erreichbar. Steht eines auf pending_deletion,
@@ -82,6 +85,7 @@ export function createDocumentService(
       actorId: string,
       input: UploadInput,
     ): Promise<ClientDeskDocument> {
+      await demoLimits.assertUploadAllowed(workspaceId);
       assertAcceptablePdf(input.bytes, input.contentType);
 
       if (!(await repository.customerExists(workspaceId, input.customerId))) {
@@ -133,6 +137,55 @@ export function createDocumentService(
           entityType: 'document',
           entityId: created.id,
           metadata: { originalName: created.originalName, customerId: input.customerId },
+        });
+        return created.id;
+      });
+
+      return this.get(workspaceId, id);
+    },
+
+    /**
+     * Das enthaltene Beispieldokument. Es ist der einzige Weg, in einer Demo
+     * eine Datei anzulegen — hochgeladen wird dabei nichts.
+     */
+    async addSample(
+      workspaceId: string,
+      actorId: string,
+      customerId: string,
+    ): Promise<ClientDeskDocument> {
+      if (!(await repository.customerExists(workspaceId, customerId))) {
+        throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
+          customerId: ['Unbekannter Kunde'],
+        });
+      }
+
+      const bytes = makeSimplePdf('Beispieldokument — erfundener Inhalt zu Vorführzwecken');
+      const objectKey = newObjectKey(workspaceId);
+      await storage.put(objectKey, bytes, ALLOWED_DOCUMENT_MIME);
+
+      const id = await db.transaction(async (tx) => {
+        const [created] = await tx
+          .insert(documents)
+          .values({
+            workspaceId,
+            customerId,
+            uploadedBy: actorId,
+            objectKey,
+            originalName: 'Beispieldokument.pdf',
+            mimeType: ALLOWED_DOCUMENT_MIME,
+            sizeBytes: bytes.length,
+            clientVisible: false,
+          })
+          .returning({ id: documents.id });
+        if (!created) throw new HttpError('INTERNAL', 'Dokument konnte nicht angelegt werden.');
+
+        await recordActivity(tx, {
+          workspaceId,
+          actorId,
+          action: 'document.uploaded',
+          entityType: 'document',
+          entityId: created.id,
+          metadata: { originalName: 'Beispieldokument.pdf', customerId },
         });
         return created.id;
       });

@@ -12,6 +12,7 @@ import type {
 } from '@clientdesk/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
+import type { DemoLimits } from '../demo/limits.ts';
 import { todayInTimezone } from '../../lib/workspace-date.ts';
 import type { ContractRepository } from './repository.ts';
 
@@ -51,7 +52,11 @@ function blankToNull(value: string | null | undefined): string | null {
   return trimmed === '' ? null : trimmed;
 }
 
-export function createContractService(db: Database, repository: ContractRepository) {
+export function createContractService(
+  db: Database,
+  repository: ContractRepository,
+  demoLimits: DemoLimits,
+) {
   async function requireContract(
     workspaceId: string,
     contractId: string,
@@ -111,6 +116,8 @@ export function createContractService(db: Database, repository: ContractReposito
       actorId: string,
       input: ContractInput,
     ): Promise<ServiceContract> {
+      await demoLimits.assertBelowLimit(workspaceId, 'contracts');
+
       const customer = await repository.findAssignableCustomer(workspaceId, input.customerId);
       if (!customer) {
         throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {

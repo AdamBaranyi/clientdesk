@@ -13,6 +13,7 @@ import {
 } from '@clientdesk/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
+import type { DemoLimits } from '../demo/limits.ts';
 import { findExistingResult, hashRequest, recordResult } from '../../lib/idempotency.ts';
 import type { RequestRepository } from './repository.ts';
 
@@ -53,7 +54,11 @@ function toComment(row: {
   return { ...row, createdAt: row.createdAt.toISOString() };
 }
 
-export function createRequestService(db: Database, repository: RequestRepository) {
+export function createRequestService(
+  db: Database,
+  repository: RequestRepository,
+  demoLimits: DemoLimits,
+) {
   async function require(workspaceId: string, requestId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, requestId);
     if (!row) throw notFound('Anfrage nicht gefunden.');
@@ -117,6 +122,8 @@ export function createRequestService(db: Database, repository: RequestRepository
       input: RequestInput,
       idempotencyKey?: string,
     ): Promise<ServiceRequest> {
+      await demoLimits.assertBelowLimit(workspaceId, 'requests');
+
       const customer = await repository.customerExists(workspaceId, input.customerId);
       if (!customer) {
         throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {

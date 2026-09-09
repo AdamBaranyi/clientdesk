@@ -1,6 +1,7 @@
 export * from './auth.ts';
 export * from './customer.ts';
 export * from './dashboard.ts';
+export * from './demo.ts';
 export * from './document.ts';
 export * from './errors.ts';
 export * from './invitation.ts';

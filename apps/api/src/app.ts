@@ -21,6 +21,10 @@ import { createContractRouter } from './modules/contracts/routes.ts';
 import { createContractService } from './modules/contracts/service.ts';
 import { createDashboardRouter } from './modules/dashboard/routes.ts';
 import { createDashboardService } from './modules/dashboard/service.ts';
+import { createDemoLimits } from './modules/demo/limits.ts';
+import { createDemoRepository } from './modules/demo/repository.ts';
+import { createDemoRouter } from './modules/demo/routes.ts';
+import { createDemoService } from './modules/demo/service.ts';
 import { createDocumentRepository } from './modules/documents/repository.ts';
 import { createDocumentRouter } from './modules/documents/routes.ts';
 import { createDocumentService } from './modules/documents/service.ts';
@@ -71,11 +75,13 @@ export function createApp({ env, db, pool, logger, storage }: AppDependencies): 
   const authRepository = createAuthRepository(db);
   const authService = createAuthService(authRepository);
 
+  const demoLimits = createDemoLimits(db);
+
   const customerRepository = createCustomerRepository(db);
-  const customerService = createCustomerService(db, customerRepository);
+  const customerService = createCustomerService(db, customerRepository, demoLimits);
 
   const contractRepository = createContractRepository(db);
-  const contractService = createContractService(db, contractRepository);
+  const contractService = createContractService(db, contractRepository, demoLimits);
   const dashboardService = createDashboardService(db);
 
   const documentStorage =
@@ -88,19 +94,27 @@ export function createApp({ env, db, pool, logger, storage }: AppDependencies): 
       secretAccessKey: env.S3_SECRET_ACCESS_KEY,
     });
 
+  const demoRepository = createDemoRepository(db);
+  const demoService = createDemoService(db, demoRepository, documentStorage);
+
   const requestRepository = createRequestRepository(db);
-  const requestService = createRequestService(db, requestRepository);
+  const requestService = createRequestService(db, requestRepository, demoLimits);
 
   const documentRepository = createDocumentRepository(db);
-  const documentService = createDocumentService(db, documentRepository, documentStorage);
+  const documentService = createDocumentService(
+    db,
+    documentRepository,
+    documentStorage,
+    demoLimits,
+  );
 
   const invitationService = createInvitationService(db, env.APP_ORIGIN);
 
   const portalRepository = createPortalRepository(db);
-  const portalService = createPortalService(db, portalRepository, documentStorage);
+  const portalService = createPortalService(db, portalRepository, documentStorage, demoLimits);
 
   const projectRepository = createProjectRepository(db);
-  const projectService = createProjectService(db, projectRepository);
+  const projectService = createProjectService(db, projectRepository, demoLimits);
   const milestoneService = createMilestoneService(db, projectRepository);
 
   app.use('/api/v1/health', createHealthRouter(pool));
@@ -143,6 +157,7 @@ export function createApp({ env, db, pool, logger, storage }: AppDependencies): 
     createInvitationAdminRouter(invitationService, authRepository),
   );
   app.use('/api/v1/invitations', createInvitationPublicRouter(invitationService));
+  app.use('/api/v1/demo', createDemoRouter(demoService, env));
   app.use('/api/v1/portal/:workspaceId', createPortalRouter(portalService, authRepository));
 
   app.use(notFoundHandler);

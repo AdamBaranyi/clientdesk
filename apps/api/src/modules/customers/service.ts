@@ -10,6 +10,7 @@ import type {
 } from '@clientdesk/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
+import type { DemoLimits } from '../demo/limits.ts';
 import type { CustomerRepository } from './repository.ts';
 
 interface Row {
@@ -49,7 +50,11 @@ function blankToNull(value: string | null | undefined): string | null {
   return trimmed === '' ? null : trimmed;
 }
 
-export function createCustomerService(db: Database, repository: CustomerRepository) {
+export function createCustomerService(
+  db: Database,
+  repository: CustomerRepository,
+  demoLimits: DemoLimits,
+) {
   async function requireCustomer(workspaceId: string, customerId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, customerId);
     if (!row) throw notFound('Kunde nicht gefunden.');
@@ -83,6 +88,8 @@ export function createCustomerService(db: Database, repository: CustomerReposito
     },
 
     async create(workspaceId: string, actorId: string, input: CustomerInput): Promise<Customer> {
+      await demoLimits.assertBelowLimit(workspaceId, 'customers');
+
       const id = await db.transaction(async (tx) => {
         const [created] = await tx
           .insert(customers)

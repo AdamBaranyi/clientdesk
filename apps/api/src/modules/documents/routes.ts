@@ -57,6 +57,13 @@ export function createDocumentRouter(
     },
   );
 
+  /** Nur in der Demo sinnvoll, aber überall erlaubt — es legt nichts Fremdes ab. */
+  router.post('/sample', async (req, res) => {
+    const { customerId } = z.object({ customerId: z.uuid() }).parse(req.query);
+    const { workspaceId, userId } = getWorkspace(req);
+    res.status(201).json(await service.addSample(workspaceId, userId, customerId));
+  });
+
   router.get('/:documentId', async (req, res) => {
     const documentId = idSchema.parse(req.params.documentId);
     const { workspaceId } = getWorkspace(req);
