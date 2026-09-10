@@ -26,12 +26,15 @@
     "admin:create": "bun run --filter '@clientdesk/db' admin:create",
     "seed:demo": "bun run --filter '@clientdesk/db' seed:demo",
     "seed:load": "bun run --filter '@clientdesk/db' seed:load",
-    "measure": "bun --env-file=.env scripts/measure-performance.ts"
+    "measure": "bun --env-file=.env scripts/measure-performance.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
     "@clientdesk/contracts": "workspace:*",
     "@clientdesk/db": "workspace:*",
     "@eslint/js": "10.0.1",
+    "@playwright/test": "1.57.0",
     "@types/bun": "1.4.2",
     "@types/node": "26.5.0",
     "drizzle-orm": "0.45.2",
