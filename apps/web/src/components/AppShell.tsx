@@ -74,6 +74,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
           user={user}
           workspace={workspace}
           onOpenNavigation={() => setNavigationOpen(true)}
+          onOpenSearch={() => palette.setOpen(true)}
           loggingOut={logout.isPending}
           onLogout={() => logout.mutate(undefined, { onSuccess: () => void navigate('/login') })}
         />

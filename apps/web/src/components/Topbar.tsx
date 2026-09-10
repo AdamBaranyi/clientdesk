@@ -1,4 +1,4 @@
-import { LogOut, Menu } from 'lucide-react';
+import { LogOut, Menu, Search } from 'lucide-react';
 import { useLocation } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
 import { ThemeToggle } from './base/ThemeToggle.tsx';
@@ -7,6 +7,7 @@ interface TopbarProps {
   user: SessionUser;
   workspace: WorkspaceSummary;
   onOpenNavigation: () => void;
+  onOpenSearch: () => void;
   onLogout: () => void;
   loggingOut: boolean;
 }
@@ -21,7 +22,14 @@ const SECTION_LABELS: Record<string, string> = {
   settings: 'Einstellungen',
 };
 
-export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut }: TopbarProps) {
+export function Topbar({
+  user,
+  workspace,
+  onOpenNavigation,
+  onOpenSearch,
+  onLogout,
+  loggingOut,
+}: TopbarProps) {
   const location = useLocation();
   const section = location.pathname.split('/')[3] ?? 'dashboard';
   const label = SECTION_LABELS[section] ?? 'Übersicht';
@@ -51,6 +59,21 @@ export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
+        {/*
+          Ohne sichtbaren Griff wäre die Palette ein Geheimnis für alle, die
+          das Kürzel nicht kennen. Das Kürzel steht daneben statt in einer
+          Hilfeseite — dort liest es niemand.
+        */}
+        <button
+          type="button"
+          onClick={onOpenSearch}
+          className="text-dense flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink"
+        >
+          <Search size={15} strokeWidth={1.8} aria-hidden="true" />
+          <span className="hidden sm:inline">Springen zu</span>
+          <kbd className="text-micro hidden border border-line px-1 font-mono md:inline">⌘K</kbd>
+          <span className="sr-only">Suche öffnen, Tastenkürzel Befehl K</span>
+        </button>
         <ThemeToggle />
         <span className="text-dense hidden text-muted md:inline" title={user.email}>
           {user.displayName}
