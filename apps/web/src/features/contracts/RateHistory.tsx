@@ -59,7 +59,7 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
           >
             <span className="flex items-baseline gap-3">
               <span className="font-mono text-sm">ab {formatDate(rate.effectiveFrom)}</span>
-              {index === 0 && <span className="text-xs text-faint">Erste Version</span>}
+              {index === 0 && <span className="text-xs text-muted">Erste Version</span>}
             </span>
             <span className="font-mono text-sm font-medium">
               CHF {formatAmountMinor(rate.monthlyAmountMinor)}

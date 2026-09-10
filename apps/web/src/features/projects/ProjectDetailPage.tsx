@@ -74,7 +74,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
           <p className="mt-1.5 text-sm text-muted">{project.customerName}</p>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="projekt-status" className="text-xs font-medium text-faint">
+          <label htmlFor="projekt-status" className="text-xs font-medium text-muted">
             Status
           </label>
           <select
@@ -82,7 +82,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
             value={project.status}
             disabled={update.isPending}
             onChange={(event) => changeStatus(event.target.value as ProjectStatus)}
-            className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+            className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
           >
             {PROJECT_STATUS.map((option) => (
               <option key={option} value={option}>
@@ -106,7 +106,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader title="Übersicht" />
         <dl className="grid grid-cols-1 gap-x-6 gap-y-4 px-4 pb-5 sm:grid-cols-3 sm:px-5">
           <div>
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Status
             </dt>
             <dd className="mt-1.5">
@@ -114,13 +114,13 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Start
             </dt>
             <dd className="mt-1.5 font-mono text-sm">{formatDate(project.startDate)}</dd>
           </div>
           <div>
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Zieltermin
             </dt>
             <dd className="mt-1.5 font-mono text-sm">
@@ -131,7 +131,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
         {project.description && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Beschreibung
             </dt>
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
@@ -142,7 +142,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
         {project.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Interne Notiz
             </dt>
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
@@ -156,7 +156,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader
           title="Meilensteine"
           action={
-            <span className="text-xs text-faint">
+            <span className="text-xs text-muted">
               {project.milestoneCount === 0
                 ? 'Noch keine Meilensteine'
                 : `${project.milestonesDone} von ${project.milestoneCount} erledigt`}

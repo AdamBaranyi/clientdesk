@@ -90,7 +90,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
                 <span className="flex flex-wrap items-center gap-3">
                   <RequestStatusBadge status={request.status} />
                   {request.projectName && (
-                    <span className="text-xs text-faint">{request.projectName}</span>
+                    <span className="text-xs text-muted">{request.projectName}</span>
                   )}
                 </span>
               </Link>
@@ -118,7 +118,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
               id="portal-projekt"
               value={projectId}
               onChange={(event) => setProjectId(event.target.value)}
-              className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+              className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
             >
               <option value="">Ohne Projekt</option>
               {/* Die Auswahl kommt vom Server — hier steht nichts, was nicht erlaubt wäre. */}

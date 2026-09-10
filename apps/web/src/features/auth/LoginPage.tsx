@@ -6,6 +6,8 @@ import { ApiRequestError } from '../../lib/api.ts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { useLogin, useSession } from './use-session.ts';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
+import { Button } from '../../components/base/Button.tsx';
+import { CONTROL_BASE } from '../../components/base/control-style.ts';
 
 export function LoginPage() {
   const session = useSession();
@@ -71,13 +73,9 @@ export function LoginPage() {
               registration={form.register('password')}
             />
 
-            <button
-              type="submit"
-              disabled={login.isPending}
-              className="min-h-11 rounded-sm bg-accent px-4 font-medium text-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
-            >
+            <Button type="submit" variant="primary" disabled={login.isPending}>
               {login.isPending ? 'Wird geprüft …' : 'Anmelden'}
-            </button>
+            </Button>
           </form>
         </div>
       </main>
@@ -97,7 +95,7 @@ function Field({ label, type, autoComplete, error, registration }: FieldProps) {
   const id = `feld-${registration.name}`;
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="text-dense font-medium">
         {label}
       </label>
       <input
@@ -107,10 +105,10 @@ function Field({ label, type, autoComplete, error, registration }: FieldProps) {
         autoComplete={autoComplete}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-fehler` : undefined}
-        className="min-h-11 rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+        className={`min-h-11 ${CONTROL_BASE}`}
       />
       {error && (
-        <p id={`${id}-fehler`} className="text-sm text-danger">
+        <p id={`${id}-fehler`} className="text-dense text-danger">
           {error}
         </p>
       )}

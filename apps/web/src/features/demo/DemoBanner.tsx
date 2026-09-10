@@ -36,9 +36,9 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
   const clients = status.data.identities.filter((entry) => entry.role === 'client');
 
   return (
-    <div className="flex flex-col gap-3 border-b border-line bg-accent-soft px-3 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+    <div className="flex flex-col gap-3 border-b border-line bg-raised px-3 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-        <span className="inline-flex items-center gap-1.5 font-semibold text-accent">
+        <span className="font-condensed text-label inline-flex items-center gap-1.5 font-semibold tracking-[0.12em] uppercase">
           <FlaskConical size={14} strokeWidth={2} aria-hidden="true" />
           Demo
         </span>
@@ -46,7 +46,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
           Alle Firmen, Personen und Zahlen sind erfunden. Diese Daten gehören nur Ihnen und werden
           danach gelöscht.
         </span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-faint">
+        <span className="inline-flex items-center gap-1.5 font-mono text-muted">
           <Clock size={12} strokeWidth={2} aria-hidden="true" />
           noch {status.data.minutesLeft} Min.
         </span>
@@ -64,7 +64,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
             className={[
               'inline-flex min-h-11 items-center gap-1.5 rounded-sm border px-2.5 text-xs font-medium transition-colors',
               identity.current
-                ? 'border-accent bg-surface text-accent'
+                ? 'border-ink bg-surface text-ink'
                 : 'border-line text-muted hover:text-ink',
             ].join(' ')}
           >

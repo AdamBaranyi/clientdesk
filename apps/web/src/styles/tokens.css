@@ -76,14 +76,6 @@
   --radius-sm: 2px; /* Knöpfe, Eingabefelder, Chips */
   --radius: 3px; /* Flächen */
 
-  /*
-   * Kanten statt Schatten. Die Tokens bleiben vorerst auf none, weil vier
-   * Komponenten sie noch referenzieren; sie verschwinden, sobald die
-   * jeweilige Komponente umgebaut ist.
-   */
-  --shadow-card: none;
-  --shadow-raised: none;
-
   --sidebar-width: 232px;
   --topbar-height: 56px;
   --rule-width: 1px;
@@ -146,9 +138,16 @@
   --line: #d8d5cd;
   --line-soft: #e6e3db;
 
+  /*
+   * --faint trägt keinen Text. Auf dunklem Grund erreicht es 3,7:1 und
+   * verfehlt damit die 4,5:1 für Fliesstext; für Punkte, Trennlinien und
+   * ähnliche Nichtschrift reichen die 3:1. Wer hier Text hinsetzt, macht ihn
+   * für einen Teil der Leser unlesbar — deshalb steht es hier und nicht in
+   * einem Dokument, das niemand aufschlägt.
+   */
   --ink: #191813;
   --muted: #5c5a50;
-  --faint: #8c8a7e;
+  --faint: #8c8a7e; /* nur Punkte und Linien, siehe unten */
 
   /*
    * KOBALT: NUR FÜR DATEN.
@@ -188,15 +187,6 @@
   --danger-mark: #c04437;
 
   --sidebar-bg: #e7e5df;
-
-  /*
-   * Übergangsbrücke: --accent zeigt bewusst auf Tinte, nicht auf Kobalt.
-   * Noch nicht umgebaute Stellen sind damit standardmässig richtig statt
-   * standardmässig falsch. Fällt weg, sobald die letzte Referenz weg ist.
-   */
-  --accent: var(--action-bg);
-  --accent-soft: rgba(25, 24, 19, 0.06);
-  --on-accent: var(--action-fg);
 }
 
 /* ==========================================================================
@@ -234,10 +224,6 @@
     --danger-mark: #f07a6a;
 
     --sidebar-bg: #100f0c;
-
-    --accent: var(--action-bg);
-    --accent-soft: rgba(237, 235, 227, 0.08);
-    --on-accent: var(--action-fg);
   }
 }
 
@@ -270,8 +256,4 @@
   --danger-mark: #f07a6a;
 
   --sidebar-bg: #100f0c;
-
-  --accent: var(--action-bg);
-  --accent-soft: rgba(237, 235, 227, 0.08);
-  --on-accent: var(--action-fg);
 }

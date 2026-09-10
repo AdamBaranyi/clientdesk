@@ -76,7 +76,7 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
         <select
           id="vertrag-kunde"
           {...form.register('customerId')}
-          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
           {customers.map((customer) => (
             <option key={customer.id} value={customer.id}>
@@ -130,7 +130,7 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
         <select
           id="vertrag-status"
           {...form.register('confirmationStatus')}
-          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
           <option value="confirmed">Bestätigt — zählt in die Kennzahlen</option>
           <option value="draft">Entwurf — zählt nicht</option>
@@ -156,11 +156,11 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
         <input
           type="checkbox"
           {...form.register('clientVisible')}
-          className="mt-0.5 size-5 shrink-0 accent-[var(--accent)]"
+          className="mt-0.5 size-5 shrink-0 accent-[var(--action-bg)]"
         />
         <span>
           Im Kundenportal sichtbar
-          <span className="mt-0.5 block text-xs text-faint">
+          <span className="mt-0.5 block text-xs text-muted">
             Standardmässig aus. Die interne Notiz bleibt in jedem Fall intern.
           </span>
         </span>

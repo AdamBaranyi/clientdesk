@@ -16,7 +16,7 @@ export function Pagination({ pagination, onChange }: Props) {
       aria-label="Seiten"
       className="flex flex-wrap items-center justify-between gap-3 border-t border-line-soft px-4 py-3 sm:px-5"
     >
-      <p className="text-xs text-faint">
+      <p className="text-xs text-muted">
         Seite {page} von {totalPages} · {totalItems} Einträge
       </p>
       <div className="flex items-center gap-2">

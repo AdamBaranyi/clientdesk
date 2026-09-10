@@ -79,7 +79,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
         <CardHeader
           title="Einladen"
           action={
-            <span className="text-xs text-faint">Der Link gilt sieben Tage und genau einmal</span>
+            <span className="text-xs text-muted">Der Link gilt sieben Tage und genau einmal</span>
           }
         />
         <form onSubmit={submit} className="flex flex-col gap-4 px-4 pb-5 sm:px-5">
@@ -109,7 +109,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
               id="einladung-rolle"
               value={role}
               onChange={(event) => setRole(event.target.value as MembershipRole)}
-              className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+              className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
             >
               {MEMBERSHIP_ROLES.map((option) => (
                 <option key={option} value={option}>
@@ -128,7 +128,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
                 id="einladung-kunde"
                 value={customerId}
                 onChange={(event) => setCustomerId(event.target.value)}
-                className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+                className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
               >
                 <option value="">Bitte wählen</option>
                 {available.map((customer) => (
@@ -137,7 +137,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-faint">
+              <p className="text-xs text-muted">
                 Ein Kundenzugang sieht ausschliesslich freigegebene Inhalte dieses einen Kunden.
               </p>
             </div>
@@ -158,7 +158,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
         {created && (
           <div className="border-t border-line-soft bg-raised px-4 py-4 sm:px-5">
             <p className="text-sm font-medium">Link für {created.email}</p>
-            <p className="mt-1 text-xs text-faint">
+            <p className="mt-1 text-xs text-muted">
               Dieser Link wird nur jetzt angezeigt. Gespeichert ist nur sein Hash — er lässt sich
               später nicht erneut aufrufen.
             </p>
@@ -196,7 +196,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
             >
               <div className="min-w-0 flex-1">
                 <p className="font-medium break-words">{invitation.email}</p>
-                <p className="mt-1 text-xs text-faint">
+                <p className="mt-1 text-xs text-muted">
                   {invitation.role === 'client'
                     ? `Kundenzugang · ${invitation.customerName ?? 'unbekannt'}`
                     : invitation.role === 'owner'

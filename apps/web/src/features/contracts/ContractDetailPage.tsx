@@ -93,13 +93,13 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
         {contract.publicDescription && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Leistungsbeschreibung
             </dt>
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
               {contract.publicDescription}
             </dd>
-            <p className="mt-2 text-xs text-faint">
+            <p className="mt-2 text-xs text-muted">
               {contract.clientVisible
                 ? 'Für den Kunden im Portal sichtbar.'
                 : 'Noch nicht fürs Kundenportal freigegeben.'}
@@ -109,7 +109,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
         {contract.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Interne Notiz
             </dt>
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
@@ -123,7 +123,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
         <CardHeader
           title="Preisversionen"
           action={
-            <span className="text-xs text-faint">
+            <span className="text-xs text-muted">
               Eine Änderung ersetzt nichts — sie gilt ab ihrem Datum
             </span>
           }
@@ -140,7 +140,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 function Entry({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
-      <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">{label}</dt>
+      <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">{label}</dt>
       <dd className="mt-1.5 font-mono text-sm">{value}</dd>
     </div>
   );

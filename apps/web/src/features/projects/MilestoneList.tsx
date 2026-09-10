@@ -59,7 +59,7 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
               className={[
                 'mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-sm border transition-colors',
                 milestone.status === 'done'
-                  ? 'border-accent bg-accent text-on-accent'
+                  ? 'border-ink bg-action text-action-fg'
                   : 'border-line text-transparent hover:border-faint',
               ].join(' ')}
             >
@@ -82,9 +82,9 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
               </span>
               <span className="flex flex-wrap items-center gap-3 text-xs">
                 {milestone.dueDate ? (
-                  <span className="font-mono text-faint">{formatDate(milestone.dueDate)}</span>
+                  <span className="font-mono text-muted">{formatDate(milestone.dueDate)}</span>
                 ) : (
-                  <span className="text-faint">Ohne Termin</span>
+                  <span className="text-muted">Ohne Termin</span>
                 )}
                 {milestone.overdue && (
                   <span className="inline-flex items-center gap-1.5 font-medium text-danger">

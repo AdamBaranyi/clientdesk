@@ -116,7 +116,7 @@ export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary 
               <div className="mt-3">
                 <ProjectProgress project={project} />
               </div>
-              <p className="mt-2 font-mono text-xs text-faint">
+              <p className="mt-2 font-mono text-xs text-muted">
                 Start {formatDate(project.startDate)}
                 {project.targetDate ? ` · Ziel ${formatDate(project.targetDate)}` : ''}
               </p>
@@ -164,7 +164,7 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
                   {contract.publicDescription}
                 </p>
               )}
-              <p className="mt-2 font-mono text-xs text-faint">
+              <p className="mt-2 font-mono text-xs text-muted">
                 Ab {formatDate(contract.startDate)}
                 {contract.endDate ? ` bis ${formatDate(contract.endDate)}` : ' · unbefristet'}
                 {contract.active ? '' : ' · derzeit nicht aktiv'}
@@ -202,7 +202,7 @@ export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary
             >
               <div className="min-w-0 flex-1">
                 <p className="font-medium break-words">{document.originalName}</p>
-                <p className="mt-1 font-mono text-xs text-faint">
+                <p className="mt-1 font-mono text-xs text-muted">
                   {formatDate(document.createdAt.slice(0, 10))}
                   {document.projectName ? ` · ${document.projectName}` : ''}
                 </p>

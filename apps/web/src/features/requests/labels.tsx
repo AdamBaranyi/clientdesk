@@ -3,7 +3,7 @@ import { REQUEST_STATUS_LABELS } from './status-labels.ts';
 
 const STATUS_STYLE: Record<RequestStatus, { dot: string; text: string }> = {
   open: { dot: 'bg-faint', text: 'text-muted' },
-  in_progress: { dot: 'bg-accent', text: 'text-accent' },
+  in_progress: { dot: 'bg-ink', text: 'text-ink' },
   waiting_customer: { dot: 'bg-[var(--warning-mark)]', text: 'text-warning' },
   resolved: { dot: 'bg-positive', text: 'text-positive' },
 };

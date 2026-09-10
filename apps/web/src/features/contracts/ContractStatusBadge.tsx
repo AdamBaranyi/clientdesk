@@ -8,7 +8,7 @@ const LABELS: Record<ContractVisibleStatus, { label: string; dot: string; text: 
   draft: { label: 'Entwurf', dot: 'bg-faint', text: 'text-muted' },
   planned: { label: 'Geplant', dot: 'bg-[var(--warning-mark)]', text: 'text-warning' },
   active: { label: 'Aktiv', dot: 'bg-positive', text: 'text-positive' },
-  ended: { label: 'Beendet', dot: 'bg-faint', text: 'text-faint' },
+  ended: { label: 'Beendet', dot: 'bg-faint', text: 'text-muted' },
 };
 
 export function ContractStatusBadge({ status }: { status: ContractVisibleStatus }) {

@@ -86,7 +86,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader
           title="Anliegen"
           action={
-            <span className="text-xs text-faint">
+            <span className="text-xs text-muted">
               {request.createdByName ? `Erfasst von ${request.createdByName}` : 'Aus dem Portal'}
             </span>
           }
@@ -98,7 +98,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader
           title="Verlauf"
           action={
-            <span className="text-xs text-faint">
+            <span className="text-xs text-muted">
               Interne Kommentare erreichen das Kundenportal nie
             </span>
           }

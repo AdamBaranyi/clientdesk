@@ -68,7 +68,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
                   )}
                   {isInternal ? 'Nur intern' : 'Für den Kunden sichtbar'}
                 </span>
-                <span className="font-mono text-xs text-faint">
+                <span className="font-mono text-xs text-muted">
                   {formatMoment(comment.createdAt)}
                 </span>
               </div>
@@ -91,19 +91,19 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
             rows={3}
             value={body}
             onChange={(event) => setBody(event.target.value)}
-            className="w-full resize-y rounded-sm border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent"
+            className="text-body w-full resize-y rounded-sm border border-line bg-surface px-3 py-2.5 text-ink"
           />
         </div>
 
         <fieldset className="flex flex-col gap-2">
-          <legend className="text-xs font-medium text-faint">Sichtbarkeit</legend>
+          <legend className="text-xs font-medium text-muted">Sichtbarkeit</legend>
           <div className="flex flex-col gap-2 sm:flex-row">
             {(['internal', 'public'] as const).map((option) => (
               <label
                 key={option}
                 className={[
                   'flex min-h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-sm border px-3 text-sm',
-                  visibility === option ? 'border-accent bg-accent-soft' : 'border-line',
+                  visibility === option ? 'border-ink bg-raised' : 'border-line',
                 ].join(' ')}
               >
                 <input
@@ -112,7 +112,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
                   value={option}
                   checked={visibility === option}
                   onChange={() => setVisibility(option)}
-                  className="size-4 accent-[var(--accent)]"
+                  className="size-4 accent-[var(--action-bg)]"
                 />
                 {option === 'internal' ? (
                   <>

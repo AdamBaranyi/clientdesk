@@ -68,7 +68,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
               form.setValue('projectId', '');
             },
           })}
-          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
           {customers.map((customer) => (
             <option key={customer.id} value={customer.id}>
@@ -86,7 +86,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
         <select
           id="anfrage-projekt"
           {...form.register('projectId')}
-          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
           <option value="">Ohne Projekt</option>
           {(projects.data?.data ?? []).map((project) => (
@@ -118,7 +118,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
         <select
           id="anfrage-prio"
           {...form.register('priority')}
-          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
           <option value="normal">Normal</option>
           <option value="high">Hoch</option>

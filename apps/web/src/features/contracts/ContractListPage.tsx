@@ -73,13 +73,13 @@ export function ContractListPage({ workspace }: { workspace: WorkspaceSummary })
 
       {board.data && (
         <Card className="px-4 py-4 sm:px-5">
-          <p className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+          <p className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
             Monatlicher Vertragswert am {formatDate(board.data.contractDate)}
           </p>
           <p className="mt-2 font-mono text-2xl leading-none font-medium">
             CHF {formatAmountMinor(board.data.monthlyContractValueMinor)}
           </p>
-          <p className="mt-2 text-xs text-faint">
+          <p className="mt-2 text-xs text-muted">
             {board.data.confirmedContracts === 1
               ? '1 bestätigter Vertrag zählt an diesem Tag'
               : `${board.data.confirmedContracts} bestätigte Verträge zählen an diesem Tag`}
@@ -111,7 +111,7 @@ export function ContractListPage({ workspace }: { workspace: WorkspaceSummary })
         </SelectField>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="vertrag-stichtag" className="text-xs font-medium text-faint">
+          <label htmlFor="vertrag-stichtag" className="text-xs font-medium text-muted">
             Stichtag
           </label>
           <input
@@ -119,7 +119,7 @@ export function ContractListPage({ workspace }: { workspace: WorkspaceSummary })
             type="date"
             value={onDate ?? ''}
             onChange={(event) => patchParams({ onDate: event.target.value || null })}
-            className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+            className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
           />
         </div>
       </div>

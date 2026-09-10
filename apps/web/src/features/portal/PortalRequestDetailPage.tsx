@@ -71,7 +71,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
             <li key={comment.id} className="border-t border-line-soft px-4 py-4 sm:px-5">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-sm font-medium">{comment.authorName ?? 'Team'}</span>
-                <span className="font-mono text-xs text-faint">
+                <span className="font-mono text-xs text-muted">
                   {formatMoment(comment.createdAt)}
                 </span>
               </div>
@@ -93,7 +93,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
               rows={3}
               value={body}
               onChange={(event) => setBody(event.target.value)}
-              className="w-full resize-y rounded-sm border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent"
+              className="text-body w-full resize-y rounded-sm border border-line bg-surface px-3 py-2.5 text-ink"
             />
             {request.status === 'waiting_customer' && (
               <p className="text-xs text-warning">

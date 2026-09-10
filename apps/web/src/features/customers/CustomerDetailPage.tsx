@@ -73,7 +73,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
         {customer.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
+            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
               Interne Notiz
             </dt>
             {/* Erscheint nie im Kundenportal — die Client-DTOs führen dieses Feld gar nicht. */}
@@ -137,7 +137,7 @@ function Entry({
 }) {
   return (
     <div className="min-w-0">
-      <dt className="text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">{label}</dt>
+      <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">{label}</dt>
       <dd className="mt-1 text-sm">
         {value ? (
           href ? (
@@ -148,7 +148,7 @@ function Entry({
             <span className="break-words">{value}</span>
           )
         ) : (
-          <span className="text-faint">Nicht erfasst</span>
+          <span className="text-muted">Nicht erfasst</span>
         )}
       </dd>
     </div>

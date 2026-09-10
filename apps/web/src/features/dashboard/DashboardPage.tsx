@@ -39,7 +39,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
           </p>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="dashboard-stichtag" className="text-xs font-medium text-faint">
+          <label htmlFor="dashboard-stichtag" className="text-xs font-medium text-muted">
             Stichtag für Vertragskennzahlen
           </label>
           <input
@@ -52,7 +52,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
               else next.delete('contractDate');
               setParams(next, { replace: true });
             }}
-            className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+            className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
           />
         </div>
       </div>
@@ -62,10 +62,10 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
       <Card>
         <CardHeader
           title="Monatlicher Vertragswert"
-          action={<span className="text-xs text-faint">Letzte sechs Monate</span>}
+          action={<span className="text-xs text-muted">Letzte sechs Monate</span>}
         />
         <div className="px-4 pb-5 sm:px-5">
-          <p className="mb-3 text-xs text-faint">
+          <p className="mb-3 text-xs text-muted">
             Zu Monatsenddaten berechnet; der laufende Monat zum heutigen Datum. Vertraglich
             vereinbarter Wert, kein Zahlungseingang und kein buchhalterischer Umsatz.
           </p>
@@ -97,7 +97,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
         )}
       </Card>
 
-      <p className="text-xs text-faint">
+      <p className="text-xs text-muted">
         Offene Anfragen erscheinen hier, sobald es Anfragen gibt.
       </p>
     </div>

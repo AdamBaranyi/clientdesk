@@ -105,14 +105,14 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
       )}
 
       <div className="flex flex-col gap-1.5 sm:max-w-xs">
-        <label htmlFor="dokument-kunde" className="text-xs font-medium text-faint">
+        <label htmlFor="dokument-kunde" className="text-xs font-medium text-muted">
           Kunde
         </label>
         <select
           id="dokument-kunde"
           value={customerId}
           onChange={(event) => setCustomerId(event.target.value)}
-          className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+          className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
         >
           <option value="">Alle Kunden</option>
           {available.map((customer) => (
@@ -122,7 +122,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
           ))}
         </select>
         {customerId === '' && available.length > 0 && (
-          <p className="text-xs text-faint">
+          <p className="text-xs text-muted">
             Hochgeladen wird für {available[0]?.name}. Zum Wechseln zuerst den Kunden wählen.
           </p>
         )}
@@ -154,7 +154,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
               >
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <span className="font-medium break-words">{document.originalName}</span>
-                  <span className="flex flex-wrap items-center gap-3 text-xs text-faint">
+                  <span className="flex flex-wrap items-center gap-3 text-xs text-muted">
                     <span>{document.customerName}</span>
                     <span className="font-mono">{formatSize(document.sizeBytes)}</span>
                     <span className="font-mono">{formatDate(document.createdAt.slice(0, 10))}</span>

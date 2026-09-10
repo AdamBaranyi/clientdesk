@@ -27,11 +27,6 @@
   --color-data: var(--data-mark);
   --color-data-soft: var(--data-mark-soft);
 
-  /* Übergangsbrücke, fällt mit der letzten Referenz weg. */
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-on-accent: var(--on-accent);
-
   --font-sans: var(--font-sans);
   --font-condensed: var(--font-condensed);
   --font-mono: var(--font-mono);
@@ -128,13 +123,13 @@ body {
    * ihren Zustand über Hintergrund oder Rahmen und bleiben unberührt.
    */
   a {
-    color: var(--accent);
+    color: var(--action-bg);
     text-decoration: none;
     transition: color var(--dur-snap) var(--ease-state);
   }
 
   a:hover {
-    color: color-mix(in oklab, var(--accent) 78%, var(--ink));
+    color: var(--action-bg-hover);
   }
 
   /*
