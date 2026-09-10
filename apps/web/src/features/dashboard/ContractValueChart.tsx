@@ -1,21 +1,44 @@
+import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { formatAmountMinor, type MonthlyValuePoint } from '@clientdesk/contracts';
-import { useTheme } from '../../lib/theme-context.ts';
-import { formatDate } from '../../lib/format.ts';
+import type { MonthlyValuePoint } from '@clientdesk/contracts';
+import { useChartColors } from '../../lib/use-chart-colors.ts';
+import { ContractValueTable } from './ContractValueTable.tsx';
 
 /**
- * Recharts liest keine CSS-Variablen, deshalb die Tokenwerte hier als Literale
- * — sie stammen aus derselben Palette wie tokens.css.
+ * Ein Balken. Recharts animiert seine Balken nur alle gleichzeitig; der
+ * Versatz kommt deshalb hier aus derselben Regel, die auch Tabellenreihen
+ * staffelt — samt Deckel, damit ein längeres Diagramm nicht auseinanderläuft.
+ *
+ * `transformBox: fill-box` ist bei SVG nötig, sonst bezieht sich
+ * `transform-origin: bottom` auf den Ursprung der Zeichenfläche und der Balken
+ * wächst aus der falschen Kante.
  */
-const PALETTE = {
-  dark: { accent: '#7C6BFF', muted: '#2A3242', axis: '#6A7385', grid: '#232936' },
-  light: { accent: '#5B47E0', muted: '#DEE0E8', axis: '#88909F', grid: '#EBECF1' },
-} as const;
+interface BarShapeProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  fill?: string;
+  index?: number;
+}
+
+function GrowingBar({ x, y, width, height, fill, index = 0 }: BarShapeProps) {
+  return (
+    <rect
+      x={x}
+      y={y}
+      width={width}
+      height={height}
+      fill={fill}
+      className="motion-bar"
+      style={{ transformBox: 'fill-box', '--motion-index': index } as CSSProperties}
+    />
+  );
+}
 
 export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }) {
-  const { resolved } = useTheme();
-  const colors = PALETTE[resolved];
+  const colors = useChartColors();
 
   // Ohne useMemo entstünde bei jedem Render ein neues Array, und Recharts
   // startete seine Balkenanimation jedes Mal von vorn — sichtbar als Diagramm,
@@ -26,7 +49,7 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* Für Screenreader ist die Tabelle darunter die zugängliche Fassung. */}
       <div className="h-[200px] w-full" aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
@@ -36,74 +59,44 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
               dataKey="label"
               tick={{ fill: colors.axis, fontSize: 11 }}
               tickLine={false}
-              axisLine={{ stroke: colors.grid }}
+              axisLine={{ stroke: colors.cursor }}
             />
             <YAxis
               tick={{ fill: colors.axis, fontSize: 11 }}
               tickLine={false}
               axisLine={false}
               width={56}
-              tickFormatter={(value: number) => `${value.toLocaleString('de-CH')}`}
+              tickFormatter={(value: number) => value.toLocaleString('de-CH')}
             />
             <Tooltip
-              cursor={{ fill: colors.grid, opacity: 0.4 }}
+              cursor={{ fill: colors.cursor, opacity: 0.35 }}
               contentStyle={{
                 background: 'var(--surface)',
                 border: '1px solid var(--line)',
-                borderRadius: 8,
+                borderRadius: 0,
+                fontFamily: 'var(--font-mono)',
                 fontSize: 12,
               }}
-              labelStyle={{ color: 'var(--muted)' }}
+              labelStyle={{ color: 'var(--muted)', fontFamily: 'var(--font-condensed)' }}
               formatter={(value) => [
                 `CHF ${typeof value === 'number' ? value.toLocaleString('de-CH') : '—'}`,
                 'Monatswert',
               ]}
             />
-            {/* Ohne Animation: das Diagramm ist ein Datenbild, keine Vorführung —
-                und es bleibt bei reduzierter Bewegung ruhig. */}
+            {/* Eigene Animation statt der von Recharts: gestaffelt, mit den
+                Zeiten aus den Bewegungstokens, und bei reduzierter Bewegung
+                automatisch still. */}
             <Bar
               dataKey="francs"
-              radius={[4, 4, 0, 0]}
-              fill={colors.accent}
+              fill={colors.mark}
               isAnimationActive={false}
+              shape={<GrowingBar />}
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      <details className="rounded-md border border-line-soft px-3 py-2">
-        <summary className="cursor-pointer text-xs font-medium text-muted">
-          Werte als Tabelle
-        </summary>
-        <table className="mt-3 w-full border-collapse text-sm">
-          <caption className="sr-only">
-            Monatlicher Vertragswert der letzten sechs Monate in Schweizer Franken
-          </caption>
-          <thead>
-            <tr className="text-left text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
-              <th className="pb-2 font-semibold">Monat</th>
-              <th className="pb-2 font-semibold">Stichtag</th>
-              <th className="pb-2 text-right font-semibold">Vertragswert</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((point) => (
-              <tr key={point.date} className="border-t border-line-soft">
-                <td className="py-2">
-                  {point.label}
-                  {point.isCurrentMonth && (
-                    <span className="ml-2 text-xs text-faint">laufender Monat</span>
-                  )}
-                </td>
-                <td className="py-2 font-mono text-xs text-muted">{formatDate(point.date)}</td>
-                <td className="py-2 text-right font-mono">
-                  CHF {formatAmountMinor(point.amountMinor)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </details>
+      <ContractValueTable history={history} />
     </div>
   );
 }
