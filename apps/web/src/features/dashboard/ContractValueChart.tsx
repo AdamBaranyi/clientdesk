@@ -86,9 +86,13 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
             {/* Eigene Animation statt der von Recharts: gestaffelt, mit den
                 Zeiten aus den Bewegungstokens, und bei reduzierter Bewegung
                 automatisch still. */}
+            {/* Ohne Deckel füllt Recharts die volle Kategoriebreite aus, und
+                sechs Balken werden zu sechs Flächen. Ein Balken ist ein
+                Messwert, kein Farbfeld. */}
             <Bar
               dataKey="francs"
               fill={colors.mark}
+              maxBarSize={44}
               isAnimationActive={false}
               shape={<GrowingBar />}
             />
