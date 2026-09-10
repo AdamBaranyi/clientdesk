@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { SearchHit } from '@clientdesk/contracts';
+import { Modal } from '../../components/base/Modal.tsx';
 import { MIN_TERM_LENGTH, useSearch } from './api.ts';
 import { KIND_LABEL, hitPath } from './paths.ts';
 
@@ -71,20 +72,8 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[10vh]">
-      <button
-        type="button"
-        aria-label="Suche schliessen"
-        onClick={onClose}
-        className="absolute inset-0 bg-black/50"
-      />
-
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label="Springen zu"
-        className="relative flex w-full max-w-[560px] flex-col border border-line bg-surface"
-      >
+    <Modal label="Springen zu" onClose={onClose} align="top">
+      <div className="flex w-full max-w-[560px] flex-col border border-line bg-surface">
         <input
           ref={eingabe}
           value={term}
@@ -120,7 +109,7 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
           </span>
         </p>
       </div>
-    </div>
+    </Modal>
   );
 }
 
