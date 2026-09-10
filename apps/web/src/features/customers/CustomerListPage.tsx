@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 import type { CustomerStatusFilter, WorkspaceSummary } from '@clientdesk/contracts';
 import { Button } from '../../components/base/Button.tsx';
@@ -11,6 +11,7 @@ import { Pagination } from '../../components/base/Pagination.tsx';
 import { useCreateCustomer, useCustomers } from './api.ts';
 import { CustomerForm } from './CustomerForm.tsx';
 import { CustomerRows } from './CustomerRows.tsx';
+import { FilterGroup, SearchField } from '../../components/base/Controls.tsx';
 
 const STATUS_LABELS: Record<CustomerStatusFilter, string> = {
   active: 'Aktiv',
@@ -55,36 +56,22 @@ export function CustomerListPage({ workspace }: { workspace: WorkspaceSummary })
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="flex min-h-11 flex-1 items-center gap-2.5 rounded-lg border border-line bg-surface px-3">
-          <Search size={16} strokeWidth={1.8} className="shrink-0 text-faint" aria-hidden="true" />
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => patchParams({ search: event.target.value })}
-            placeholder="Name, Kontakt oder E-Mail"
-            aria-label="Kunden durchsuchen"
-            className="min-w-0 flex-1 bg-transparent text-base text-ink outline-none"
-          />
-        </div>
+        <SearchField
+          value={search}
+          onChange={(wert) => patchParams({ search: wert })}
+          placeholder="Name, Kontakt oder E-Mail"
+          label="Kunden durchsuchen"
+        />
 
-        <div role="group" aria-label="Status" className="flex gap-1.5">
-          {(Object.keys(STATUS_LABELS) as CustomerStatusFilter[]).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => patchParams({ status: option === 'active' ? null : option })}
-              aria-pressed={status === option}
-              className={[
-                'min-h-11 rounded-lg border px-3 text-sm font-medium transition-colors',
-                status === option
-                  ? 'border-accent bg-accent-soft text-accent'
-                  : 'border-line text-muted hover:text-ink',
-              ].join(' ')}
-            >
-              {STATUS_LABELS[option]}
-            </button>
-          ))}
-        </div>
+        <FilterGroup
+          label="Status"
+          active={status}
+          options={(Object.keys(STATUS_LABELS) as CustomerStatusFilter[]).map((option) => ({
+            value: option,
+            label: STATUS_LABELS[option],
+          }))}
+          onSelect={(option) => patchParams({ status: option === 'active' ? null : option })}
+        />
       </div>
 
       <Card>

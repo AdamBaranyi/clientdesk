@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 import { PROJECT_STATUS, type ProjectStatus, type WorkspaceSummary } from '@clientdesk/contracts';
 import { Button } from '../../components/base/Button.tsx';
@@ -12,6 +12,7 @@ import { useCustomers } from '../customers/api.ts';
 import { useCreateProject, useProjects } from './api.ts';
 import { ProjectForm } from './ProjectForm.tsx';
 import { ProjectRows } from './ProjectRows.tsx';
+import { SearchField, SelectField } from '../../components/base/Controls.tsx';
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
   planned: 'Geplant',
@@ -64,36 +65,27 @@ export function ProjectListPage({ workspace }: { workspace: WorkspaceSummary }) 
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="flex min-h-11 flex-1 items-center gap-2.5 rounded-lg border border-line bg-surface px-3">
-          <Search size={16} strokeWidth={1.8} className="shrink-0 text-faint" aria-hidden="true" />
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => patchParams({ search: event.target.value })}
-            placeholder="Projekt oder Kunde"
-            aria-label="Projekte durchsuchen"
-            className="min-w-0 flex-1 bg-transparent text-base text-ink outline-none"
-          />
-        </div>
+        <SearchField
+          value={search}
+          onChange={(wert) => patchParams({ search: wert })}
+          placeholder="Projekt oder Kunde"
+          label="Projekte durchsuchen"
+        />
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="projekt-status-filter" className="sr-only">
-            Nach Status filtern
-          </label>
-          <select
-            id="projekt-status-filter"
-            value={status ?? ''}
-            onChange={(event) => patchParams({ status: event.target.value || null })}
-            className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
-          >
-            <option value="">Alle Status</option>
-            {PROJECT_STATUS.map((option) => (
-              <option key={option} value={option}>
-                {STATUS_LABELS[option]}
-              </option>
-            ))}
-          </select>
-        </div>
+        <SelectField
+          id="projekt-status-filter"
+          label="Nach Status filtern"
+          labelHidden
+          value={status ?? ''}
+          onChange={(event) => patchParams({ status: event.target.value || null })}
+        >
+          <option value="">Alle Status</option>
+          {PROJECT_STATUS.map((option) => (
+            <option key={option} value={option}>
+              {STATUS_LABELS[option]}
+            </option>
+          ))}
+        </SelectField>
       </div>
 
       <Card>

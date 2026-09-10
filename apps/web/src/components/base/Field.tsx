@@ -1,7 +1,5 @@
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
-
-const CONTROL =
-  'w-full rounded-lg border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent';
+import { CONTROL_BASE } from './control-style.ts';
 
 interface Common {
   id: string;
@@ -13,13 +11,13 @@ interface Common {
 function Wrapper({ id, label, error, hint, children }: Common & { children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="text-dense font-medium">
         {label}
       </label>
       {children}
-      {hint && !error && <p className="text-xs text-faint">{hint}</p>}
+      {hint && !error && <p className="text-micro text-muted">{hint}</p>}
       {error && (
-        <p id={`${id}-fehler`} className="text-sm text-danger">
+        <p id={`${id}-fehler`} className="text-dense text-danger">
           {error}
         </p>
       )}
@@ -37,7 +35,7 @@ export function TextField({ id, label, error, hint, ...props }: TextFieldProps) 
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-fehler` : undefined}
-        className={['min-h-11', CONTROL].join(' ')}
+        className={['min-h-11', CONTROL_BASE].join(' ')}
       />
     </Wrapper>
   );
@@ -54,7 +52,7 @@ export function TextAreaField({ id, label, error, hint, ...props }: TextAreaProp
         rows={props.rows ?? 3}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-fehler` : undefined}
-        className={['resize-y', CONTROL].join(' ')}
+        className={['resize-y', CONTROL_BASE].join(' ')}
       />
     </Wrapper>
   );

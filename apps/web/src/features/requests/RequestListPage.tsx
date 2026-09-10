@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useSearchParams } from 'react-router';
 import { REQUEST_STATUS, type RequestStatus, type WorkspaceSummary } from '@clientdesk/contracts';
 import { Button } from '../../components/base/Button.tsx';
@@ -13,6 +13,7 @@ import { useCreateRequest, useRequests } from './api.ts';
 import { RequestForm } from './RequestForm.tsx';
 import { RequestRows } from './RequestRows.tsx';
 import { REQUEST_STATUS_LABELS } from './status-labels.ts';
+import { SearchField, SelectField } from '../../components/base/Controls.tsx';
 
 export function RequestListPage({ workspace }: { workspace: WorkspaceSummary }) {
   const [params, setParams] = useSearchParams();
@@ -61,36 +62,26 @@ export function RequestListPage({ workspace }: { workspace: WorkspaceSummary }) 
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="flex min-h-11 flex-1 items-center gap-2.5 rounded-lg border border-line bg-surface px-3">
-          <Search size={16} strokeWidth={1.8} className="shrink-0 text-faint" aria-hidden="true" />
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => patchParams({ search: event.target.value })}
-            placeholder="Betreff oder Kunde"
-            aria-label="Anfragen durchsuchen"
-            className="min-w-0 flex-1 bg-transparent text-base text-ink outline-none"
-          />
-        </div>
+        <SearchField
+          value={search}
+          onChange={(wert) => patchParams({ search: wert })}
+          placeholder="Betreff oder Kunde"
+          label="Anfragen durchsuchen"
+        />
 
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="anfrage-status-filter" className="text-xs font-medium text-faint">
-            Status
-          </label>
-          <select
-            id="anfrage-status-filter"
-            value={status ?? ''}
-            onChange={(event) => patchParams({ status: event.target.value || null })}
-            className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
-          >
-            <option value="">Alle Status</option>
-            {REQUEST_STATUS.map((option) => (
-              <option key={option} value={option}>
-                {REQUEST_STATUS_LABELS[option]}
-              </option>
-            ))}
-          </select>
-        </div>
+        <SelectField
+          id="anfrage-status-filter"
+          label="Status"
+          value={status ?? ''}
+          onChange={(event) => patchParams({ status: event.target.value || null })}
+        >
+          <option value="">Alle Status</option>
+          {REQUEST_STATUS.map((option) => (
+            <option key={option} value={option}>
+              {REQUEST_STATUS_LABELS[option]}
+            </option>
+          ))}
+        </SelectField>
       </div>
 
       <Card>
