@@ -28,7 +28,8 @@
     "seed:load": "bun run --filter '@clientdesk/db' seed:load",
     "measure": "bun --env-file=.env scripts/measure-performance.ts",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "check:bundle-size": "bun run --filter '@clientdesk/web' build && bun scripts/check-bundle-size.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.11.2",

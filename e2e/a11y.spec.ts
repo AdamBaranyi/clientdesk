@@ -34,6 +34,25 @@ async function pruefe(page: Page, thema: 'light' | 'dark') {
   await page.emulateMedia({ colorScheme: thema });
   await warteAufSchriften(page);
 
+  /*
+   * Erst warten, bis nichts mehr nachlädt, dann laufende Bewegungen ans Ende
+   * setzen, dann prüfen, dass wirklich keine mehr läuft.
+   *
+   * Die Reihenfolge ist der ganze Punkt. Das Kennzahlband hängt sich erst
+   * ein, wenn seine Abfrage geantwortet hat, und startet dabei neue
+   * Eintritte. Wer vorher `finish()` aufruft, beendet Bewegungen, die es noch
+   * gar nicht gibt — und axe misst danach eine Deckkraft unter eins. Genau
+   * daher kamen Kontrastbefunde, die bei jedem Lauf auf einer anderen Breite
+   * auftraten und im Einzellauf nie.
+   */
+  await page.waitForLoadState('networkidle');
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) animation.finish();
+  });
+  await page.waitForFunction(() =>
+    document.getAnimations().every((animation) => animation.playState !== 'running'),
+  );
+
   const ergebnis = await new AxeBuilder({ page }).withTags(NORMEN).analyze();
 
   const befunde = ergebnis.violations.map((v) => ({

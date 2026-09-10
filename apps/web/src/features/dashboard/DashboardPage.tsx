@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import type { WorkspaceSummary } from '@clientdesk/contracts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
@@ -6,7 +7,14 @@ import { workspacePath } from '../../lib/paths.ts';
 import { useDashboard } from '../contracts/api.ts';
 import { ProjectRows } from '../projects/ProjectRows.tsx';
 import { useProjects } from '../projects/api.ts';
-import { ContractValueChart } from './ContractValueChart.tsx';
+/*
+ * Recharts ist die grösste Abhängigkeit im Frontend und wird auf genau einer
+ * Seite gebraucht. Ohne diese Trennung lädt jeder Besucher der Startseite
+ * eine Diagrammbibliothek mit, die er nie sieht.
+ */
+const ContractValueChart = lazy(() =>
+  import('./ContractValueChart.tsx').then((modul) => ({ default: modul.ContractValueChart })),
+);
 import { MetricBand } from './MetricBand.tsx';
 
 export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
@@ -69,7 +77,20 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
             Zu Monatsenddaten berechnet; der laufende Monat zum heutigen Datum. Vertraglich
             vereinbarter Wert, kein Zahlungseingang und kein buchhalterischer Umsatz.
           </p>
-          <ContractValueChart history={data.history} />
+          {/*
+            Der Platzhalter ist genauso hoch wie das Diagramm. Ein Fallback mit
+            anderer Höhe würde beim Nachladen den Rest der Seite verschieben —
+            und genau das misst der CLS-Wert.
+          */}
+          <Suspense
+            fallback={
+              <div className="text-dense flex h-[248px] items-center text-muted">
+                Diagramm wird geladen …
+              </div>
+            }
+          >
+            <ContractValueChart history={data.history} />
+          </Suspense>
         </div>
       </Card>
 

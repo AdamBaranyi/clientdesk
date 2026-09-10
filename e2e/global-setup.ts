@@ -1,7 +1,14 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium, type FullConfig } from '@playwright/test';
-import { AUTH_DIR, STATE_FILE, WORKSPACE_FILE } from './paths.ts';
+import {
+  AUTH_DIR,
+  LOAD_STATE_FILE,
+  LOAD_WORKSPACE_FILE,
+  LOAD_ZUGANG,
+  STATE_FILE,
+  WORKSPACE_FILE,
+} from './paths.ts';
 
 /**
  * Startet genau eine Demo für den ganzen Lauf.
@@ -40,8 +47,43 @@ async function bestehendeSitzungLaeuftNoch(baseURL: string): Promise<boolean> {
   }
 }
 
+/**
+ * Meldet einmal am Lastdaten-Workspace an, falls es ihn gibt.
+ *
+ * Auch hier greift eine Begrenzung: fünf Anmeldeversuche je Fenster. Drei
+ * Messungen, die sich einzeln anmelden, verbrauchen sie in einem Lauf.
+ *
+ * Gibt es die Lastdaten nicht, wird keine Datei geschrieben und die
+ * Messungen überspringen sich selbst mit einem lesbaren Grund — statt an
+ * einem Anmeldeformular zu scheitern, das aussieht wie ein Fehler.
+ */
+async function lastZugangVorbereiten(baseURL: string): Promise<void> {
+  await mkdir(AUTH_DIR, { recursive: true });
+  const browser = await chromium.launch();
+  try {
+    const context = await browser.newContext({ baseURL });
+    const page = await context.newPage();
+    await page.goto('/login');
+    await page.getByLabel('E-Mail').fill(LOAD_ZUGANG.email);
+    await page.getByLabel('Passwort').fill(LOAD_ZUGANG.passwort);
+    await page.getByRole('button', { name: 'Anmelden' }).click();
+    await page.waitForURL(/\/app\/[0-9a-f-]+\//, { timeout: 15_000 });
+
+    const workspaceId = /\/app\/([0-9a-f-]+)\//.exec(page.url())?.[1];
+    if (!workspaceId) return;
+
+    await context.storageState({ path: LOAD_STATE_FILE });
+    await writeFile(LOAD_WORKSPACE_FILE, JSON.stringify({ workspaceId }), 'utf8');
+  } catch {
+    // Kein Lastdaten-Bestand: bun --env-file=.env run seed:load
+  } finally {
+    await browser.close();
+  }
+}
+
 async function globalSetup(config: FullConfig): Promise<void> {
   const baseURL = config.projects[0]?.use.baseURL ?? 'http://localhost:5173';
+  await lastZugangVorbereiten(baseURL);
   if (await bestehendeSitzungLaeuftNoch(baseURL)) return;
 
   const browser = await chromium.launch();
