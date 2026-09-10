@@ -1,6 +1,10 @@
 /*
  * Design-Tokens. Eine Datei, zwei Wertesätze.
  *
+ * Richtung: industriell/technisch auf einem Schweizer Raster. Tinte auf
+ * Papier, Kanten statt Schatten, Zahlen in Mono. Der Entwurf soll wie ein
+ * Datenblatt wirken, nicht wie ein Kartenteppich.
+ *
  * Der helle Satz steht auf :root und ist damit immer definiert. Der dunkle
  * Satz greift zweimal: über prefers-color-scheme für die Gerätewahl und über
  * [data-theme="dark"] für die ausdrückliche Wahl. Kein Wert wird
@@ -8,72 +12,184 @@
  * Nutzer ausdrücklich umschaltet.
  */
 
+/* ==========================================================================
+   Schrift
+   ========================================================================== */
+
+:root {
+  /* IBM Plex: eine Familie, drei Schnitte, echte Herkunft — als
+     Ingenieursidentität gezeichnet. Condensed trägt Label und Spaltenköpfe,
+     Mono trägt jede Zahl. */
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+  --font-condensed: 'IBM Plex Sans Condensed', var(--font-sans);
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /*
+   * Typoskala, bewusst zweiteilig.
+   *
+   * Arbeitsband 11–14 px, linear in Einzelschritten: ein Datenblatt braucht
+   * im Kleinen Auflösung, keine Abstufung. Eine geometrische Skala liefert
+   * hier entweder 10,5 px oder gar nichts.
+   *
+   * Displayband ab 14 px geometrisch mit Faktor 1,5: oben zählen Sprünge.
+   * Grösste zu Fliesstext = 72:14, also 5,1:1. Vorher waren es 1,7:1.
+   */
+  --text-micro: 11px; /* Einheiten, Achsen, Teilstriche */
+  --text-label: 12px; /* Spaltenköpfe, Einheitszeilen (condensed, Versalien) */
+  --text-dense: 13px; /* Tabellenzellen */
+  --text-body: 14px; /* Fliesstext, Bedienelemente */
+
+  --text-section: 21px; /* Abschnittstitel */
+  --text-page: 32px; /* Seitentitel */
+  --text-figure: 48px; /* die Zahl auf der Messlatte */
+  --text-hero: 72px; /* Startseite */
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.35;
+  --leading-body: 1.55;
+
+  /* Zahlen laufen tabellarisch, sonst springt jede Aktualisierung. */
+  --numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Raster: Abstände und Radien
+   ========================================================================== */
+
+:root {
+  /*
+   * Abstandsskala auf 4-px-Raster. Der Rhythmus entsteht durch die Sprünge
+   * 16 → 24 → 48 → 80, nicht durch gleichmässiges Atmen. Vorher lagen alle
+   * Abstände zwischen 2 und 12 px, und nichts war dadurch betont.
+   */
+  --space-1: 4px; /* innerhalb einer Zeile */
+  --space-2: 8px; /* zwischen zusammengehörigen Elementen */
+  --space-3: 12px; /* Zellinnenabstand */
+  --space-4: 16px; /* Blockinnenabstand */
+  --space-6: 24px; /* zwischen Blöcken */
+  --space-8: 32px;
+  --space-12: 48px; /* zwischen Abschnitten */
+  --space-20: 80px; /* vor einem neuen Kapitel */
+
+  /* Scharf. Ein Datenblatt hat keine weichen Ecken. */
+  --radius-none: 0; /* Tabellen, Messlatte */
+  --radius-sm: 2px; /* Knöpfe, Eingabefelder, Chips */
+  --radius: 3px; /* Flächen */
+
+  /*
+   * Kanten statt Schatten. Die Tokens bleiben vorerst auf none, weil vier
+   * Komponenten sie noch referenzieren; sie verschwinden, sobald die
+   * jeweilige Komponente umgebaut ist.
+   */
+  --shadow-card: none;
+  --shadow-raised: none;
+
+  --sidebar-width: 232px;
+  --topbar-height: 56px;
+  --rule-width: 1px;
+}
+
+/* ==========================================================================
+   Farben — hell (Papier)
+   ========================================================================== */
+
 :root {
   color-scheme: light;
 
-  --bg: #f3f4f7;
+  /* Warmes Papiergrau, kein Blaustich. */
+  --bg: #f0efeb;
   --surface: #ffffff;
-  --raised: #f7f7fb;
-  --line: #e3e5eb;
-  --line-soft: #eeeff3;
+  --raised: #f7f6f3;
+  --line: #d8d5cd;
+  --line-soft: #e6e3db;
 
-  --ink: #11141a;
-  --muted: #59616f;
-  --faint: #88909f;
+  --ink: #191813;
+  --muted: #5c5a50;
+  --faint: #8c8a7e;
 
-  --accent: #5b47e0;
-  --accent-soft: rgba(91, 71, 224, 0.1);
-  --on-accent: #ffffff;
+  /*
+   * KOBALT: NUR FÜR DATEN.
+   *
+   * Erlaubt an genau drei Stellen:
+   *   1. Diagramm-Daten (Balken, Linien, Marker)
+   *   2. aktiver Navigationszustand
+   *   3. Fokusring — muss auffällig sein, und keine Statusfarbe darf das
+   *      übernehmen
+   *
+   * Verboten: Knöpfe, Flächen, Rahmen, Icons, Text.
+   *
+   * Landet Kobalt je auf einem Knopf, ist das der Rückfall ins
+   * Standard-SaaS. Das Token heisst deshalb nicht "accent" — ein Token
+   * namens Akzent lädt genau dazu ein.
+   */
+  --data-mark: #1b4ddb;
+  --data-mark-soft: rgba(27, 77, 219, 0.12);
+  --focus-ring: #1b4ddb;
 
-  --positive: #1f8a5b;
+  /*
+   * Die Hauptaktion trägt keine Farbe, sondern Tinte. Das ist die
+   * eigentliche Abkehr vom Reflex: der färbt immer den Knopf.
+   */
+  --action-bg: #191813;
+  --action-fg: #f6f5f2;
+
+  /* Statusfarben bedeuten etwas und bleiben von Kobalt unterscheidbar. */
+  --positive: #1d7a4c;
   --warning: #8a5e12;
-  --warning-mark: #c89020;
-  --danger: #a83a30;
-  --danger-mark: #c4453a;
+  --warning-mark: #b8801f;
+  --danger: #a3352b;
+  --danger-mark: #c04437;
 
-  --sidebar-bg: #eceef2;
-  --shadow-card: 0 1px 2px rgba(17, 20, 26, 0.04);
-  --shadow-raised: 0 1px 3px rgba(17, 20, 26, 0.08);
+  --sidebar-bg: #e7e5df;
 
-  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-
-  --radius-sm: 5px;
-  --radius: 8px;
-  --radius-lg: 10px;
-
-  --sidebar-width: 244px;
-  --topbar-height: 60px;
+  /*
+   * Übergangsbrücke: --accent zeigt bewusst auf Tinte, nicht auf Kobalt.
+   * Noch nicht umgebaute Stellen sind damit standardmässig richtig statt
+   * standardmässig falsch. Fällt weg, sobald die letzte Referenz weg ist.
+   */
+  --accent: var(--action-bg);
+  --accent-soft: rgba(25, 24, 19, 0.06);
+  --on-accent: var(--action-fg);
 }
+
+/* ==========================================================================
+   Farben — dunkel
+   ========================================================================== */
 
 /* Gerätewahl: dunkel, solange nicht ausdrücklich hell gewählt wurde. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --bg: #0b0e13;
-    --surface: #12161d;
-    --raised: #181d26;
-    --line: #232936;
-    --line-soft: #1b212b;
+    --bg: #141310;
+    --surface: #1b1a16;
+    --raised: #22201b;
+    --line: #35322a;
+    --line-soft: #29261f;
 
-    --ink: #eaedf3;
-    --muted: #98a1b2;
-    --faint: #6a7385;
+    --ink: #edebe3;
+    --muted: #a09d91;
+    --faint: #736f64;
 
-    --accent: #7c6bff;
-    --accent-soft: rgba(124, 107, 255, 0.14);
-    --on-accent: #0b0e13;
+    /* Aufgehellt, damit Balken gegen den dunklen Grund 3:1 erreichen. */
+    --data-mark: #5b82f5;
+    --data-mark-soft: rgba(91, 130, 245, 0.16);
+    --focus-ring: #5b82f5;
 
-    --positive: #43d392;
-    --warning: #f0b44a;
-    --warning-mark: #f0b44a;
-    --danger: #ff7a6b;
-    --danger-mark: #ff7a6b;
+    --action-bg: #edebe3;
+    --action-fg: #141310;
 
-    --sidebar-bg: #080a0e;
-    --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.025);
-    --shadow-raised: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --positive: #4fbf87;
+    --warning: #d9a441;
+    --warning-mark: #d9a441;
+    --danger: #f07a6a;
+    --danger-mark: #f07a6a;
+
+    --sidebar-bg: #100f0c;
+
+    --accent: var(--action-bg);
+    --accent-soft: rgba(237, 235, 227, 0.08);
+    --on-accent: var(--action-fg);
   }
 }
 
@@ -81,27 +197,32 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #0b0e13;
-  --surface: #12161d;
-  --raised: #181d26;
-  --line: #232936;
-  --line-soft: #1b212b;
+  --bg: #141310;
+  --surface: #1b1a16;
+  --raised: #22201b;
+  --line: #35322a;
+  --line-soft: #29261f;
 
-  --ink: #eaedf3;
-  --muted: #98a1b2;
-  --faint: #6a7385;
+  --ink: #edebe3;
+  --muted: #a09d91;
+  --faint: #736f64;
 
-  --accent: #7c6bff;
-  --accent-soft: rgba(124, 107, 255, 0.14);
-  --on-accent: #0b0e13;
+  --data-mark: #5b82f5;
+  --data-mark-soft: rgba(91, 130, 245, 0.16);
+  --focus-ring: #5b82f5;
 
-  --positive: #43d392;
-  --warning: #f0b44a;
-  --warning-mark: #f0b44a;
-  --danger: #ff7a6b;
-  --danger-mark: #ff7a6b;
+  --action-bg: #edebe3;
+  --action-fg: #141310;
 
-  --sidebar-bg: #080a0e;
-  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.025);
-  --shadow-raised: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --positive: #4fbf87;
+  --warning: #d9a441;
+  --warning-mark: #d9a441;
+  --danger: #f07a6a;
+  --danger-mark: #f07a6a;
+
+  --sidebar-bg: #100f0c;
+
+  --accent: var(--action-bg);
+  --accent-soft: rgba(237, 235, 227, 0.08);
+  --on-accent: var(--action-fg);
 }

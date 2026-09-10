@@ -11,14 +11,49 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-faint: var(--faint);
-  --color-accent: var(--accent);
-  --color-accent-soft: var(--accent-soft);
-  --color-on-accent: var(--on-accent);
   --color-positive: var(--positive);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+
+  /* Aktion trägt Tinte, nicht Farbe. */
+  --color-action: var(--action-bg);
+  --color-action-fg: var(--action-fg);
+
+  /* Kobalt: nur Diagramm-Daten, aktiver Nav-Zustand, Fokusring.
+     Siehe die Regel in tokens.css. */
+  --color-data: var(--data-mark);
+  --color-data-soft: var(--data-mark-soft);
+
+  /* Übergangsbrücke, fällt mit der letzten Referenz weg. */
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+
   --font-sans: var(--font-sans);
+  --font-condensed: var(--font-condensed);
   --font-mono: var(--font-mono);
+
+  --text-micro: var(--text-micro);
+  --text-label: var(--text-label);
+  --text-dense: var(--text-dense);
+  --text-body: var(--text-body);
+  --text-section: var(--text-section);
+  --text-page: var(--text-page);
+  --text-figure: var(--text-figure);
+  --text-hero: var(--text-hero);
+
+  --spacing-1: var(--space-1);
+  --spacing-2: var(--space-2);
+  --spacing-3: var(--space-3);
+  --spacing-4: var(--space-4);
+  --spacing-6: var(--space-6);
+  --spacing-8: var(--space-8);
+  --spacing-12: var(--space-12);
+  --spacing-20: var(--space-20);
+
+  --radius-none: var(--radius-none);
+  --radius-sm: var(--radius-sm);
+  --radius: var(--radius);
 }
 
 html {
@@ -34,8 +69,8 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
   /* Kein overflow-x: hidden — ein Überlauf wird an der Ursache behoben. */
 }
@@ -46,9 +81,13 @@ body {
   box-sizing: border-box;
 }
 
-/* Sichtbarer Fokus überall, auch auf dunklem Grund. */
+/*
+ * Sichtbarer Fokus überall, auch auf dunklem Grund. Der Ring ist die dritte
+ * und letzte erlaubte Verwendung von Kobalt: er muss auffallen, und keine
+ * Statusfarbe darf diese Rolle übernehmen.
+ */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
