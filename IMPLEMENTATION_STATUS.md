@@ -171,11 +171,9 @@ Mandantentests wie jeder andere Endpunkt.
 
 **Meilenstein 6a: Frontend-Qualität** — hängt nicht am Server und läuft deshalb vor Meilenstein 6.
 
-- Playwright über sechs Prüfbreiten. **Je Breite neu laden, nicht das Fenster ziehen** — in der
-  Fensteremulation feuert weder `resize` noch `ResizeObserver`, und `innerWidth` bleibt stehen.
-  Wer zieht statt neu zu laden, misst ein Artefakt.
-- Fokusfalle im Dialog, Fokus-Rückgabe an den Auslöser, Hintergrund `inert` — mit Tests, die es
-  belegen. Heute führt der Fokus in den Dialog hinein, aber Tab verlässt ihn wieder.
+- ~~Playwright über sechs Prüfbreiten~~ **erledigt**, 72 Tests je Lauf, rund 22 Sekunden.
+- ~~Fokusfalle, Fokus-Rückgabe, inerter Hintergrund~~ **erledigt** — über `showModal()` des
+  Browsers statt selbst gebaut; Dialog und Kommandopalette liegen jetzt auf demselben Bauteil.
 - `@axe-core/playwright` über alle Hauptseiten, hell und dunkel getrennt; `eslint-plugin-jsx-a11y`
   in `bun run verify`. Damit hält die Maschine die Kontraste, die bisher von Hand gemessen sind.
 - Frontend-Budget: Bündelgrösse je Chunk, LCP, CLS und INP gegen den Lastdaten-Seed, hart in der CI.

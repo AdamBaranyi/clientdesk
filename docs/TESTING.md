@@ -22,11 +22,46 @@ bun --env-file=.env run vitest run
 Ohne `--env-file` fehlt `TEST_DATABASE_URL`, und zwölf Testdateien scheitern beim Start statt
 in einem Testfall — der Fehler sieht dann grösser aus, als er ist.
 
+### End-to-End mit Playwright
+
+```bash
+bun run test:e2e        # alle sechs Breiten
+bun run test:e2e:ui     # zum Nachsehen, wenn etwas rot ist
+```
+
+**12 Tests je Breite, 72 im Lauf, rund 22 Sekunden.**
+
+Sechs Projekte, eines je Prüfbreite. **Es wird nie mitten im Test die Fenstergrösse verändert.**
+Manche Umgebungen ändern das Layout, ohne der Seite Bescheid zu sagen — dann feuert weder `resize`
+noch ein `ResizeObserver`, und Bauteile, die sich selbst messen, bleiben auf der alten Grösse
+stehen. Genau das hat am 10.09.2026 zu einer Fehldiagnose an einem Diagramm geführt. Wer zieht
+statt neu zu laden, prüft ein Artefakt.
+
+Geprüft wird je Breite: kein waagerechter Überlauf auf Startseite, Dashboard und Kundenliste — die
+Zusicherung nennt beim Scheitern das schuldige Element; der Wechsel zwischen Tabelle und Karten bei
+640 Pixeln; die Seitenleiste fest ab 1024 und darunter hinter dem Hamburger, samt Escape; und dass
+der Fliesstext bei 16 Pixeln bleibt.
+
+Dazu Fokus und Tastatur: der Dialog sperrt den Hintergrund aus, gibt den Fokus an seinen Auslöser
+zurück, die Kommandopalette ebenso, die Sprungmarke führt zum Inhalt, und jedes Bedienelement zeigt
+einen mindestens zwei Pixel breiten Fokusring.
+
+**Wie die Fokusfalle gemessen wird:** nicht durch zwanzigmal Tab. Der Headless-Shell hat keine
+Browserleiste, an die der Fokus hinter dem letzten Element wandern könnte, und
+`document.activeElement` fällt dann auf `body` zurück — eine heile Falle sähe aus wie ein Leck.
+Stattdessen wird auf jedem der rund vierzig Bedienelemente hinter dem Dialog `focus()` aufgerufen
+und geprüft, ob es gewirkt hat. Ohne Dialog: vierzig erreichbar. Mit Dialog: null.
+
+**Eine Demo für den ganzen Lauf.** Die Anwendung lässt fünf je Viertelstunde zu; zwei Dutzend wären
+mehr als die Grenze, und die Grenze ist richtig. Eine noch gültige Sitzung wird
+weiterverwendet, sonst verbraucht jeder Entwicklungslauf eine Demo. Das geht nur, weil diese Tests
+ausschliesslich lesen — **ein Test, der schreibt, darf diese Sitzung nicht benutzen.**
+
 ### Noch nicht geprüft
 
-Es gibt **keine End-to-End-Tests, keine axe-Prüfung und keine Frontend-Messung**. Tastaturführung,
-Kontraste und Bedienbarkeit ab 320 Pixeln sind von Hand im Browser gemessen und in den
-Commit-Nachrichten festgehalten, aber nichts davon hält sich selbst. Das ist Meilenstein 6a.
+Es gibt **keine axe-Prüfung und keine Frontend-Messung**. Kontraste sind von Hand im Browser
+gemessen und in den Commit-Nachrichten festgehalten, aber nichts hält sie dort. Das ist der Rest
+von Meilenstein 6a.
 
 ### Was geprüft wird
 
