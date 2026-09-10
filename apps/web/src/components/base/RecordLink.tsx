@@ -47,9 +47,19 @@ export function RecordLink({ to, title }: { to: string; title: string }) {
       return ueberschriftSteht;
     });
 
-    // Der Link ist nach der Navigation meist schon ausgehängt; der Rücksetzer
-    // greift für den Fall, dass der Übergang abgebrochen wird.
-    void transition.finished.finally(() => {
+    /*
+     * Ein Übergang bricht im Alltag ab — ein zweiter Klick, ein Zurück, ein
+     * Tabwechsel. Dann weist der Browser `ready` und `finished` zurück, und
+     * ohne Behandlung landet das als unbehandelte Zurückweisung in der
+     * Konsole. Gemessen: eine `InvalidStateError` je Navigation.
+     *
+     * Ein Abbruch ist hier kein Fehler, sondern der Normalfall. Er wird
+     * geschluckt, aber der Name muss trotzdem vom Link verschwinden — sonst
+     * bliebe er beim nächsten Übergang doppelt vergeben.
+     */
+    const abgebrochenIstInOrdnung = () => undefined;
+    void transition.ready.catch(abgebrochenIstInOrdnung);
+    void transition.finished.catch(abgebrochenIstInOrdnung).finally(() => {
       if (element) element.style.viewTransitionName = 'none';
     });
   }
