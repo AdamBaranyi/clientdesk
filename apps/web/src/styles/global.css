@@ -19,6 +19,7 @@
   /* Aktion trägt Tinte, nicht Farbe. */
   --color-action: var(--action-bg);
   --color-action-fg: var(--action-fg);
+  --color-action-hover: var(--action-bg-hover);
 
   /* Kobalt: nur Diagramm-Daten, aktiver Nav-Zustand, Fokusring.
      Siehe die Regel in tokens.css. */

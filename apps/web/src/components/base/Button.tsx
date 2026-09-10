@@ -3,8 +3,8 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-accent text-on-accent hover:opacity-90',
-  secondary: 'border border-line bg-surface text-ink hover:border-faint',
+  primary: 'bg-action text-action-fg hover:bg-action-hover',
+  secondary: 'border border-line bg-surface text-ink hover:border-ink',
   ghost: 'text-muted hover:text-ink',
   danger: 'border border-line bg-surface text-danger hover:border-danger',
 };
@@ -20,8 +20,9 @@ export function Button({ variant = 'secondary', className = '', ...props }: Butt
     <button
       {...props}
       className={[
-        'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-4',
-        'text-sm font-medium transition-colors disabled:opacity-60',
+        'inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-4',
+        'text-body font-medium disabled:opacity-60',
+        'transition-colors ease-state duration-[var(--dur-snap)]',
         VARIANTS[variant],
         className,
       ].join(' ')}

@@ -175,6 +175,10 @@
    */
   --action-bg: #191813;
   --action-fg: #f6f5f2;
+  /* Ein Knopf aus Tinte kann beim Überfahren nicht dunkler werden. Er hellt
+     auf — und zwar als eigener Wert, nicht als Deckkraft: durchscheinende
+     Knöpfe nehmen die Farbe von dem an, worauf sie zufällig liegen. */
+  --action-bg-hover: #322f26;
 
   /* Statusfarben bedeuten etwas und bleiben von Kobalt unterscheidbar. */
   --positive: #1d7a4c;
@@ -221,6 +225,7 @@
 
     --action-bg: #edebe3;
     --action-fg: #141310;
+    --action-bg-hover: #ffffff;
 
     --positive: #4fbf87;
     --warning: #d9a441;
@@ -256,6 +261,7 @@
 
   --action-bg: #edebe3;
   --action-fg: #141310;
+  --action-bg-hover: #ffffff;
 
   --positive: #4fbf87;
   --warning: #d9a441;
