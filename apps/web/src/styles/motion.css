@@ -104,3 +104,37 @@
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Routenwechsel von der Zeile zur Detailseite.
+ *
+ * Der Browser blendet standardmässig die ganze Seite über — das ist genau die
+ * Sorte Übergang, die nach Vorlage aussieht. Er läuft hier deshalb so kurz,
+ * dass er nur die Kante wegnimmt; die eigentliche Bewegung ist der Name, der
+ * aus der Tabellenzeile in die Überschrift wandert.
+ *
+ * Die Namensvergabe steht in RecordLink.tsx und hängt immer nur an dem Link,
+ * über den gerade navigiert wird.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-snap);
+  animation-timing-function: var(--ease-state);
+}
+
+::view-transition-group(record-title) {
+  animation-duration: var(--dur-shift);
+  animation-timing-function: var(--ease-state);
+}
+
+/*
+ * Reduzierte Bewegung greift hier eigens: die Übergangs-Pseudoelemente sind
+ * keine Nachfahren von `*` und werden von der Regel oben nicht erfasst.
+ */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+  }
+}

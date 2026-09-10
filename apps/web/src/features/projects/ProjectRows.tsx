@@ -10,6 +10,7 @@ import {
   TableHead,
   Th,
 } from '../../components/base/DataTable.tsx';
+import { RecordLink } from '../../components/base/RecordLink.tsx';
 import { ProjectStatusBadge } from '../../components/base/StatusBadge.tsx';
 import { formatDate } from '../../lib/format.ts';
 
@@ -85,9 +86,7 @@ export function ProjectRows({ projects, basePath, showCustomer = true }: Props) 
           {projects.map((project) => (
             <Row key={project.id}>
               <Cell lead>
-                <Link to={`${basePath}/${project.id}`} className="text-ink">
-                  {project.name}
-                </Link>
+                <RecordLink to={`${basePath}/${project.id}`} title={project.name} />
                 {project.overdueMilestones > 0 && (
                   <span className="mt-1 block">
                     <OverdueMark count={project.overdueMilestones} />

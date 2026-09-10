@@ -9,6 +9,7 @@ import {
   TableHead,
   Th,
 } from '../../components/base/DataTable.tsx';
+import { RecordLink } from '../../components/base/RecordLink.tsx';
 import { ArchivedBadge } from '../../components/base/StatusBadge.tsx';
 
 interface Props {
@@ -59,9 +60,7 @@ export function CustomerRows({ customers, basePath }: Props) {
           {customers.map((customer) => (
             <Row key={customer.id}>
               <Cell lead>
-                <Link to={`${basePath}/${customer.id}`} className="text-ink">
-                  {customer.name}
-                </Link>
+                <RecordLink to={`${basePath}/${customer.id}`} title={customer.name} />
               </Cell>
               <Cell>{customer.contactName ?? '—'}</Cell>
               <Cell>{customer.archivedAt ? <ArchivedBadge /> : 'Aktiv'}</Cell>

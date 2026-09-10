@@ -10,6 +10,11 @@ import { workspacePath } from '../../lib/paths.ts';
 import { ContractStatusBadge } from './ContractStatusBadge.tsx';
 import { RateHistory } from './RateHistory.tsx';
 import { useContract, useRates, useUpdateContract } from './api.ts';
+import {
+  PendingRecord,
+  RecordHeading,
+  useRecordTitlePreview,
+} from '../../components/base/RecordLink.tsx';
 
 export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { contractId } = useParams();
@@ -17,7 +22,8 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
   const rates = useRates(workspace.id, contractId);
   const update = useUpdateContract(workspace.id, contractId ?? '');
 
-  if (query.isPending) return <LoadingState label="Vertrag wird geladen …" />;
+  const preview = useRecordTitlePreview();
+  if (query.isPending) return <PendingRecord title={preview} label="Vertrag wird geladen …" />;
   if (query.isError || !query.data) {
     return (
       <ErrorState detail="Dieser Vertrag existiert nicht oder gehört zu einem anderen Workspace." />
@@ -40,7 +46,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{contract.name}</h1>
+          <RecordHeading>{contract.name}</RecordHeading>
           <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted">
             <span>{contract.customerName}</span>
             <ContractStatusBadge status={contract.visibleStatus} />

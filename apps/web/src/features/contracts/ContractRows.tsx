@@ -9,6 +9,7 @@ import {
   TableHead,
   Th,
 } from '../../components/base/DataTable.tsx';
+import { RecordLink } from '../../components/base/RecordLink.tsx';
 import { formatDate } from '../../lib/format.ts';
 import { ContractStatusBadge } from './ContractStatusBadge.tsx';
 
@@ -83,9 +84,7 @@ export function ContractRows({ contracts, basePath, showCustomer = true }: Props
           {contracts.map((contract) => (
             <Row key={contract.id}>
               <Cell lead>
-                <Link to={`${basePath}/${contract.id}`} className="text-ink">
-                  {contract.name}
-                </Link>
+                <RecordLink to={`${basePath}/${contract.id}`} title={contract.name} />
               </Cell>
               {showCustomer && <Cell>{contract.customerName}</Cell>}
               <Cell>

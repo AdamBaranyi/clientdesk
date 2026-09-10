@@ -9,6 +9,7 @@ import {
   TableHead,
   Th,
 } from '../../components/base/DataTable.tsx';
+import { RecordLink } from '../../components/base/RecordLink.tsx';
 import { PriorityBadge, RequestStatusBadge } from './labels.tsx';
 
 interface Props {
@@ -67,9 +68,7 @@ export function RequestRows({ requests, basePath, showCustomer = true }: Props) 
               <Cell lead>
                 <span className="flex items-center gap-2">
                   <PriorityBadge priority={request.priority} />
-                  <Link to={`${basePath}/${request.id}`} className="text-ink">
-                    {request.subject}
-                  </Link>
+                  <RecordLink to={`${basePath}/${request.id}`} title={request.subject} />
                 </span>
               </Cell>
               {showCustomer && <Cell>{request.customerName}</Cell>}

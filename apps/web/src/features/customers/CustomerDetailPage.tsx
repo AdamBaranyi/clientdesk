@@ -13,6 +13,11 @@ import { useProjects } from '../projects/api.ts';
 import { ArchiveSection } from './ArchiveSection.tsx';
 import { useCustomer, useUpdateCustomer } from './api.ts';
 import { CustomerForm } from './CustomerForm.tsx';
+import {
+  PendingRecord,
+  RecordHeading,
+  useRecordTitlePreview,
+} from '../../components/base/RecordLink.tsx';
 
 export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { customerId } = useParams();
@@ -22,7 +27,8 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
   const projects = useProjects(workspace.id, { customerId });
   const update = useUpdateCustomer(workspace.id, customerId ?? '');
 
-  if (query.isPending) return <LoadingState label="Kunde wird geladen …" />;
+  const preview = useRecordTitlePreview();
+  if (query.isPending) return <PendingRecord title={preview} label="Kunde wird geladen …" />;
   if (query.isError || !query.data) {
     return (
       <ErrorState detail="Dieser Kunde existiert nicht oder gehört zu einem anderen Workspace." />
@@ -43,7 +49,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{customer.name}</h1>
+          <RecordHeading>{customer.name}</RecordHeading>
           <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted">
             {customer.contactName && <span>{customer.contactName}</span>}
             {customer.archivedAt && <ArchivedBadge />}

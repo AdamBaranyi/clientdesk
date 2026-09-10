@@ -11,6 +11,11 @@ import { CompletionDialog } from './CompletionDialog.tsx';
 import { MilestoneList } from './MilestoneList.tsx';
 import { formatDate } from '../../lib/format.ts';
 import { useMilestones, useProject, useUpdateProject } from './api.ts';
+import {
+  PendingRecord,
+  RecordHeading,
+  useRecordTitlePreview,
+} from '../../components/base/RecordLink.tsx';
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
   planned: 'Geplant',
@@ -27,7 +32,8 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
   const milestones = useMilestones(workspace.id, projectId);
   const update = useUpdateProject(workspace.id, projectId ?? '');
 
-  if (query.isPending) return <LoadingState label="Projekt wird geladen …" />;
+  const preview = useRecordTitlePreview();
+  if (query.isPending) return <PendingRecord title={preview} label="Projekt wird geladen …" />;
   if (query.isError || !query.data) {
     return (
       <ErrorState detail="Dieses Projekt existiert nicht oder gehört zu einem anderen Workspace." />
@@ -67,7 +73,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{project.name}</h1>
+          <RecordHeading>{project.name}</RecordHeading>
           <p className="mt-1.5 text-sm text-muted">{project.customerName}</p>
         </div>
         <div className="flex flex-col gap-1.5">

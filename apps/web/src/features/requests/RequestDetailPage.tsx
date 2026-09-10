@@ -13,6 +13,11 @@ import { CommentThread } from './CommentThread.tsx';
 import { PriorityBadge, RequestStatusBadge } from './labels.tsx';
 import { REQUEST_STATUS_LABELS } from './status-labels.ts';
 import { useChangeRequestStatus, useRequest, useRequestComments } from './api.ts';
+import {
+  PendingRecord,
+  RecordHeading,
+  useRecordTitlePreview,
+} from '../../components/base/RecordLink.tsx';
 
 export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { requestId } = useParams();
@@ -20,7 +25,8 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
   const comments = useRequestComments(workspace.id, requestId);
   const changeStatus = useChangeRequestStatus(workspace.id, requestId ?? '');
 
-  if (query.isPending) return <LoadingState label="Anfrage wird geladen …" />;
+  const preview = useRecordTitlePreview();
+  if (query.isPending) return <PendingRecord title={preview} label="Anfrage wird geladen …" />;
   if (query.isError || !query.data) {
     return (
       <ErrorState detail="Diese Anfrage existiert nicht oder gehört zu einem anderen Workspace." />
@@ -45,7 +51,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <div className="min-w-0">
           <span className="flex flex-wrap items-center gap-2">
             <PriorityBadge priority={request.priority} />
-            <h1 className="text-xl font-semibold tracking-[-0.02em]">{request.subject}</h1>
+            <RecordHeading>{request.subject}</RecordHeading>
           </span>
           <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted">
             <span>{request.customerName}</span>
