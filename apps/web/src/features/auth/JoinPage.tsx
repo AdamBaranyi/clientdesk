@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Layers } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import type { InvitationPreview } from '@clientdesk/contracts';
@@ -7,6 +6,7 @@ import { Button } from '../../components/base/Button.tsx';
 import { TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError, apiRequest } from '../../lib/api.ts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
+import { Wordmark } from '../../components/base/Wordmark.tsx';
 
 const ROLE_TEXT: Record<string, string> = {
   owner: 'als Owner',
@@ -56,16 +56,15 @@ export function JoinPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <div className="flex items-center justify-between px-3 py-3 sm:px-6">
-        <span className="flex items-center gap-2.5">
-          <Layers size={18} strokeWidth={2.2} className="text-accent" aria-hidden="true" />
-          <span className="font-bold">ClientDesk</span>
+      <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
+        <Wordmark name="ClientDesk" />
+        <span className="pb-4">
+          <ThemeToggle />
         </span>
-        <ThemeToggle />
       </div>
 
       <main className="flex flex-1 items-center justify-center px-3 py-6 sm:px-6">
-        <div className="w-full max-w-[440px] rounded-lg border border-line bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7">
+        <div className="w-full max-w-[440px] border border-line bg-surface p-5 sm:p-7">
           {preview.isPending && <p className="text-sm text-muted">Einladung wird geprüft …</p>}
 
           {preview.isError && (

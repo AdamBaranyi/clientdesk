@@ -1,0 +1,89 @@
+/*
+ * Schriften aus dem eigenen Verzeichnis, nicht von Google.
+ *
+ * Vorher lud `index.html` ein blockierendes Stylesheet von zwei Google-Domains.
+ * Google Fonts setzt zwar keine Cookies, überträgt aber die IP-Adresse jedes
+ * Besuchers — das Landgericht München I hat genau das 2022 als
+ * DSGVO-Verstoss gewertet (Az. 3 O 17493/20). Ein Einwilligungsbanner hilft
+ * dagegen nicht, weil der Abruf vor jeder Zustimmung passiert.
+ *
+ * Damit hat die Anwendung keine einzige Verbindung zu Dritten mehr. Das ist
+ * die Voraussetzung für eine Content Security Policy ohne Fremd-Ursprünge.
+ *
+ * Sechs Schnitte, nur Latin, zusammen 89 KB. Neun waren es vorher — zwei
+ * Schnitte hingen an insgesamt drei Vorkommen im Code und wurden auf einen
+ * vorhandenen Schnitt gezogen, statt für sie eine eigene Datei auszuliefern.
+ *
+ * IBM Plex steht unter SIL OFL 1.1. Die Lizenz liegt neben den Dateien.
+ */
+
+/*
+ * `swap`: bis die Schrift da ist, wird die Systemschrift gezeigt statt gar
+ * nichts. Bei 89 KB von der eigenen Domain ist das Zeitfenster kurz, aber
+ * unsichtbarer Text ist nie die bessere Wahl.
+ */
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/plex-sans-400.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/plex-sans-500.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/plex-sans-600.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Sans Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/plex-sans-condensed-600.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/plex-mono-400.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/plex-mono-500.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

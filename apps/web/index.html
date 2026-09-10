@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>ClientDesk</title>
     <meta name="description" content="Kundenportal und Übersicht für kleine Digitalagenturen." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-    />
+    <!--
+      Schriften liegen unter /fonts und kommen nicht mehr von Google. Warum,
+      steht in src/styles/fonts.css.
+
+      Vorgeladen werden nur die beiden Schnitte, die auf jeder Seite oben
+      stehen: Fliesstext und der halbfette Schnitt für Überschriften. Alles
+      vorzuladen hiesse, nichts zu bevorzugen.
+    -->
+    <link rel="preload" href="/fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/plex-sans-600.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <div id="root"></div>

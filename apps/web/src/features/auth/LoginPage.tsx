@@ -1,11 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Layers } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router';
 import { loginSchema, type LoginInput } from '@clientdesk/contracts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { useLogin, useSession } from './use-session.ts';
+import { Wordmark } from '../../components/base/Wordmark.tsx';
 
 export function LoginPage() {
   const session = useSession();
@@ -27,16 +27,15 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <div className="flex items-center justify-between px-3 py-3 sm:px-6">
-        <span className="flex items-center gap-2.5">
-          <Layers size={18} strokeWidth={2.2} className="text-accent" aria-hidden="true" />
-          <span className="font-bold">ClientDesk</span>
+      <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
+        <Wordmark name="ClientDesk" />
+        <span className="pb-4">
+          <ThemeToggle />
         </span>
-        <ThemeToggle />
       </div>
 
       <main className="flex flex-1 items-center justify-center px-3 py-6 sm:px-6">
-        <div className="w-full max-w-[400px] rounded-lg border border-line bg-surface p-5 shadow-[var(--shadow-card)] sm:p-7">
+        <div className="w-full max-w-[400px] border border-line bg-surface p-5 sm:p-7">
           <h1 className="text-xl font-semibold tracking-[-0.02em]">Anmelden</h1>
           <p className="mt-1.5 text-sm text-muted">
             Interne Konten werden über den Admin-Befehl eingerichtet.

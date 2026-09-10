@@ -29,7 +29,7 @@ export function RequestStatusBadge({ status }: { status: RequestStatus }) {
 export function PriorityBadge({ priority }: { priority: RequestPriority }) {
   if (priority === 'normal') return null;
   return (
-    <span className="inline-flex shrink-0 items-center rounded-[5px] bg-[color-mix(in_oklab,var(--danger)_16%,transparent)] px-1.5 py-0.5 font-mono text-[10px] font-semibold tracking-[0.04em] text-danger">
+    <span className="text-micro inline-flex shrink-0 items-center rounded-sm border border-danger px-1.5 py-0.5 font-condensed font-semibold tracking-[0.12em] text-danger">
       HOCH
     </span>
   );
