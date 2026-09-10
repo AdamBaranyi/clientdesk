@@ -1,14 +1,13 @@
 import { Link, useSearchParams } from 'react-router';
-import { formatAmountMinor, type WorkspaceSummary } from '@clientdesk/contracts';
+import type { WorkspaceSummary } from '@clientdesk/contracts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
-import { formatDate } from '../../lib/format.ts';
 import { workspacePath } from '../../lib/paths.ts';
 import { useDashboard } from '../contracts/api.ts';
 import { ProjectRows } from '../projects/ProjectRows.tsx';
 import { useProjects } from '../projects/api.ts';
 import { ContractValueChart } from './ContractValueChart.tsx';
-import { MetricCard } from './MetricCard.tsx';
+import { MetricBand } from './MetricBand.tsx';
 
 export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
   const [params, setParams] = useSearchParams();
@@ -31,7 +30,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
   const base = workspacePath(workspace.id);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-12">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-[-0.02em]">Dashboard</h1>
@@ -58,37 +57,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard
-          label="Aktive Kunden"
-          value={String(data.activeCustomers)}
-          hint="Nicht archiviert · aktueller Stand"
-          to={`${base}/customers`}
-        />
-        <MetricCard
-          label="Laufende Projekte"
-          value={String(data.runningProjects)}
-          hint={
-            data.pausedProjects === 1
-              ? '1 pausiert · aktueller Stand'
-              : `${data.pausedProjects} pausiert · aktueller Stand`
-          }
-          to={`${base}/projects?status=active`}
-        />
-        <MetricCard
-          label="Monatlicher Vertragswert"
-          value={`CHF ${formatAmountMinor(data.monthlyContractValueMinor)}`}
-          hint={`Am ${formatDate(data.contractDate)} · vereinbart, kein Zahlungseingang`}
-          to={`${base}/contracts?status=active`}
-          highlight
-        />
-        <MetricCard
-          label="Bestätigte Verträge"
-          value={String(data.confirmedContracts)}
-          hint={`Zählen am ${formatDate(data.contractDate)}`}
-          to={`${base}/contracts`}
-        />
-      </div>
+      <MetricBand data={data} base={base} />
 
       <Card>
         <CardHeader

@@ -41,8 +41,8 @@
 
   --text-section: 21px; /* Abschnittstitel */
   --text-page: 32px; /* Seitentitel */
-  --text-figure: 48px; /* die Zahl auf der Messlatte */
-  --text-hero: 72px; /* Startseite */
+  --text-figure: 48px; /* die Zähler auf der Messlatte */
+  --text-hero: 72px; /* die Leitzahl, und die Startseite */
 
   --leading-tight: 1.1;
   --leading-snug: 1.35;
