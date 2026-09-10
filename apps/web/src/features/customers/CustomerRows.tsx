@@ -1,5 +1,14 @@
 import { Link } from 'react-router';
 import type { Customer } from '@clientdesk/contracts';
+import {
+  CardItem,
+  CardList,
+  Cell,
+  DataTable,
+  Row,
+  TableHead,
+  Th,
+} from '../../components/base/DataTable.tsx';
 import { ArchivedBadge } from '../../components/base/StatusBadge.tsx';
 
 interface Props {
@@ -7,70 +16,62 @@ interface Props {
   basePath: string;
 }
 
+function projectCount(count: number): string {
+  return count === 1 ? '1 laufendes Projekt' : `${count} laufende Projekte`;
+}
+
 /**
- * Zwei Darstellungen desselben Bestands: ab sm eine Tabelle, darunter Karten.
- * Damit bleibt auf 320 Pixeln alles lesbar, ohne die Tabelle seitlich zu
- * schieben oder Spalten ersatzlos wegzulassen.
+ * Zwei Darstellungen desselben Bestands: ab 640 Pixeln eine Tabelle, darunter
+ * Karten. Damit bleibt auf 320 Pixeln alles lesbar, ohne die Tabelle seitlich
+ * zu schieben oder Spalten ersatzlos wegzulassen.
  */
 export function CustomerRows({ customers, basePath }: Props) {
   return (
     <>
-      <ul className="flex flex-col sm:hidden">
+      <CardList>
         {customers.map((customer) => (
-          <li key={customer.id} className="border-t border-line-soft">
+          <CardItem key={customer.id}>
             <Link
               to={`${basePath}/${customer.id}`}
-              className="flex flex-col gap-1.5 px-4 py-4 no-underline hover:bg-raised"
+              className="flex flex-col gap-2 px-4 py-4 text-ink hover:bg-raised"
             >
-              <span className="font-medium text-ink">{customer.name}</span>
+              <span className="font-medium">{customer.name}</span>
               {customer.contactName && (
-                <span className="text-sm text-muted">{customer.contactName}</span>
+                <span className="text-dense text-muted">{customer.contactName}</span>
               )}
-              <span className="flex flex-wrap items-center gap-3 text-xs text-faint">
-                <span>
-                  {customer.activeProjectCount === 1
-                    ? '1 laufendes Projekt'
-                    : `${customer.activeProjectCount} laufende Projekte`}
-                </span>
+              <span className="text-micro flex flex-wrap items-center gap-3 text-muted">
+                <span>{projectCount(customer.activeProjectCount)}</span>
                 {customer.archivedAt && <ArchivedBadge />}
               </span>
             </Link>
-          </li>
+          </CardItem>
         ))}
-      </ul>
+      </CardList>
 
-      <table className="hidden w-full border-collapse sm:table">
-        <thead>
-          <tr className="text-left text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
-            <th className="px-5 pb-2 font-semibold">Name</th>
-            <th className="px-5 pb-2 font-semibold">Hauptkontakt</th>
-            <th className="px-5 pb-2 font-semibold">Status</th>
-            <th className="px-5 pb-2 text-right font-semibold">Laufende Projekte</th>
-          </tr>
-        </thead>
+      <DataTable>
+        <TableHead>
+          <Th>Name</Th>
+          <Th>Hauptkontakt</Th>
+          <Th>Status</Th>
+          <Th right>Laufende Projekte</Th>
+        </TableHead>
         <tbody>
           {customers.map((customer) => (
-            <tr key={customer.id} className="border-t border-line-soft hover:bg-raised">
-              <td className="px-5 py-3">
-                <Link to={`${basePath}/${customer.id}`} className="font-medium no-underline">
+            <Row key={customer.id}>
+              <Cell lead>
+                <Link to={`${basePath}/${customer.id}`} className="text-ink">
                   {customer.name}
                 </Link>
-              </td>
-              <td className="px-5 py-3 text-sm text-muted">{customer.contactName ?? '—'}</td>
-              <td className="px-5 py-3">
-                {customer.archivedAt ? (
-                  <ArchivedBadge />
-                ) : (
-                  <span className="text-xs text-muted">Aktiv</span>
-                )}
-              </td>
-              <td className="px-5 py-3 text-right font-mono text-sm">
+              </Cell>
+              <Cell>{customer.contactName ?? '—'}</Cell>
+              <Cell>{customer.archivedAt ? <ArchivedBadge /> : 'Aktiv'}</Cell>
+              <Cell right numeric>
                 {customer.activeProjectCount}
-              </td>
-            </tr>
+              </Cell>
+            </Row>
           ))}
         </tbody>
-      </table>
+      </DataTable>
     </>
   );
 }

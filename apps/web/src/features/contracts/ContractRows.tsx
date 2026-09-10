@@ -1,5 +1,14 @@
 import { Link } from 'react-router';
 import { formatAmountMinor, type ServiceContract } from '@clientdesk/contracts';
+import {
+  CardItem,
+  CardList,
+  Cell,
+  DataTable,
+  Row,
+  TableHead,
+  Th,
+} from '../../components/base/DataTable.tsx';
 import { formatDate } from '../../lib/format.ts';
 import { ContractStatusBadge } from './ContractStatusBadge.tsx';
 
@@ -9,83 +18,87 @@ interface Props {
   showCustomer?: boolean;
 }
 
+/**
+ * Der Betrag am Stichtag. Die Währung steht im Spaltenkopf und nicht in jeder
+ * Zeile — sie ändert sich nicht, und wiederholt kostet sie nur Platz neben der
+ * Zahl, auf die es ankommt.
+ */
 function Amount({ contract }: { contract: ServiceContract }) {
   if (contract.amountAtDateMinor === null) {
     // Bei einem geplanten Vertrag gibt es sehr wohl einen Preis — er gilt am
     // Stichtag nur noch nicht. „Kein Preis" würde einen Datenfehler nahelegen.
     return (
-      <span className="text-xs whitespace-nowrap text-faint">
+      <span className="text-micro whitespace-nowrap">
         {contract.visibleStatus === 'planned' ? 'Ab Vertragsbeginn' : 'Kein Preis hinterlegt'}
       </span>
     );
   }
-  return (
-    <span className="font-mono text-sm">CHF {formatAmountMinor(contract.amountAtDateMinor)}</span>
-  );
+  return <>{formatAmountMinor(contract.amountAtDateMinor)}</>;
+}
+
+function term(contract: ServiceContract): string {
+  const start = formatDate(contract.startDate);
+  return contract.endDate ? `${start} – ${formatDate(contract.endDate)}` : `${start} – offen`;
 }
 
 export function ContractRows({ contracts, basePath, showCustomer = true }: Props) {
   return (
     <>
-      <ul className="flex flex-col sm:hidden">
+      <CardList>
         {contracts.map((contract) => (
-          <li key={contract.id} className="border-t border-line-soft">
+          <CardItem key={contract.id}>
             <Link
               to={`${basePath}/${contract.id}`}
-              className="flex flex-col gap-2 px-4 py-4 no-underline hover:bg-raised"
+              className="flex flex-col gap-2 px-4 py-4 text-ink hover:bg-raised"
             >
               <span className="flex flex-wrap items-baseline justify-between gap-2">
-                <span className="font-medium text-ink">{contract.name}</span>
-                <Amount contract={contract} />
+                <span className="font-medium">{contract.name}</span>
+                <span className="text-dense font-mono tabular-nums text-muted">
+                  <Amount contract={contract} />
+                </span>
               </span>
-              {showCustomer && <span className="text-sm text-muted">{contract.customerName}</span>}
+              {showCustomer && (
+                <span className="text-dense text-muted">{contract.customerName}</span>
+              )}
               <span className="flex flex-wrap items-center gap-3">
                 <ContractStatusBadge status={contract.visibleStatus} />
-                <span className="font-mono text-xs text-faint">
-                  ab {formatDate(contract.startDate)}
-                  {contract.endDate ? ` bis ${formatDate(contract.endDate)}` : ''}
+                <span className="text-micro font-mono tabular-nums text-muted">
+                  {term(contract)}
                 </span>
               </span>
             </Link>
-          </li>
+          </CardItem>
         ))}
-      </ul>
+      </CardList>
 
-      <table className="hidden w-full border-collapse sm:table">
-        <thead>
-          <tr className="text-left text-[10px] font-semibold tracking-[0.09em] text-faint uppercase">
-            <th className="px-5 pb-2 font-semibold">Bezeichnung</th>
-            {showCustomer && <th className="px-5 pb-2 font-semibold">Kunde</th>}
-            <th className="px-5 pb-2 font-semibold">Status</th>
-            <th className="px-5 pb-2 font-semibold">Laufzeit</th>
-            <th className="px-5 pb-2 text-right font-semibold">Monatlich</th>
-          </tr>
-        </thead>
+      <DataTable>
+        <TableHead>
+          <Th>Bezeichnung</Th>
+          {showCustomer && <Th>Kunde</Th>}
+          <Th>Status</Th>
+          <Th>Laufzeit</Th>
+          <Th right>Monatlich · CHF</Th>
+        </TableHead>
         <tbody>
           {contracts.map((contract) => (
-            <tr key={contract.id} className="border-t border-line-soft hover:bg-raised">
-              <td className="px-5 py-3">
-                <Link to={`${basePath}/${contract.id}`} className="font-medium no-underline">
+            <Row key={contract.id}>
+              <Cell lead>
+                <Link to={`${basePath}/${contract.id}`} className="text-ink">
                   {contract.name}
                 </Link>
-              </td>
-              {showCustomer && (
-                <td className="px-5 py-3 text-sm text-muted">{contract.customerName}</td>
-              )}
-              <td className="px-5 py-3">
+              </Cell>
+              {showCustomer && <Cell>{contract.customerName}</Cell>}
+              <Cell>
                 <ContractStatusBadge status={contract.visibleStatus} />
-              </td>
-              <td className="px-5 py-3 font-mono text-xs text-muted">
-                {formatDate(contract.startDate)}
-                {contract.endDate ? ` – ${formatDate(contract.endDate)}` : ' – offen'}
-              </td>
-              <td className="px-5 py-3 text-right">
+              </Cell>
+              <Cell numeric>{term(contract)}</Cell>
+              <Cell right numeric>
                 <Amount contract={contract} />
-              </td>
-            </tr>
+              </Cell>
+            </Row>
           ))}
         </tbody>
-      </table>
+      </DataTable>
     </>
   );
 }

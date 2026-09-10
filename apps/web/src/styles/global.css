@@ -124,14 +124,21 @@ a:hover {
   color: color-mix(in oklab, var(--accent) 78%, var(--ink));
 }
 
-/* Unterstrichen wird nur, wo der Link tatsächlich im Fliesstext steht. */
-:where(p, li, dd, dt, td, th) a {
+/*
+ * Unterstrichen wird nur, wo der Link tatsächlich im Fliesstext steht.
+ *
+ * Tabellenzellen standen hier zuerst mit drin. In einer Datentabelle ist ein
+ * Link aber nie ein Wort im Satz, sondern der Name der Zeile — acht
+ * unterstrichene Kundennamen untereinander sind Lärm, kein Hinweis. Die Zeile
+ * meldet sich beim Überfahren ohnehin, indem ihre Zellen auf Tinte gehen.
+ */
+:where(p, li, dd, dt) a {
   text-decoration: underline;
   text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
 }
 
-:where(p, li, dd, dt, td, th) a:hover {
+:where(p, li, dd, dt) a:hover {
   text-decoration-thickness: 2px;
 }
 

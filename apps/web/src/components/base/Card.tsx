@@ -1,16 +1,8 @@
 import type { ReactNode } from 'react';
 
+/** Eine Fläche mit Kante, ohne Rundung und ohne Schatten. */
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return (
-    <div
-      className={[
-        'rounded-lg border border-line bg-surface shadow-[var(--shadow-card)]',
-        className,
-      ].join(' ')}
-    >
-      {children}
-    </div>
-  );
+  return <div className={['border border-line bg-surface', className].join(' ')}>{children}</div>;
 }
 
 export function CardHeader({ title, action }: { title: string; action?: ReactNode }) {
