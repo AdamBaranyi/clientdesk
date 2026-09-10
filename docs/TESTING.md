@@ -1,5 +1,8 @@
 # Tests und Prüfungen
 
+Befunde, die beim Prüfen entstanden sind, stehen in [DIAGNOSTICS.md](DIAGNOSTICS.md) —
+mit Messung, Ursache und Korrektur, einschliesslich der drei Fehldiagnosen.
+
 Stand: 10.09.2026, nach der Design-Überarbeitung.
 
 ## Ausgeführt

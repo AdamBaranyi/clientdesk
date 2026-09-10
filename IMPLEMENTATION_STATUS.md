@@ -1,9 +1,9 @@
 # Umsetzungsstand
 
-Stand: 10.09.2026 · Meilensteine 1–5 abgeschlossen · Design-Überarbeitung abgeschlossen
+Stand: 10.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · Design-Überarbeitung abgeschlossen
 
-158 Tests grün · 205 Code-Dateien unter der 400-Zeilen-Grenze (längste 317) · Lint ohne Fehler
-und ohne Warnungen · Typecheck in allen vier Paketen sauber.
+166 Unit- und Integrationstests · 147 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
+und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
 
@@ -169,18 +169,20 @@ Nachher aus dem fertigen Stand, zweiter `avoid-ai-design`-Lauf im detect-Modus a
 Verträge und Anfragen, dazu ein Dialog mit Tastaturführung. Bekommt dieselben negativen
 Mandantentests wie jeder andere Endpunkt.
 
-**Meilenstein 6a: Frontend-Qualität** — hängt nicht am Server und läuft deshalb vor Meilenstein 6.
+**Meilenstein 6a: Frontend-Qualität** — **erledigt am 10.09.2026.**
 
-- ~~Playwright über sechs Prüfbreiten~~ **erledigt**, 72 Tests je Lauf, rund 22 Sekunden.
-- ~~Fokusfalle, Fokus-Rückgabe, inerter Hintergrund~~ **erledigt** — über `showModal()` des
-  Browsers statt selbst gebaut; Dialog und Kommandopalette liegen jetzt auf demselben Bauteil.
-- `@axe-core/playwright` über alle Hauptseiten, hell und dunkel getrennt; `eslint-plugin-jsx-a11y`
-  in `bun run verify`. Damit hält die Maschine die Kontraste, die bisher von Hand gemessen sind.
-- Frontend-Budget: Bündelgrösse je Chunk, LCP, CLS und INP gegen den Lastdaten-Seed, hart in der CI.
-  `measure-performance.ts` deckt bisher nur die API ab.
-- Schriften selbst ausliefern statt von Google Fonts — Voraussetzung für eine strenge CSP.
-- `docs/DIAGNOSTICS.md`: die reproduzierbaren Befunde dieses Projekts mit Messung, Ursache und
-  Korrektur.
+- Playwright über sechs Prüfbreiten, 147 Prüfungen je Lauf. **Je Breite neu laden, nie das Fenster
+  ziehen** — die Begründung steht in `playwright.config.ts` und in `docs/DIAGNOSTICS.md`.
+- Fokusfalle, inerter Hintergrund und Fokusrückgabe über `showModal()` des Browsers; Dialog und
+  Kommandopalette liegen auf demselben Bauteil.
+- `eslint-plugin-jsx-a11y` in `bun run verify`, axe über fünf Seiten in beiden Erscheinungsbildern
+  plus offener Dialog und Palette mit Treffern. Null Verletzungen, gegengeprüft.
+- `bun run check:bundle-size`: Erstlast 149 KB gzip (Grenze 170), Diagramm getrennt nachgeladen mit
+  101 KB (Grenze 115). Vorher lag alles in einem Bündel mit 260 KB.
+- Messung gegen den Lastdaten-Workspace: Dashboard LCP 560 ms / CLS 0.0004, Kundenliste mit 1'000
+  Kunden LCP 524 ms / CLS 0.0043, Suchantwort 61 ms. Gemessen gegen den Entwicklungsserver — die
+  echte Ladezeit gehört auf den Server aus Meilenstein 6.
+- `docs/DIAGNOSTICS.md` mit zwölf Befunden, drei davon ausdrücklich als Fehldiagnose.
 
 **Meilenstein 6: Deployment** — Produktions-Compose mit Caddy, FSIT-KVM-Server einrichten,
 A-Record `clientdesk.adambaranyi.xyz`, Content Security Policy, Secret- und Abhängigkeitsscan in
