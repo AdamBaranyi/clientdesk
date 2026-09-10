@@ -4,6 +4,8 @@ import { Outlet, useNavigate } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
 import { useLogout } from '../features/auth/use-session.ts';
 import { DemoBanner } from '../features/demo/DemoBanner.tsx';
+import { CommandPalette } from '../features/search/CommandPalette.tsx';
+import { useCommandPalette } from '../features/search/use-command-palette.ts';
 import { Sidebar } from './Sidebar.tsx';
 import { Topbar } from './Topbar.tsx';
 
@@ -19,6 +21,7 @@ interface AppShellProps {
  */
 export function AppShell({ user, workspace }: AppShellProps) {
   const [navigationOpen, setNavigationOpen] = useState(false);
+  const palette = useCommandPalette();
   const navigate = useNavigate();
   const logout = useLogout();
 
@@ -37,6 +40,8 @@ export function AppShell({ user, workspace }: AppShellProps) {
       <a href="#inhalt" className="skip-link">
         Zum Inhalt springen
       </a>
+
+      {palette.open && <CommandPalette workspaceId={workspace.id} onClose={palette.close} />}
 
       <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line lg:block">
         <Sidebar workspace={workspace} />

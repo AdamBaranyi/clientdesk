@@ -44,6 +44,8 @@ import { createMilestoneService } from './modules/projects/milestone-service.ts'
 import { createProjectRepository } from './modules/projects/repository.ts';
 import { createProjectRouter } from './modules/projects/routes.ts';
 import { createProjectService } from './modules/projects/service.ts';
+import { createSearchRouter } from './modules/search/routes.ts';
+import { createSearchService } from './modules/search/service.ts';
 import { createWorkspaceRouter } from './modules/workspaces/routes.ts';
 
 export interface AppDependencies {
@@ -143,6 +145,10 @@ export function createApp({ env, db, pool, logger, storage }: AppDependencies): 
   app.use(
     '/api/v1/workspaces/:workspaceId/dashboard',
     createDashboardRouter(dashboardService, authRepository),
+  );
+  app.use(
+    '/api/v1/workspaces/:workspaceId/search',
+    createSearchRouter(createSearchService(db), authRepository),
   );
   app.use(
     '/api/v1/workspaces/:workspaceId/requests',
