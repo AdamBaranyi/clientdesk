@@ -90,6 +90,49 @@
 }
 
 /* ==========================================================================
+   Bewegung
+   ========================================================================== */
+
+:root {
+  /*
+   * Drei Geschwindigkeiten, mehr braucht es nicht.
+   *
+   * 90 ms ist der Wert, den man nicht als Bewegung wahrnimmt, sondern als
+   * Reaktion. Wer eine Tabelle mit 25 Zeilen abscannt, hängt bei 180 ms
+   * hinter dem eigenen Zeiger.
+   *
+   * 260 ms ist bewusst kurz für einen Eintritt. Was länger dauert, wirkt
+   * nicht ruhig, sondern langsam.
+   */
+  --dur-snap: 90ms; /* Überfahren, Fokus, Aktivzustand */
+  --dur-shift: 160ms; /* Wechsel mit Layoutfolge; auch: Zahl landet */
+  --dur-sweep: 260ms; /* der eine Eintritt pro Seitenaufruf */
+
+  /*
+   * Zwei Versätze, weil zwei verschiedene Dinge gestaffelt werden.
+   *
+   * Reihen und Balken sind gleichartig und stehen nebeneinander: kleiner
+   * Schritt, harter Deckel. Ab der sechsten Reihe landen alle gemeinsam —
+   * die Deckelung erledigt das, nicht eine Zeilengrenze im Bauteil.
+   *
+   * Das Kennzahlband ist kein Stapel, sondern ein Zug von links nach rechts.
+   * Der Versatz muss zur Laufzeit der Messlatte passen, sonst überholen die
+   * Zahlen die Linie, die sie eigentlich freilegt.
+   */
+  --stagger-step: 24ms;
+  --stagger-max: 120ms;
+  --wake-step: 60ms;
+
+  /*
+   * Die Kurve entscheidet mehr als die Dauer, ob etwas nach Instrument oder
+   * nach Spielzeug aussieht. Beide stammen aus IBMs Bewegungssystem — also
+   * aus derselben Herkunft wie Plex, statt aus einem Kurven-Generator.
+   */
+  --ease-state: cubic-bezier(0.2, 0, 0.38, 0.9);
+  --ease-enter: cubic-bezier(0, 0, 0.3, 1);
+}
+
+/* ==========================================================================
    Farben — hell (Papier)
    ========================================================================== */
 

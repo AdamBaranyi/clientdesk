@@ -1,0 +1,106 @@
+/*
+ * Bewegung. Drei Momente im ganzen Produkt, mehr nicht.
+ *
+ *   1. Tabellenzeile beim Überfahren — kein Schmuck, sondern Rückmeldung auf
+ *      der dichtesten Fläche der Anwendung. Reine Zustandsänderung, deshalb
+ *      steht sie in der Komponente und nicht hier.
+ *   2. Kennzahlband: die Messlatte zeichnet sich einmal von links nach rechts,
+ *      jede Zahl erscheint in ihrem Kielwasser.
+ *   3. Diagrammbalken wachsen gestaffelt aus der Grundlinie.
+ *
+ * Was hier bewusst fehlt: hochzählende Zahlen. Ein Zähler ist eine
+ * Marketing-Trope. Auf einem Dashboard ist die Zahl eine Tatsache, und eine
+ * Tatsache hochzuzählen macht sie zum Spielautomaten — beim dritten Besuch
+ * derselben Seite nervt es. Ebenso fehlen: eingefadete Sektionen beim
+ * Scrollen, Parallax, Federn auf Daten.
+ *
+ * Alle Eintritte laufen einmal beim Einhängen der Komponente. Ein
+ * Routenwechsel hängt neu ein, also einmal pro Seitenaufruf — ohne dass ein
+ * Bauteil sich merken muss, ob es schon gelaufen ist.
+ */
+
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes figure-land {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@layer components {
+  /*
+   * Die Messlatte. `both` hält den Endzustand, damit die Linie nach dem Lauf
+   * stehen bleibt und nicht zurückspringt.
+   */
+  .motion-rule {
+    transform-origin: left center;
+    animation: rule-draw var(--dur-sweep) var(--ease-enter) both;
+  }
+
+  /*
+   * Eine Zelle im Kennzahlband. `--motion-index` setzt die Komponente pro
+   * Zelle; ohne den Wert läuft die Zelle sofort, was für Einzelstücke richtig
+   * ist. Die Zahl selbst landet schnell (160 ms) — sie folgt der Linie, sie
+   * begleitet sie nicht.
+   */
+  .motion-figure {
+    animation: figure-land var(--dur-shift) var(--ease-enter) both;
+    animation-delay: calc(var(--wake-step) * var(--motion-index, 0));
+  }
+
+  /*
+   * Ein Diagrammbalken. Der Deckel steht hier und nicht im Bauteil: ab der
+   * sechsten Reihe ist der Versatz aufgebraucht und alles Weitere startet
+   * gemeinsam. Damit gilt dieselbe Regel für Balken, Reihen und alles, was
+   * später dazukommt.
+   */
+  .motion-bar {
+    transform-origin: bottom;
+    animation: bar-grow var(--dur-sweep) var(--ease-enter) both;
+    animation-delay: min(calc(var(--stagger-step) * var(--motion-index, 0)), var(--stagger-max));
+  }
+}
+
+/*
+ * Reduzierte Bewegung: der Eintritt stirbt, der Zustand bleibt.
+ *
+ * Die frühere Fassung setzte `transition-duration: 0.01ms !important` auf
+ * alles. Damit stirbt auch die Rückmeldung beim Überfahren und beim Fokus,
+ * und die Oberfläche fühlt sich nicht ruhig an, sondern kaputt. Wer
+ * reduzierte Bewegung einstellt, will keine Zustandsblindheit.
+ *
+ * Also: Animationen aus (das sind genau die drei Eintritte oben), alle
+ * Verzögerungen auf null (das ist der Versatz), Übergänge unangetastet. Es
+ * gibt im Code keine einzige Übergangsdauer über 160 ms, die man deckeln
+ * müsste — falls das je passiert, gehört sie an ihre Quelle korrigiert und
+ * nicht hier pauschal erschlagen.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --stagger-step: 0ms;
+    --stagger-max: 0ms;
+    --wake-step: 0ms;
+    --dur-sweep: 1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

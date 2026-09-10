@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './motion.css';
 
 /* Tailwind-Utilities auf die Projekt-Tokens abbilden. */
 @theme inline {
@@ -50,6 +51,12 @@
   --spacing-8: var(--space-8);
   --spacing-12: var(--space-12);
   --spacing-20: var(--space-20);
+
+  /* Nur die Kurven kommen als Utility zurück (`ease-state`, `ease-enter`).
+     Für Dauern gibt es in Tailwind 4 keinen Theme-Namensraum — die stehen
+     im CSS oder als duration-[var(--dur-snap)]. */
+  --ease-state: var(--ease-state);
+  --ease-enter: var(--ease-enter);
 
   --radius-none: var(--radius-none);
   --radius-sm: var(--radius-sm);
@@ -110,6 +117,7 @@ body {
 a {
   color: var(--accent);
   text-decoration: none;
+  transition: color var(--dur-snap) var(--ease-state);
 }
 
 a:hover {
@@ -131,17 +139,6 @@ a:hover {
 :where(h1, h2, h3, p, li, td, th, dd, dt) {
   overflow-wrap: anywhere;
   text-wrap: pretty;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
 }
 
 /* Sprungmarke für Tastaturbedienung. */
