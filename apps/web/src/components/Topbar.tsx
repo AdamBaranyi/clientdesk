@@ -32,32 +32,34 @@ export function Topbar({ user, workspace, onOpenNavigation, onLogout, loggingOut
         <button
           type="button"
           onClick={onOpenNavigation}
-          className="flex size-11 shrink-0 items-center justify-center rounded-md text-muted hover:text-ink lg:hidden"
+          className="flex size-11 shrink-0 items-center justify-center rounded-sm text-muted hover:text-ink lg:hidden"
         >
           <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
           <span className="sr-only">Navigation öffnen</span>
         </button>
 
         {/* Auf schmalen Geräten trägt die Kopfzeile nur den aktuellen Ort. */}
-        <nav aria-label="Brotkrumen" className="flex min-w-0 items-center gap-2 text-[13px]">
+        <nav aria-label="Brotkrumen" className="text-dense flex min-w-0 items-center gap-2">
           <span className="hidden truncate text-muted sm:inline">{workspace.name}</span>
-          <span className="hidden text-faint sm:inline" aria-hidden="true">
+          <span className="hidden text-muted sm:inline" aria-hidden="true">
             /
           </span>
-          <span className="truncate font-medium">{label}</span>
+          <span className="font-condensed text-label truncate font-semibold tracking-[0.12em] uppercase">
+            {label}
+          </span>
         </nav>
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
         <ThemeToggle />
-        <span className="hidden text-[13px] text-muted md:inline" title={user.email}>
+        <span className="text-dense hidden text-muted md:inline" title={user.email}>
           {user.displayName}
         </span>
         <button
           type="button"
           onClick={onLogout}
           disabled={loggingOut}
-          className="flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-[13px] font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
+          className="text-dense flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
         >
           <LogOut size={15} strokeWidth={1.8} aria-hidden="true" />
           <span className="hidden sm:inline">{loggingOut ? 'Abmelden …' : 'Abmelden'}</span>

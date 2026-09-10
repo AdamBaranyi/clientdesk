@@ -50,7 +50,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
             onClick={() => setNavigationOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
-          <div className="absolute inset-y-0 left-0 flex w-[min(272px,85vw)] flex-col border-r border-line shadow-[var(--shadow-raised)]">
+          <div className="absolute inset-y-0 left-0 flex w-[min(272px,85vw)] flex-col border-r border-line">
             <button
               type="button"
               onClick={() => setNavigationOpen(false)}

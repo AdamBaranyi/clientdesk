@@ -1,6 +1,6 @@
 import type { MouseEvent, ReactNode } from 'react';
 import { useLayoutEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { awaitRecordHeading, signalRecordHeading } from '../../lib/record-transition.ts';
 import { LoadingState } from './EmptyState.tsx';
 
@@ -21,7 +21,7 @@ import { LoadingState } from './EmptyState.tsx';
  * Ohne Unterstützung im Browser — Firefox kann dokumentinterne Übergänge noch
  * nicht — bleibt der Link ein gewöhnlicher Link. Kein Sonderpfad, kein Fehler.
  */
-export const RECORD_TITLE = 'record-title';
+const RECORD_TITLE = 'record-title';
 
 function nurEinfacherKlick(event: MouseEvent<HTMLAnchorElement>): boolean {
   // Mittelklick, Cmd- und Ctrl-Klick öffnen einen neuen Tab. Da gibt es nichts
@@ -59,17 +59,6 @@ export function RecordLink({ to, title }: { to: string; title: string }) {
       {title}
     </Link>
   );
-}
-
-/**
- * Der Name, den die Zeile mitgegeben hat. Damit steht die Überschrift schon,
- * während die Detaildaten noch laden — sonst wandert der Name in einen leeren
- * Ladezustand und löst sich dort auf. Beim direkten Aufruf einer URL gibt es
- * ihn nicht, dann bleibt es beim gewöhnlichen Ladezustand.
- */
-export function useRecordTitlePreview(): string | undefined {
-  const state = useLocation().state as { recordTitle?: unknown } | null;
-  return typeof state?.recordTitle === 'string' ? state.recordTitle : undefined;
 }
 
 export function RecordHeading({ children }: { children: ReactNode }) {

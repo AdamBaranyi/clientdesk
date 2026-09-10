@@ -13,11 +13,8 @@ import { useProjects } from '../projects/api.ts';
 import { ArchiveSection } from './ArchiveSection.tsx';
 import { useCustomer, useUpdateCustomer } from './api.ts';
 import { CustomerForm } from './CustomerForm.tsx';
-import {
-  PendingRecord,
-  RecordHeading,
-  useRecordTitlePreview,
-} from '../../components/base/RecordLink.tsx';
+import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
+import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
 
 export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { customerId } = useParams();

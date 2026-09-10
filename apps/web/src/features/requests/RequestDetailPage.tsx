@@ -13,11 +13,8 @@ import { CommentThread } from './CommentThread.tsx';
 import { PriorityBadge, RequestStatusBadge } from './labels.tsx';
 import { REQUEST_STATUS_LABELS } from './status-labels.ts';
 import { useChangeRequestStatus, useRequest, useRequestComments } from './api.ts';
-import {
-  PendingRecord,
-  RecordHeading,
-  useRecordTitlePreview,
-} from '../../components/base/RecordLink.tsx';
+import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
+import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
 
 export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { requestId } = useParams();

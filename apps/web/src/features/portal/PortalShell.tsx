@@ -3,19 +3,20 @@ import {
   FileText,
   FolderKanban,
   LayoutGrid,
-  Layers,
   LogOut,
   Menu,
   MessageSquare,
   Paperclip,
   X,
 } from 'lucide-react';
-import { NavLink, Outlet, useNavigate } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useLogout } from '../auth/use-session.ts';
 import { DemoBanner } from '../demo/DemoBanner.tsx';
+import { NavItem } from '../../components/base/NavItem.tsx';
+import { Wordmark } from '../../components/base/Wordmark.tsx';
 
 /**
  * Reduzierte Navigation. Es gibt hier bewusst keinen Workspace-Umschalter:
@@ -52,22 +53,13 @@ export function PortalShell({ user, workspace }: Props) {
   const navigation = (
     <nav aria-label="Portalnavigation" className="flex flex-col gap-0.5">
       {NAV_ITEMS.map((item) => (
-        <NavLink
+        <NavItem
           key={item.to}
           to={portalPath(workspace.id, item.to)}
-          onClick={() => setNavOpen(false)}
-          className={({ isActive }) =>
-            [
-              'flex min-h-11 items-center gap-2.5 rounded-md px-2.5 text-sm font-medium transition-colors',
-              isActive
-                ? 'bg-raised text-ink shadow-[inset_2px_0_0_var(--accent)]'
-                : 'text-muted hover:text-ink',
-            ].join(' ')
-          }
-        >
-          <item.icon size={17} strokeWidth={1.8} aria-hidden="true" />
-          {item.label}
-        </NavLink>
+          label={item.label}
+          icon={item.icon}
+          onNavigate={() => setNavOpen(false)}
+        />
       ))}
     </nav>
   );
@@ -78,14 +70,13 @@ export function PortalShell({ user, workspace }: Props) {
         Zum Inhalt springen
       </a>
 
-      <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line bg-[var(--sidebar-bg)] p-[13px] lg:block">
-        <div className="flex items-center gap-2.5 px-2.5 pt-0.5 pb-4">
-          <Layers size={17} strokeWidth={2.2} className="shrink-0 text-accent" aria-hidden="true" />
-          <span className="text-sm font-bold">Kundenportal</span>
-        </div>
-        <div className="mb-4 rounded-lg border border-line bg-surface px-2.5 py-2.5">
-          <p className="truncate text-[12.5px] font-semibold">{workspace.name}</p>
-          <p className="text-[10.5px] text-faint">Ihr Zugang</p>
+      <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line bg-[var(--sidebar-bg)] p-3 lg:block">
+        <Wordmark name="Kundenportal" />
+        <div className="mb-4 border border-line bg-surface px-2.5 py-2.5">
+          <p className="text-dense truncate font-medium">{workspace.name}</p>
+          <p className="font-condensed text-micro tracking-[0.14em] text-muted uppercase">
+            Ihr Zugang
+          </p>
         </div>
         {navigation}
       </aside>
@@ -98,7 +89,7 @@ export function PortalShell({ user, workspace }: Props) {
             onClick={() => setNavOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
-          <div className="absolute inset-y-0 left-0 flex w-[min(272px,85vw)] flex-col border-r border-line bg-[var(--sidebar-bg)] p-[13px] shadow-[var(--shadow-raised)]">
+          <div className="absolute inset-y-0 left-0 flex w-[min(272px,85vw)] flex-col border-r border-line bg-[var(--sidebar-bg)] p-3">
             <button
               type="button"
               onClick={() => setNavOpen(false)}
@@ -107,10 +98,7 @@ export function PortalShell({ user, workspace }: Props) {
               <X size={18} strokeWidth={1.8} aria-hidden="true" />
               <span className="sr-only">Schliessen</span>
             </button>
-            <div className="flex items-center gap-2.5 px-2.5 pt-0.5 pb-4">
-              <Layers size={17} strokeWidth={2.2} className="text-accent" aria-hidden="true" />
-              <span className="text-sm font-bold">Kundenportal</span>
-            </div>
+            <Wordmark name="Kundenportal" />
             {navigation}
           </div>
         </div>

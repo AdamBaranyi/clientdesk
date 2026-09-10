@@ -10,11 +10,8 @@ import { workspacePath } from '../../lib/paths.ts';
 import { ContractStatusBadge } from './ContractStatusBadge.tsx';
 import { RateHistory } from './RateHistory.tsx';
 import { useContract, useRates, useUpdateContract } from './api.ts';
-import {
-  PendingRecord,
-  RecordHeading,
-  useRecordTitlePreview,
-} from '../../components/base/RecordLink.tsx';
+import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
+import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
 
 export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { contractId } = useParams();

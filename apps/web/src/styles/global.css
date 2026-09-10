@@ -100,46 +100,58 @@ body {
 }
 
 /*
- * In dieser Anwendung sind Links zweierlei: einzelne Wörter im Satz und
- * Hüllen um ganze Karten oder Tabellenzeilen. Eine gemeinsame Regel kann
- * beides nicht bedienen.
+ * Diese Regeln stehen ausdrücklich in @layer base.
  *
- * Die frühere Fassung unterstrich jeden Link beim Überfahren. Auf einer
- * Kennzahlkarte traf das Label, Zahl und Hinweis gleichzeitig. Die
- * Komponenten haben zwanzigmal `no-underline` dagegengesetzt — wirkungslos,
- * weil Tailwind-Utilities in @layer utilities liegen und eine ungeschichtete
- * Regel wie diese sie überstimmt.
- *
- * Farbe und Überfahr-Zustand erben nur Links, deren Text nicht selbst
- * eingefärbt ist — also die echten Textlinks. Kartengrosse Links tragen
- * ihren Zustand über Hintergrund oder Rahmen und bleiben unberührt.
+ * Ungeschichtet würden sie jede Tailwind-Utility schlagen — geschichtete
+ * Regeln verlieren gegen ungeschichtete, unabhängig von der Spezifität. Genau
+ * das ist zweimal passiert: erst hat `no-underline` nie gewirkt, dann war
+ * `text-muted` auf einem Link wirkungslos, weil `a { color: … }` gewann. In
+ * @layer base sind sie das, was sie sein sollen: eine Vorgabe, die sich
+ * überschreiben lässt.
  */
-a {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--dur-snap) var(--ease-state);
-}
+@layer base {
+  /*
+   * In dieser Anwendung sind Links zweierlei: einzelne Wörter im Satz und
+   * Hüllen um ganze Karten oder Tabellenzeilen. Eine gemeinsame Regel kann
+   * beides nicht bedienen.
+   *
+   * Die frühere Fassung unterstrich jeden Link beim Überfahren. Auf einer
+   * Kennzahlkarte traf das Label, Zahl und Hinweis gleichzeitig. Die
+   * Komponenten haben zwanzigmal `no-underline` dagegengesetzt — wirkungslos,
+   * weil Tailwind-Utilities in @layer utilities liegen und eine ungeschichtete
+   * Regel wie diese sie überstimmt.
+   *
+   * Farbe und Überfahr-Zustand erben nur Links, deren Text nicht selbst
+   * eingefärbt ist — also die echten Textlinks. Kartengrosse Links tragen
+   * ihren Zustand über Hintergrund oder Rahmen und bleiben unberührt.
+   */
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color var(--dur-snap) var(--ease-state);
+  }
 
-a:hover {
-  color: color-mix(in oklab, var(--accent) 78%, var(--ink));
-}
+  a:hover {
+    color: color-mix(in oklab, var(--accent) 78%, var(--ink));
+  }
 
-/*
- * Unterstrichen wird nur, wo der Link tatsächlich im Fliesstext steht.
- *
- * Tabellenzellen standen hier zuerst mit drin. In einer Datentabelle ist ein
- * Link aber nie ein Wort im Satz, sondern der Name der Zeile — acht
- * unterstrichene Kundennamen untereinander sind Lärm, kein Hinweis. Die Zeile
- * meldet sich beim Überfahren ohnehin, indem ihre Zellen auf Tinte gehen.
- */
-:where(p, li, dd, dt) a {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  text-decoration-thickness: 1px;
-}
+  /*
+   * Unterstrichen wird nur, wo der Link tatsächlich im Fliesstext steht.
+   *
+   * Tabellenzellen standen hier zuerst mit drin. In einer Datentabelle ist ein
+   * Link aber nie ein Wort im Satz, sondern der Name der Zeile — acht
+   * unterstrichene Kundennamen untereinander sind Lärm, kein Hinweis. Die Zeile
+   * meldet sich beim Überfahren ohnehin, indem ihre Zellen auf Tinte gehen.
+   */
+  :where(p, li, dd, dt) a {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
 
-:where(p, li, dd, dt) a:hover {
-  text-decoration-thickness: 2px;
+  :where(p, li, dd, dt) a:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
 /* Lange Namen, E-Mail-Adressen und URLs dürfen den Container nicht sprengen. */

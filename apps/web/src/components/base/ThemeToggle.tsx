@@ -42,10 +42,10 @@ export function ThemeToggle() {
               // 44 Pixel hoch auf Touch-Breiten, ab sm die kompakte Variante
               // aus dem Entwurf. Die Breite bleibt bei 36 Pixeln, damit die
               // Kopfzeile bei 320 Pixeln nicht überläuft.
-              'flex h-11 w-9 items-center justify-center rounded-[5px] transition-colors sm:h-8',
+              'flex h-11 w-9 items-center justify-center rounded-sm transition-colors sm:h-8',
               active
-                ? 'bg-raised text-ink shadow-[inset_0_0_0_1px_var(--line)]'
-                : 'text-faint hover:text-muted',
+                ? 'border border-line bg-raised text-ink'
+                : 'border border-transparent text-muted hover:text-ink',
             ].join(' ')}
           >
             <Icon size={15} strokeWidth={1.8} aria-hidden="true" />

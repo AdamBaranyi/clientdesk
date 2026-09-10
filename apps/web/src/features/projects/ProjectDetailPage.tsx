@@ -11,11 +11,8 @@ import { CompletionDialog } from './CompletionDialog.tsx';
 import { MilestoneList } from './MilestoneList.tsx';
 import { formatDate } from '../../lib/format.ts';
 import { useMilestones, useProject, useUpdateProject } from './api.ts';
-import {
-  PendingRecord,
-  RecordHeading,
-  useRecordTitlePreview,
-} from '../../components/base/RecordLink.tsx';
+import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
+import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
 
 const STATUS_LABELS: Record<ProjectStatus, string> = {
   planned: 'Geplant',
