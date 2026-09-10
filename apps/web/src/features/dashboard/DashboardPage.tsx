@@ -52,7 +52,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
               else next.delete('contractDate');
               setParams(next, { replace: true });
             }}
-            className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+            className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
           />
         </div>
       </div>

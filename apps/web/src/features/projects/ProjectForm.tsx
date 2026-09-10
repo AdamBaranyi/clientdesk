@@ -63,7 +63,7 @@ export function ProjectForm({
       {message && (
         <p
           role="alert"
-          className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
         >
           {message}
         </p>
@@ -76,7 +76,7 @@ export function ProjectForm({
         <select
           id="projekt-kunde"
           {...form.register('customerId')}
-          className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
         >
           {customers.map((customer) => (
             <option key={customer.id} value={customer.id}>

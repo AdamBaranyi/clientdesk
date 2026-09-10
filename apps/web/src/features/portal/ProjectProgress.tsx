@@ -13,12 +13,9 @@ export function ProjectProgress({ project }: { project: ClientProject }) {
         <span className="text-xs text-faint">Noch keine Meilensteine</span>
       ) : (
         <span className="flex items-center gap-2">
-          <span
-            className="h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-line"
-            aria-hidden="true"
-          >
+          <span className="h-1.5 w-24 shrink-0 overflow-hidden bg-line" aria-hidden="true">
             <span
-              className="block h-full rounded-full bg-accent"
+              className="block h-full bg-accent"
               style={{ width: `${Math.round(project.progress * 100)}%` }}
             />
           </span>

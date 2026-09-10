@@ -20,10 +20,7 @@ export function ContractStatusBadge({ status }: { status: ContractVisibleStatus 
         entry.text,
       ].join(' ')}
     >
-      <span
-        className={['size-1.5 shrink-0 rounded-full', entry.dot].join(' ')}
-        aria-hidden="true"
-      />
+      <span className={['size-1.5 shrink-0', entry.dot].join(' ')} aria-hidden="true" />
       {entry.label}
     </span>
   );

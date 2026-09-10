@@ -24,7 +24,7 @@ export function Pagination({ pagination, onChange }: Props) {
           type="button"
           onClick={() => onChange(page - 1)}
           disabled={page <= 1}
-          className="flex min-h-11 items-center gap-1 rounded-lg border border-line px-3 text-sm text-muted disabled:opacity-40"
+          className="flex min-h-11 items-center gap-1 rounded-sm border border-line px-3 text-sm text-muted disabled:opacity-40"
         >
           <ChevronLeft size={16} strokeWidth={1.8} aria-hidden="true" />
           Zurück
@@ -33,7 +33,7 @@ export function Pagination({ pagination, onChange }: Props) {
           type="button"
           onClick={() => onChange(page + 1)}
           disabled={page >= totalPages}
-          className="flex min-h-11 items-center gap-1 rounded-lg border border-line px-3 text-sm text-muted disabled:opacity-40"
+          className="flex min-h-11 items-center gap-1 rounded-sm border border-line px-3 text-sm text-muted disabled:opacity-40"
         >
           Weiter
           <ChevronRight size={16} strokeWidth={1.8} aria-hidden="true" />

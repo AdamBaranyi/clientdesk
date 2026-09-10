@@ -26,7 +26,7 @@ export function ThemeToggle() {
     <div
       role="group"
       aria-label="Erscheinungsbild"
-      className="flex items-center gap-0.5 rounded-lg border border-line bg-surface p-[3px]"
+      className="flex items-center gap-0.5 rounded-sm border border-line bg-surface p-[3px]"
     >
       {THEME_CHOICES.map((option) => {
         const Icon = ICONS[option];

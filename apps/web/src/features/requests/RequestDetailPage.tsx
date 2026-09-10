@@ -65,7 +65,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
               type="button"
               disabled={changeStatus.isPending}
               onClick={() => changeStatus.mutate({ status: next, version: request.version })}
-              className="min-h-11 rounded-lg border border-line px-3 text-sm font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
+              className="min-h-11 rounded-sm border border-line px-3 text-sm font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
             >
               {REQUEST_STATUS_LABELS[next]}
             </button>
@@ -76,7 +76,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
       {conflict && (
         <p
           role="alert"
-          className="rounded-lg border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
         >
           Die Anfrage wurde inzwischen geändert. Bitte Seite neu laden.
         </p>

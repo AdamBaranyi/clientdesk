@@ -91,7 +91,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
             rows={3}
             value={body}
             onChange={(event) => setBody(event.target.value)}
-            className="w-full resize-y rounded-lg border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent"
+            className="w-full resize-y rounded-sm border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent"
           />
         </div>
 
@@ -102,7 +102,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
               <label
                 key={option}
                 className={[
-                  'flex min-h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-lg border px-3 text-sm',
+                  'flex min-h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-sm border px-3 text-sm',
                   visibility === option ? 'border-accent bg-accent-soft' : 'border-line',
                 ].join(' ')}
               >

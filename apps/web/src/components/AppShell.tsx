@@ -54,7 +54,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
             <button
               type="button"
               onClick={() => setNavigationOpen(false)}
-              className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-md text-muted hover:text-ink"
+              className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-sm text-muted hover:text-ink"
             >
               <X size={18} strokeWidth={1.8} aria-hidden="true" />
               <span className="sr-only">Navigation schliessen</span>

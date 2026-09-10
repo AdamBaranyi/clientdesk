@@ -50,7 +50,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
       {message && (
         <p
           role="alert"
-          className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
         >
           {message}
         </p>
@@ -68,7 +68,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
               form.setValue('projectId', '');
             },
           })}
-          className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
         >
           {customers.map((customer) => (
             <option key={customer.id} value={customer.id}>
@@ -86,7 +86,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
         <select
           id="anfrage-projekt"
           {...form.register('projectId')}
-          className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
         >
           <option value="">Ohne Projekt</option>
           {(projects.data?.data ?? []).map((project) => (
@@ -118,7 +118,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
         <select
           id="anfrage-prio"
           {...form.register('priority')}
-          className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+          className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
         >
           <option value="normal">Normal</option>
           <option value="high">Hoch</option>

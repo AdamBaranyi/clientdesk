@@ -42,14 +42,14 @@ export function Dialog({ open, title, onClose, children }: DialogProps) {
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className="relative flex max-h-[92dvh] w-full max-w-[520px] flex-col rounded-t-lg border border-line bg-surface shadow-[var(--shadow-raised)] outline-none sm:rounded-lg"
+        className="relative flex max-h-[92dvh] w-full max-w-[520px] flex-col border border-line bg-surface outline-none"
       >
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5">
           <h2 className="text-sm font-semibold">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="flex size-11 shrink-0 items-center justify-center rounded-md text-muted hover:text-ink"
+            className="flex size-11 shrink-0 items-center justify-center rounded-sm text-muted hover:text-ink"
           >
             <X size={18} strokeWidth={1.8} aria-hidden="true" />
             <span className="sr-only">Schliessen</span>

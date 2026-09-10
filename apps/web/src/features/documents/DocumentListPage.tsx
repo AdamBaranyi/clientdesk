@@ -98,7 +98,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
       {uploadMessage && (
         <p
           role="alert"
-          className="rounded-lg border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
         >
           {uploadMessage}
         </p>
@@ -112,7 +112,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
           id="dokument-kunde"
           value={customerId}
           onChange={(event) => setCustomerId(event.target.value)}
-          className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+          className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
         >
           <option value="">Alle Kunden</option>
           {available.map((customer) => (
@@ -177,7 +177,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
                 <div className="flex flex-wrap items-center gap-2">
                   <a
                     href={documentDownloadUrl(workspace.id, document.id)}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
                   >
                     <Download size={15} strokeWidth={1.8} aria-hidden="true" />
                     Öffnen

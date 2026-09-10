@@ -104,7 +104,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
           {message && (
             <p
               role="alert"
-              className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+              className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
             >
               {message}
             </p>
@@ -118,7 +118,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
               id="portal-projekt"
               value={projectId}
               onChange={(event) => setProjectId(event.target.value)}
-              className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+              className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
             >
               <option value="">Ohne Projekt</option>
               {/* Die Auswahl kommt vom Server — hier steht nichts, was nicht erlaubt wäre. */}

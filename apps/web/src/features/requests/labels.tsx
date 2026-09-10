@@ -17,10 +17,7 @@ export function RequestStatusBadge({ status }: { status: RequestStatus }) {
         style.text,
       ].join(' ')}
     >
-      <span
-        className={['size-1.5 shrink-0 rounded-full', style.dot].join(' ')}
-        aria-hidden="true"
-      />
+      <span className={['size-1.5 shrink-0', style.dot].join(' ')} aria-hidden="true" />
       {REQUEST_STATUS_LABELS[status]}
     </span>
   );

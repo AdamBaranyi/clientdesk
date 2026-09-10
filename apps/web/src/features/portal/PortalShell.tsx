@@ -93,7 +93,7 @@ export function PortalShell({ user, workspace }: Props) {
             <button
               type="button"
               onClick={() => setNavOpen(false)}
-              className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-md text-muted hover:text-ink"
+              className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-sm text-muted hover:text-ink"
             >
               <X size={18} strokeWidth={1.8} aria-hidden="true" />
               <span className="sr-only">Schliessen</span>
@@ -110,7 +110,7 @@ export function PortalShell({ user, workspace }: Props) {
             <button
               type="button"
               onClick={() => setNavOpen(true)}
-              className="flex size-11 shrink-0 items-center justify-center rounded-md text-muted hover:text-ink lg:hidden"
+              className="flex size-11 shrink-0 items-center justify-center rounded-sm text-muted hover:text-ink lg:hidden"
             >
               <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
               <span className="sr-only">Navigation öffnen</span>
@@ -125,7 +125,7 @@ export function PortalShell({ user, workspace }: Props) {
               type="button"
               onClick={() => logout.mutate(undefined, { onSuccess: () => void navigate('/login') })}
               disabled={logout.isPending}
-              className="flex min-h-11 items-center gap-2 rounded-lg border border-line px-3 text-[13px] font-medium text-muted hover:text-ink disabled:opacity-60"
+              className="flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-[13px] font-medium text-muted hover:text-ink disabled:opacity-60"
             >
               <LogOut size={15} strokeWidth={1.8} aria-hidden="true" />
               <span className="hidden sm:inline">Abmelden</span>

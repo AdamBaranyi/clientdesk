@@ -82,7 +82,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
             value={project.status}
             disabled={update.isPending}
             onChange={(event) => changeStatus(event.target.value as ProjectStatus)}
-            className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+            className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
           >
             {PROJECT_STATUS.map((option) => (
               <option key={option} value={option}>
@@ -96,7 +96,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
       {conflict && (
         <p
           role="alert"
-          className="rounded-lg border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
         >
           Das Projekt wurde inzwischen von jemand anderem geändert. Bitte Seite neu laden.
         </p>

@@ -65,7 +65,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
       {conflict && (
         <p
           role="alert"
-          className="rounded-lg border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
         >
           Der Vertrag wurde inzwischen von jemand anderem geändert. Bitte Seite neu laden.
         </p>

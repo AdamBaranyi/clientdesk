@@ -90,14 +90,14 @@ export function JoinPage() {
                 {error && (
                   <p
                     role="alert"
-                    className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+                    className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
                   >
                     {error}
                   </p>
                 )}
 
                 {preview.data.accountExists ? (
-                  <p className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-muted">
+                  <p className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-muted">
                     Zu dieser E-Mail gibt es bereits ein Konto. Melden Sie sich zuerst damit an und
                     öffnen Sie den Link erneut.
                   </p>

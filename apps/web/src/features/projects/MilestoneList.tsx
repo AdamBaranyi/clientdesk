@@ -57,7 +57,7 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
               }
               aria-pressed={milestone.status === 'done'}
               className={[
-                'mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-md border transition-colors',
+                'mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-sm border transition-colors',
                 milestone.status === 'done'
                   ? 'border-accent bg-accent text-on-accent'
                   : 'border-line text-transparent hover:border-faint',

@@ -119,7 +119,7 @@ export function ContractListPage({ workspace }: { workspace: WorkspaceSummary })
             type="date"
             value={onDate ?? ''}
             onChange={(event) => patchParams({ onDate: event.target.value || null })}
-            className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
+            className="min-h-11 rounded-sm border border-line bg-surface px-3 text-sm text-ink outline-none focus-visible:border-accent"
           />
         </div>
       </div>

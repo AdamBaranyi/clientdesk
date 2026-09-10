@@ -51,7 +51,7 @@ export function ArchiveSection({ workspace, customer }: Props) {
         {blockers.isPending && <p className="text-sm text-muted">Wird geprüft …</p>}
 
         {blocked && counts && (
-          <div className="rounded-md border border-line bg-raised px-3 py-3">
+          <div className="rounded-sm border border-line bg-raised px-3 py-3">
             <p className="text-sm font-medium">Noch nicht möglich</p>
             <ul className="mt-2 flex flex-col gap-1 text-sm text-muted">
               {counts.runningProjects > 0 && (

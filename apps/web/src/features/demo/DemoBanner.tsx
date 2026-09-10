@@ -62,7 +62,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
             onClick={() => switchTo(identity.userId, identity.role)}
             aria-pressed={identity.current}
             className={[
-              'inline-flex min-h-11 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors',
+              'inline-flex min-h-11 items-center gap-1.5 rounded-sm border px-2.5 text-xs font-medium transition-colors',
               identity.current
                 ? 'border-accent bg-surface text-accent'
                 : 'border-line text-muted hover:text-ink',

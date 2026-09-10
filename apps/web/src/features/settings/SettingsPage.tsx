@@ -86,7 +86,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
           {message && (
             <p
               role="alert"
-              className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+              className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
             >
               {message}
             </p>
@@ -109,7 +109,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
               id="einladung-rolle"
               value={role}
               onChange={(event) => setRole(event.target.value as MembershipRole)}
-              className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+              className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
             >
               {MEMBERSHIP_ROLES.map((option) => (
                 <option key={option} value={option}>
@@ -128,7 +128,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
                 id="einladung-kunde"
                 value={customerId}
                 onChange={(event) => setCustomerId(event.target.value)}
-                className="min-h-11 w-full rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+                className="min-h-11 w-full rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
               >
                 <option value="">Bitte wählen</option>
                 {available.map((customer) => (
@@ -163,7 +163,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
               später nicht erneut aufrufen.
             </p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <code className="min-w-0 flex-1 overflow-x-auto rounded-md border border-line bg-surface px-3 py-2.5 font-mono text-xs">
+              <code className="min-w-0 flex-1 overflow-x-auto rounded-sm border border-line bg-surface px-3 py-2.5 font-mono text-xs">
                 {created.inviteUrl}
               </code>
               <Button onClick={() => void copyLink(created.inviteUrl)}>

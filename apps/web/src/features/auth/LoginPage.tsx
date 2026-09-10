@@ -50,7 +50,7 @@ export function LoginPage() {
             {message && (
               <p
                 role="alert"
-                className="rounded-md border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+                className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
               >
                 {message}
               </p>
@@ -74,7 +74,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={login.isPending}
-              className="min-h-11 rounded-lg bg-accent px-4 font-medium text-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+              className="min-h-11 rounded-sm bg-accent px-4 font-medium text-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
             >
               {login.isPending ? 'Wird geprüft …' : 'Anmelden'}
             </button>
@@ -107,7 +107,7 @@ function Field({ label, type, autoComplete, error, registration }: FieldProps) {
         autoComplete={autoComplete}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-fehler` : undefined}
-        className="min-h-11 rounded-lg border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
+        className="min-h-11 rounded-sm border border-line bg-bg px-3 text-base text-ink outline-none focus-visible:border-accent"
       />
       {error && (
         <p id={`${id}-fehler`} className="text-sm text-danger">

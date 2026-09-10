@@ -209,7 +209,7 @@ export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary
               </div>
               <a
                 href={portalDownloadUrl(workspace.id, document.id)}
-                className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
+                className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
               >
                 <Download size={15} strokeWidth={1.8} aria-hidden="true" />
                 Herunterladen

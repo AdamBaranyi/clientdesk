@@ -93,7 +93,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
               rows={3}
               value={body}
               onChange={(event) => setBody(event.target.value)}
-              className="w-full resize-y rounded-lg border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent"
+              className="w-full resize-y rounded-sm border border-line bg-bg px-3 py-2.5 text-base text-ink outline-none focus-visible:border-accent"
             />
             {request.status === 'waiting_customer' && (
               <p className="text-xs text-warning">

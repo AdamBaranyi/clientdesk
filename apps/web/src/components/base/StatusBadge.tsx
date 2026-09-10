@@ -16,10 +16,7 @@ export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
   const entry = PROJECT_LABELS[status];
   return (
     <span className={['inline-flex items-center gap-2 text-xs font-medium', entry.text].join(' ')}>
-      <span
-        className={['size-1.5 shrink-0 rounded-full', entry.dot].join(' ')}
-        aria-hidden="true"
-      />
+      <span className={['size-1.5 shrink-0', entry.dot].join(' ')} aria-hidden="true" />
       {entry.label}
     </span>
   );
@@ -28,7 +25,7 @@ export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
 export function ArchivedBadge() {
   return (
     <span className="inline-flex items-center gap-2 text-xs font-medium text-faint">
-      <span className="size-1.5 shrink-0 rounded-full bg-faint" aria-hidden="true" />
+      <span className="size-1.5 shrink-0 bg-faint" aria-hidden="true" />
       Archiviert
     </span>
   );
