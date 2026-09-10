@@ -53,13 +53,39 @@ body {
   border-radius: var(--radius-sm);
 }
 
+/*
+ * In dieser Anwendung sind Links zweierlei: einzelne Wörter im Satz und
+ * Hüllen um ganze Karten oder Tabellenzeilen. Eine gemeinsame Regel kann
+ * beides nicht bedienen.
+ *
+ * Die frühere Fassung unterstrich jeden Link beim Überfahren. Auf einer
+ * Kennzahlkarte traf das Label, Zahl und Hinweis gleichzeitig. Die
+ * Komponenten haben zwanzigmal `no-underline` dagegengesetzt — wirkungslos,
+ * weil Tailwind-Utilities in @layer utilities liegen und eine ungeschichtete
+ * Regel wie diese sie überstimmt.
+ *
+ * Farbe und Überfahr-Zustand erben nur Links, deren Text nicht selbst
+ * eingefärbt ist — also die echten Textlinks. Kartengrosse Links tragen
+ * ihren Zustand über Hintergrund oder Rahmen und bleiben unberührt.
+ */
 a {
   color: var(--accent);
   text-decoration: none;
 }
 
 a:hover {
+  color: color-mix(in oklab, var(--accent) 78%, var(--ink));
+}
+
+/* Unterstrichen wird nur, wo der Link tatsächlich im Fliesstext steht. */
+:where(p, li, dd, dt, td, th) a {
   text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+:where(p, li, dd, dt, td, th) a:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* Lange Namen, E-Mail-Adressen und URLs dürfen den Container nicht sprengen. */
