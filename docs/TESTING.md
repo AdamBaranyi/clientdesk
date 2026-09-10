@@ -1,6 +1,6 @@
 # Tests und Prüfungen
 
-Stand: Meilenstein 5.
+Stand: 10.09.2026, nach der Design-Überarbeitung.
 
 ## Ausgeführt
 
@@ -9,8 +9,24 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 09.09.2026: **153 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
-allen vier Paketen sauber, 193 Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
+Ergebnis vom 10.09.2026: **158 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+allen vier Paketen sauber, 205 Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
+
+Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
+
+```bash
+docker compose -f infra/docker-compose.yml up -d
+bun --env-file=.env run vitest run
+```
+
+Ohne `--env-file` fehlt `TEST_DATABASE_URL`, und zwölf Testdateien scheitern beim Start statt
+in einem Testfall — der Fehler sieht dann grösser aus, als er ist.
+
+### Noch nicht geprüft
+
+Es gibt **keine End-to-End-Tests, keine axe-Prüfung und keine Frontend-Messung**. Tastaturführung,
+Kontraste und Bedienbarkeit ab 320 Pixeln sind von Hand im Browser gemessen und in den
+Commit-Nachrichten festgehalten, aber nichts davon hält sich selbst. Das ist Meilenstein 6a.
 
 ### Was geprüft wird
 

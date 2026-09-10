@@ -1,6 +1,9 @@
 # Umsetzungsstand
 
-Stand: 09.09.2026 · Meilenstein 5 von 6 abgeschlossen
+Stand: 10.09.2026 · Meilensteine 1–5 abgeschlossen · Design-Überarbeitung abgeschlossen
+
+158 Tests grün · 205 Code-Dateien unter der 400-Zeilen-Grenze (längste 317) · Lint ohne Fehler
+und ohne Warnungen · Typecheck in allen vier Paketen sauber.
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
 
@@ -41,6 +44,25 @@ Stand: 09.09.2026 · Meilenstein 5 von 6 abgeschlossen
 
 - 28 Tests grün, Lint ohne Fehler und Warnungen, Typecheck in allen Paketen sauber
 - Anmeldung im Browser durchgespielt: Login, Weiterleitung, Dashboard, Themenwechsel
+
+## Erledigt — Meilenstein 2: Kernablauf und Beispieldaten
+
+- Kunden anlegen, bearbeiten, archivieren — mit genannten Hinderungsgründen statt stiller Ablehnung
+- Projekte einem Kunden zugeordnet, Meilensteine abhakbar; Fortschritt entsteht aus erledigten
+  Meilensteinen, nicht aus einer Schätzung
+- Vorführ-Seed: 8 Kunden, 12 Projekte, 18 Anfragen, relativ zu einem Bezugsdatum statt mit festen
+  Kalenderdaten
+- Integrationstests laufen in der CI gegen eine echte PostgreSQL-Datenbank
+
+## Erledigt — Meilenstein 3: Verträge und Kennzahlen
+
+- Servicevereinbarungen mit Preisversionen: eine Preisänderung gilt ab ihrem Datum und lässt
+  vergangene Monatswerte unberührt
+- Monatlicher Vertragswert zu jedem Stichtag nachvollziehbar; Zählregel in Tests festgehalten
+- Dashboard-Aggregate und Sechs-Monats-Verlauf
+- Lastdaten-Seed mit rund 1'000 Kunden, 3'000 Projekten, 10'000 Anfragen
+- `scripts/measure-performance.ts` misst die API mit p50, p95 und Maximum über 30 Läufe — gemessen,
+  nicht behauptet
 
 ## Erledigt — Meilenstein 4: Portal und Dokumente
 
@@ -115,22 +137,57 @@ Stand: 09.09.2026 · Meilenstein 5 von 6 abgeschlossen
 - Ablauf im Browser durchgespielt: Demo starten, in die Kundenansicht wechseln, zurück
 - Zwei Kartenlinks waren 16 Pixel hoch und liegen jetzt bei 44
 
+## Erledigt — Design-Überarbeitung (10.09.2026)
+
+Richtung: industriell/technisch auf Schweizer Raster. Begründung und Regeln stehen in
+`ClientDesk-Masterprompt-v3.md`, Abschnitt 5.
+
+| Schritt | Commit    | Ergebnis                                                                                        |
+| ------- | --------- | ----------------------------------------------------------------------------------------------- |
+| A       | `a998cfb` | Unterstreichung ganzer Karten behoben; 20 wirkungslose `no-underline` in 14 Dateien als Ursache |
+| B       | `199c85f` | Tokens: IBM Plex, Kobalt nur für Daten, Tinte auf Knöpfen, Typoskala 5,1:1, 4-px-Raster         |
+| D       | `30a9765` | Bewegungsebene: drei Geschwindigkeiten, zwei Versätze mit Deckel, zwei Kurven                   |
+| C1      | `fb85a82` | Kennzahlband asymmetrisch, Leitzahl 72 px gegen 11-px-Einheit                                   |
+| C2      | `8ed902b` | Tabellen als Datenblattraster, gemeinsame Bauteile                                              |
+| C2      | `eb030bb` | Name wandert von der Zeile in die Detailüberschrift (View Transitions)                          |
+| C3      | `63f614b` | Navigation: Kantenstreifen raus, aktiv in Kobalt, Wortmarke statt Symbol                        |
+| C4      | `030838f` | Diagrammfarben aus den Tokens, Balken gestaffelt                                                |
+| —       | `9d7f014` | Unbehandelte Zurückweisung bei abgebrochenem Seitenübergang                                     |
+| C5      | `f6c4e25` | Startseite an der Kante statt mittig, nummerierte Zeilen statt drei Karten                      |
+
+**Vier Fehler, die niemand gemeldet hätte:** ungeschichtetes CSS schlägt jede Tailwind-Utility
+(zweimal zugeschlagen — Unterstreichung und Textfarbe), `flushSync` kommt gegen `startTransition`
+nicht an, abgebrochene Seitenübergänge lecken unbehandelte Zurückweisungen, `--faint` erreicht
+dunkel nur 3,7:1.
+
 ## Offen — nächste Schritte
 
-**Meilenstein 2: Kernablauf und Beispieldaten** _(als Nächstes)_
+**Abschluss Design** _(als Nächstes)_ — Vorher-Bilder aus einem `git worktree` auf `a998cfb`,
+Nachher aus dem fertigen Stand, zweiter `avoid-ai-design`-Lauf im detect-Modus als Gegenprobe.
 
-- Kunden anlegen, bearbeiten, archivieren mit Hinderungsgründen
-- Projekte einem Kunden zuordnen, Meilensteine erledigen
-- Vorführ-Seed: 8 Kunden, 12 Projekte, 18 Anfragen relativ zu einem Bezugsdatum
-- Einfacher Demo-Login
-- Integrationstests in die CI aufnehmen
+**Kommandopalette** — gebündelter Suchendpunkt `GET /workspaces/:w/search` über Kunden, Projekte,
+Verträge und Anfragen, dazu ein Dialog mit Tastaturführung. Bekommt dieselben negativen
+Mandantentests wie jeder andere Endpunkt.
 
-**Meilenstein 3** _(als Nächstes)_ — Verträge, Preisversionen, Dashboard-Aggregationen,
-Lastdaten-Seed, erste Messung
-**Meilenstein 4** _(als Nächstes)_ — Rollen, Anfragen, Kommentar-Sichtbarkeit, MinIO,
-Dokumentfreigabe, Einladungen
-**Meilenstein 5** — Demo-Workspaces, Rollenwechsel, Limits, Cleanup, Feinschliff
-**Meilenstein 6** — Deployment auf FSIT-KVM-Server, Caddy, End-to-End-Tests, Scans, Case Study
+**Meilenstein 6a: Frontend-Qualität** — hängt nicht am Server und läuft deshalb vor Meilenstein 6.
+
+- Playwright über sechs Prüfbreiten. **Je Breite neu laden, nicht das Fenster ziehen** — in der
+  Fensteremulation feuert weder `resize` noch `ResizeObserver`, und `innerWidth` bleibt stehen.
+  Wer zieht statt neu zu laden, misst ein Artefakt.
+- Fokusfalle im Dialog, Fokus-Rückgabe an den Auslöser, Hintergrund `inert` — mit Tests, die es
+  belegen. Heute führt der Fokus in den Dialog hinein, aber Tab verlässt ihn wieder.
+- `@axe-core/playwright` über alle Hauptseiten, hell und dunkel getrennt; `eslint-plugin-jsx-a11y`
+  in `bun run verify`. Damit hält die Maschine die Kontraste, die bisher von Hand gemessen sind.
+- Frontend-Budget: Bündelgrösse je Chunk, LCP, CLS und INP gegen den Lastdaten-Seed, hart in der CI.
+  `measure-performance.ts` deckt bisher nur die API ab.
+- Schriften selbst ausliefern statt von Google Fonts — Voraussetzung für eine strenge CSP.
+- `docs/DIAGNOSTICS.md`: die reproduzierbaren Befunde dieses Projekts mit Messung, Ursache und
+  Korrektur.
+
+**Meilenstein 6: Deployment** — Produktions-Compose mit Caddy, FSIT-KVM-Server einrichten,
+A-Record `clientdesk.adambaranyi.xyz`, Content Security Policy, Secret- und Abhängigkeitsscan in
+der CI, Fallstudie. Die Fallstudie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
+Geschmack.
 
 ## Bewusst zurückgestellt
 
@@ -138,11 +195,12 @@ Dokumentfreigabe, Einladungen
 | --------------------------------------- | --------------------------------------------------------------------- | --------------------------- |
 | Content Security Policy                 | Die benötigten Quellen stehen erst mit dem Deployment fest            | Meilenstein 6               |
 | Secret- und Abhängigkeitsscan in der CI | Gehört zum Freigabeschritt                                            | Meilenstein 6               |
-| Schriften selbst ausliefern             | Derzeit Google Fonts; nötig für strenge CSP und Datenschutz           | Meilenstein 5               |
+| Schriften selbst ausliefern             | Derzeit Google Fonts; nötig für strenge CSP und Datenschutz           | Meilenstein 6a              |
 | Weitere Navigationseinträge             | Ein Menüpunkt ohne Seite wäre ein Versprechen, das die App nicht hält | mit der jeweiligen Funktion |
 | Passwort-Reset per E-Mail               | Ohne Mailversand nicht sauber baubar                                  | Backlog                     |
 | Keycloak beziehungsweise OIDC           | Geprüft und verworfen, Begründung in `docs/ARCHITECTURE.md`           | Backlog                     |
 
 ## Blockiert
 
-Nichts. Der FSIT-KVM-Server wird erst in Meilenstein 6 gebraucht und ist bewusst noch nicht bestellt.
+Nichts. Der FSIT-KVM-Server wird erst in Meilenstein 6 gebraucht. Meilenstein 6a ist bewusst
+davorgesetzt, damit die Wartezeit auf die Bestellung nicht leer läuft.
