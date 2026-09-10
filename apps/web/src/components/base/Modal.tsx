@@ -47,7 +47,15 @@ export function Modal({ label, onClose, children, align = 'center' }: ModalProps
     return () => element.close();
   }, []);
 
+  /*
+   * jsx-a11y verlangt zu jedem Klick eine Tastaturentsprechung. Die gibt es
+   * hier: Escape schliesst, und zwar vom Browser aus, ohne eigenen Griff. Die
+   * Regel kann das nicht sehen, weil sie nur auf das Element schaut. Ein
+   * Tastaturgriff auf dem abgedunkelten Rand wäre nicht bloss überflüssig,
+   * sondern falsch — der Rand darf keinen Fokus bekommen.
+   */
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <dialog
       ref={dialog}
       aria-label={label}

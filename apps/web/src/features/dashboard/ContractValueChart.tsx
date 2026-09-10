@@ -50,8 +50,15 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Für Screenreader ist die Tabelle darunter die zugängliche Fassung. */}
-      <div className="h-[200px] w-full" aria-hidden="true">
+      {/*
+        Für Screenreader ist die Tabelle darunter die zugängliche Fassung.
+
+        `inert` gehört zwingend dazu: Recharts setzt einen tabindex auf seine
+        Zeichenfläche, und ein Element, das mit aria-hidden ausgeblendet ist,
+        darf nichts Fokussierbares enthalten — sonst landet die Tastatur in
+        etwas, das für den Screenreader nicht existiert.
+      */}
+      <div className="h-[200px] w-full" aria-hidden="true" inert>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
             <CartesianGrid stroke={colors.grid} vertical={false} />

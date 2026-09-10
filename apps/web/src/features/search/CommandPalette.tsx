@@ -155,6 +155,14 @@ function Ergebnisse({ hits, markiert, term, laedt, onSelect, onHover }: Ergebnis
       className="max-h-[50vh] overflow-y-auto"
     >
       {hits.map((hit, index) => (
+        /*
+         * Ein Eintrag in einer Auswahlliste bekommt keinen eigenen
+         * Tastaturgriff. Beim Kombinationsfeld bleibt der Fokus im
+         * Eingabefeld, und Pfeile und Enter werden dort behandelt — genau
+         * darum geht es bei `aria-activedescendant`. Ein Griff hier bekäme nie
+         * ein Tastenereignis zu sehen.
+         */
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events
         <li
           key={`${hit.kind}-${hit.id}`}
           id={`palette-treffer-${index}`}
