@@ -184,6 +184,22 @@ Mandantentests wie jeder andere Endpunkt.
   echte Ladezeit gehört auf den Server aus Meilenstein 6.
 - `docs/DIAGNOSTICS.md` mit zwölf Befunden, drei davon ausdrücklich als Fehldiagnose.
 
+**Meilenstein 6b: Pflichtseiten und Lighthouse** — teils erst mit laufender Domain prüfbar.
+
+- **Impressum und Datenschutzerklärung**, aus der Fusszeile verlinkt. Kurz und wahr: ein technisch
+  erforderliches Sitzungs-Cookie, keine Analyse, keine Einbettungen, keine Anfragen an Dritte.
+- **Urheberrechtsvermerk** in der Fusszeile und `LICENSE` im Repository. Ohne Lizenzdatei sind alle
+  Rechte vorbehalten — das ist für ein Portfoliostück richtig, sollte aber dastehen statt sich aus
+  dem Schweigen zu ergeben. Die Schriftlizenz (SIL OFL 1.1, IBM Plex) liegt bereits bei den Dateien.
+- **SEO-Grundlage** für die Startseite: `robots.txt`, Canonical, Open-Graph-Bild, sprechende
+  Meta-Angaben. Bei einer Single-Page-Anwendung bleibt das begrenzt — echtes SEO kann erst die
+  Portfolio-Seite auf Next.js.
+- **Lighthouse gegen die ausgerollte Seite**, alle Kategorien: Performance, Accessibility, Best
+  Practices, SEO und **Agentic Browsing** (seit Lighthouse 13.3, Mai 2026, standardmässig dabei).
+  Für Agentic Browsing fehlt bisher `llms.txt`; Barrierefreiheitsbaum und CLS (0.0004) stehen
+  bereits gut. **WebMCP bewusst nicht** — die Anwendung liegt hinter einer Anmeldung, und einem
+  Agenten Werkzeuge auf fremde Kundendaten zu geben wäre keine Verbesserung.
+
 **Meilenstein 6: Deployment** — Produktions-Compose mit Caddy, FSIT-KVM-Server einrichten,
 A-Record `clientdesk.adambaranyi.xyz`, Content Security Policy, Secret- und Abhängigkeitsscan in
 der CI, Fallstudie. Die Fallstudie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
