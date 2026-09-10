@@ -99,7 +99,7 @@ export function PendingRecord({
 }) {
   if (!title) return <LoadingState label={label} />;
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <RecordHeading>{title}</RecordHeading>
       <LoadingState label={label} />
     </div>

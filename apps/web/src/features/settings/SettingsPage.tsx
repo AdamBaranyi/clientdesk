@@ -67,7 +67,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
         : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div>
         <h1 className="text-xl font-semibold tracking-[-0.02em]">Einstellungen</h1>
         <p className="mt-1 text-sm text-muted">

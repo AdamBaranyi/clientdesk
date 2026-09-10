@@ -59,7 +59,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
     update.error instanceof ApiRequestError && update.error.code === 'VERSION_CONFLICT';
 
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'projects')}
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"

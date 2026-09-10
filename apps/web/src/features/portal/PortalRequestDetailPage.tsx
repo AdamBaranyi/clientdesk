@@ -39,7 +39,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <Link
         to={portalPath(workspace.id, 'requests')}
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"

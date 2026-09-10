@@ -27,7 +27,7 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
   const data = query.data;
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div>
         <h1 className="text-xl font-semibold tracking-[-0.02em]">{data.customerName}</h1>
         <p className="mt-1 text-sm text-muted">Betreut von {data.workspaceName}</p>
@@ -93,7 +93,7 @@ export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary 
   if (query.isError) return <ErrorState detail="Die Projekte konnten nicht geladen werden." />;
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <h1 className="text-xl font-semibold tracking-[-0.02em]">Projekte</h1>
 
       <Card>
@@ -135,7 +135,7 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
   if (query.isError) return <ErrorState detail="Die Verträge konnten nicht geladen werden." />;
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <h1 className="text-xl font-semibold tracking-[-0.02em]">Serviceverträge</h1>
 
       <Card>
@@ -184,7 +184,7 @@ export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary
   if (query.isError) return <ErrorState detail="Die Dokumente konnten nicht geladen werden." />;
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <h1 className="text-xl font-semibold tracking-[-0.02em]">Dokumente</h1>
 
       <Card>

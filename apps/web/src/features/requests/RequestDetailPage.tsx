@@ -35,7 +35,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
     changeStatus.error instanceof ApiRequestError && changeStatus.error.code === 'VERSION_CONFLICT';
 
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'requests')}
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"

@@ -30,7 +30,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
   const base = workspacePath(workspace.id);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-12">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-[-0.02em]">Dashboard</h1>

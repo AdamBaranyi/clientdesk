@@ -35,7 +35,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
   const customer = query.data;
 
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'customers')}
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
