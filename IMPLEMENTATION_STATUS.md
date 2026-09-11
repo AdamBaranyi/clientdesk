@@ -1,6 +1,7 @@
 # Umsetzungsstand
 
-Stand: 10.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · Design-Überarbeitung abgeschlossen
+Stand: 11.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · Server eingerichtet · Meilenstein 6 in
+Arbeit
 
 166 Unit- und Integrationstests · 147 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
 und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
@@ -154,6 +155,15 @@ Richtung: industriell/technisch auf Schweizer Raster. Begründung und Regeln ste
 | C4      | `030838f` | Diagrammfarben aus den Tokens, Balken gestaffelt                                                |
 | —       | `9d7f014` | Unbehandelte Zurückweisung bei abgebrochenem Seitenübergang                                     |
 | C5      | `f6c4e25` | Startseite an der Kante statt mittig, nummerierte Zeilen statt drei Karten                      |
+| —       | `9ba957b` | Schriften vom eigenen Server statt von Google, Lizenz SIL OFL 1.1 liegt bei den Dateien         |
+| —       | `c289864` | Favicon, gezeichnet aus dem Kennzahlband                                                        |
+| —       | `e8cfa1d` | Listensteuerung im selben Raster wie die Tabellen, Fokusring wieder sichtbar                    |
+| —       | `2acf56a` | 52 verbliebene Rundungen entfernt, auch an Dialogen und Statuspunkten                           |
+| —       | `2f50a23` | Akzentbrücke entfernt, kein Fliesstext mehr in `--faint` (dunkel nur 3,7:1)                     |
+| —       | `9bb0a90` | Vorher-/Nachher-Bilder unter gleichen Bedingungen, Gegenprobe mit `avoid-ai-design`             |
+
+Die Gegenprobe fand noch zwei Stellen, beide behoben: zu breite Diagrammbalken (`1a7ab56`) und eine
+Nummerierung, die eine Reihenfolge behauptete, die es nicht gab (`54c8bab`).
 
 **Vier Fehler, die niemand gemeldet hätte:** ungeschichtetes CSS schlägt jede Tailwind-Utility
 (zweimal zugeschlagen — Unterstreichung und Textfarbe), `flushSync` kommt gegen `startTransition`
@@ -186,16 +196,14 @@ Speicherschlüssel, Wortmarke. Die alten Docker-Volumes unter `clientdesk` sind 
 nur gestoppt. Die Git-Historie bleibt unverändert; die Vorher-Bilder zeigen den alten Namen, weil
 sie den alten Stand zeigen.
 
-## Offen — nächste Schritte
+## Erledigt — Kommandopalette (10.09.2026)
 
-**Abschluss Design** _(als Nächstes)_ — Vorher-Bilder aus einem `git worktree` auf `a998cfb`,
-Nachher aus dem fertigen Stand, zweiter `avoid-ai-design`-Lauf im detect-Modus als Gegenprobe.
+- Gebündelter Suchendpunkt `GET /workspaces/:w/search` über Kunden, Projekte, Verträge und
+  Anfragen, mit denselben negativen Mandantentests wie jeder andere Endpunkt (`423f523`)
+- `⌘K` beziehungsweise `Ctrl+K`, dazu ein sichtbarer Knopf in der Kopfzeile (`2f5c7b5`)
+- `%` und `_` im Suchbegriff werden entschärft, siehe Diagnose 10 in `docs/DIAGNOSTICS.md`
 
-**Kommandopalette** — gebündelter Suchendpunkt `GET /workspaces/:w/search` über Kunden, Projekte,
-Verträge und Anfragen, dazu ein Dialog mit Tastaturführung. Bekommt dieselben negativen
-Mandantentests wie jeder andere Endpunkt.
-
-**Meilenstein 6a: Frontend-Qualität** — **erledigt am 10.09.2026.**
+## Erledigt — Meilenstein 6a: Frontend-Qualität (10.09.2026)
 
 - Playwright über sechs Prüfbreiten, 147 Prüfungen je Lauf. **Je Breite neu laden, nie das Fenster
   ziehen** — die Begründung steht in `playwright.config.ts` und in `docs/DIAGNOSTICS.md`.
@@ -210,7 +218,55 @@ Mandantentests wie jeder andere Endpunkt.
   echte Ladezeit gehört auf den Server aus Meilenstein 6.
 - `docs/DIAGNOSTICS.md` mit zwölf Befunden, drei davon ausdrücklich als Fehldiagnose.
 
-**Meilenstein 6b: Pflichtseiten und Lighthouse** — teils erst mit laufender Domain prüfbar.
+## Erledigt — Server-Grundeinrichtung (11.09.2026)
+
+KVM-Server bei FSIT: 8 vCPU, 16 GB RAM, 150 GB SSD, Ubuntu 24.04 LTS, wöchentliche Sicherung durch
+den Anbieter.
+
+- System aktualisiert und auf dem neuen Kernel neu gestartet
+- Anmeldung nur mit Schlüssel, root kann sich nicht direkt anmelden. Verwaltet wird über einen
+  eigenen Benutzer, dessen `sudo` ein Passwort verlangt
+- Firewall `ufw`: eingehend nur 22, 80 und 443
+- Sicherheitsupdates automatisch, Neustart bei Bedarf nachts um 03:30
+- Docker Engine und Compose aus dem offiziellen Repository. Der Signaturschlüssel ist gegen den
+  veröffentlichten Fingerabdruck geprüft, Container-Logs sind begrenzt, und laufende Container
+  überstehen ein Docker-Update
+- DNS: A-Eintrag `tallyroom.adambaranyi.xyz`, kein AAAA-Eintrag, weil die IPv6-Route des Anbieters
+  fehlerhaft ist (Diagnose 13)
+
+Die einzelnen Schritte kommen mit D8 in die README.
+
+## Offen — Meilenstein 6: Deployment
+
+Plan vom 11.09.2026, in dieser Reihenfolge:
+
+| Etappe | Inhalt                                                                                   | Stand        |
+| ------ | ---------------------------------------------------------------------------------------- | ------------ |
+| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt     |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | als Nächstes |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | offen        |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | offen        |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | offen        |
+| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | offen        |
+| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | offen        |
+| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen        |
+
+**Entscheide**
+
+- **Garage statt MinIO.** Das MinIO-Community-Repository ist seit dem 12.02.2026 archiviert, fertige
+  Images gibt es seit Oktober 2025 nicht mehr. Das hier verwendete `RELEASE.2025-09-07` bekäme nie
+  wieder eine Sicherheitskorrektur. Der Code nutzt nur Schreiben, Lesen und Löschen über S3, der
+  Wechsel betrifft also die Umgebung und nicht die Fachlogik. Garage ist gepflegt, hat seit v2.3
+  einen Einzelserver-Modus und steht unter AGPL-3.0. Es läuft als eigenständiger, unveränderter
+  Dienst.
+- **Die Images entstehen auf dem Server**, aus einem Checkout des öffentlichen Repositorys. Keine
+  Registry, kein Zugangstoken. Der Deploy wird bewusst ausgelöst, eine grüne Pipeline allein
+  deployt nichts.
+- **Pflichtseiten vor dem Livegang**, weil die Seite ab dem ersten Tag Anmeldungen verarbeitet.
+
+**D4 im Einzelnen: Pflichtseiten und Lighthouse (6b).** Lighthouse lässt sich erst gegen die
+laufende Domain prüfen und läuft deshalb in D6.
 
 - **Impressum und Datenschutzerklärung**, aus der Fusszeile verlinkt. Kurz und wahr: ein technisch
   erforderliches Sitzungs-Cookie, keine Analyse, keine Einbettungen, keine Anfragen an Dritte.
@@ -226,23 +282,21 @@ Mandantentests wie jeder andere Endpunkt.
   bereits gut. **WebMCP bewusst nicht** — die Anwendung liegt hinter einer Anmeldung, und einem
   Agenten Werkzeuge auf fremde Kundendaten zu geben wäre keine Verbesserung.
 
-**Meilenstein 6: Deployment** — Produktions-Compose mit Caddy, FSIT-KVM-Server einrichten,
-A-Record `tallyroom.adambaranyi.xyz`, Content Security Policy, Secret- und Abhängigkeitsscan in
-der CI, Fallstudie. Die Fallstudie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
+**D8 im Einzelnen: Fallstudie.** Sie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
 Geschmack.
 
 ## Bewusst zurückgestellt
 
-| Punkt                                   | Warum                                                                 | Wann                        |
-| --------------------------------------- | --------------------------------------------------------------------- | --------------------------- |
-| Content Security Policy                 | Die benötigten Quellen stehen erst mit dem Deployment fest            | Meilenstein 6               |
-| Secret- und Abhängigkeitsscan in der CI | Gehört zum Freigabeschritt                                            | Meilenstein 6               |
-| Schriften selbst ausliefern             | Derzeit Google Fonts; nötig für strenge CSP und Datenschutz           | Meilenstein 6a              |
-| Weitere Navigationseinträge             | Ein Menüpunkt ohne Seite wäre ein Versprechen, das die App nicht hält | mit der jeweiligen Funktion |
-| Passwort-Reset per E-Mail               | Ohne Mailversand nicht sauber baubar                                  | Backlog                     |
-| Keycloak beziehungsweise OIDC           | Geprüft und verworfen, Begründung in `docs/ARCHITECTURE.md`           | Backlog                     |
+| Punkt                                   | Warum                                                                 | Wann                           |
+| --------------------------------------- | --------------------------------------------------------------------- | ------------------------------ |
+| Content Security Policy                 | Die benötigten Quellen stehen erst mit dem Deployment fest            | Meilenstein 6, D3              |
+| Secret- und Abhängigkeitsscan in der CI | Gehört zum Freigabeschritt                                            | Meilenstein 6, D5              |
+| IPv6 auf dem Server                     | Die Route des Anbieters ist fehlerhaft, siehe Diagnose 13             | sobald der Anbieter sie behebt |
+| Weitere Navigationseinträge             | Ein Menüpunkt ohne Seite wäre ein Versprechen, das die App nicht hält | mit der jeweiligen Funktion    |
+| Passwort-Reset per E-Mail               | Ohne Mailversand nicht sauber baubar                                  | Backlog                        |
+| Keycloak beziehungsweise OIDC           | Geprüft und verworfen, Begründung in `docs/ARCHITECTURE.md`           | Backlog                        |
 
 ## Blockiert
 
-Nichts. Der FSIT-KVM-Server wird erst in Meilenstein 6 gebraucht. Meilenstein 6a ist bewusst
-davorgesetzt, damit die Wartezeit auf die Bestellung nicht leer läuft.
+Nichts. Das fehlende IPv6 hält kein Ziel auf, denn die Seite ist über IPv4 vollständig
+erreichbar.
