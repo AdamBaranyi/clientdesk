@@ -65,8 +65,12 @@ test.describe('Fokus und Tastatur', () => {
     await page.goto(`/app/${demoWorkspaceId()}/customers`);
     await warteAufSchriften(page);
 
+    // Per Tastatur geöffnet: für sie ist die Rückgabe da. Safari fokussiert
+    // einen Knopf bei einem Mausklick gar nicht erst, dann gibt es nichts,
+    // wohin der Fokus zurückkehren könnte (DIAGNOSTICS Nummer 22).
     const ausloeser = page.getByRole('button', { name: 'Kunde anlegen' }).first();
-    await ausloeser.click();
+    await ausloeser.focus();
+    await page.keyboard.press('Enter');
     await expect(page.locator('dialog[open]')).toBeVisible();
     expect(await fokusImDialog(page)).toBe(true);
 
@@ -82,7 +86,8 @@ test.describe('Fokus und Tastatur', () => {
     await warteAufSchriften(page);
 
     const ausloeser = page.getByRole('button', { name: /Suche öffnen/i });
-    await ausloeser.click();
+    await ausloeser.focus();
+    await page.keyboard.press('Enter');
 
     const eingabe = page.getByRole('dialog').getByRole('combobox');
     await expect(eingabe).toBeFocused();

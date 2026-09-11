@@ -32,7 +32,17 @@ for (const [browserLocale, expected] of [
   });
 }
 
-test('die Wahl gilt sofort, bleibt nach dem Neuladen und erreicht die API', async ({ page }) => {
+/*
+ * Nur in Chromium: Playwright setzt die simulierte Browsersprache in Firefox
+ * und WebKit auf Netzebene durch und überschreibt dabei den Accept-Language-
+ * Header, den die Oberfläche selbst setzt. Gegengeprobt ohne Simulation: alle
+ * drei Browser senden die gewählte Sprache (DIAGNOSTICS Nummer 22).
+ */
+test('die Wahl gilt sofort, bleibt nach dem Neuladen und erreicht die API', async ({
+  page,
+  browserName,
+}) => {
+  test.skip(browserName !== 'chromium', 'Die Sprachsimulation überschreibt dort den Header.');
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(GERMAN_HEADLINE);
 

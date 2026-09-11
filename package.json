@@ -30,6 +30,7 @@
     "measure": "bun --env-file=.env scripts/measure-performance.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:browsers": "playwright test -c playwright.browsers.config.ts",
     "check:bundle-size": "bun run --filter '@tallyroom/web' build && bun scripts/check-bundle-size.mjs"
   },
   "devDependencies": {

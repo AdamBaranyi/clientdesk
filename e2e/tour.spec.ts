@@ -83,8 +83,10 @@ test.describe('Rundgang', () => {
     await page.goto(`/app/${demoWorkspaceId()}/customers`);
     await warteAufSchriften(page);
 
+    // Per Tastatur, wie in focus.spec.ts begründet.
     const knopf = page.getByRole('button', { name: 'Rundgang starten' });
-    await knopf.click();
+    await knopf.focus();
+    await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/\/dashboard$/);
 
     const dialog = page.getByRole('dialog', { name: 'Rundgang durch die Demo' });
