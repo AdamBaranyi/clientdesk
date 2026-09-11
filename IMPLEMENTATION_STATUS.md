@@ -240,17 +240,17 @@ Die einzelnen Schritte kommen mit D8 in die README.
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
 
-| Etappe | Inhalt                                                                                   | Stand        |
-| ------ | ---------------------------------------------------------------------------------------- | ------------ |
-| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt     |
-| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt     |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt     |
-| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt     |
-| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | als Nächstes |
-| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | offen        |
-| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | offen        |
-| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
-| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen        |
+| Etappe | Inhalt                                                                                   | Stand     |
+| ------ | ---------------------------------------------------------------------------------------- | --------- |
+| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt  |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt  |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt  |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt  |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | in Arbeit |
+| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt  |
+| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | offen     |
+| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen     |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen     |
 
 **Entscheide**
 
@@ -312,8 +312,21 @@ laufende Domain prüfen und läuft deshalb in D6.
   bereits gut. **WebMCP bewusst nicht** — die Anwendung liegt hinter einer Anmeldung, und einem
   Agenten Werkzeuge auf fremde Kundendaten zu geben wäre keine Verbesserung.
 
-**D6 im Einzelnen.** Auf dem Server zusätzlich `443/udp` in der Firewall freigeben. Caddy bietet
-HTTP/3 an, bisher ist dafür nur TCP offen, und Browser fallen dann still auf HTTP/2 zurück.
+**D4, Stand.** Erledigt und committet: das Request-Log ohne Adresse, Browserkennung und Query, das
+Rate-Limit verwirft Adressen spätestens eine Minute nach ihrem Zeitfenster (beides gefunden beim
+Prüfen dessen, was die Datenschutzerklärung behaupten soll), `LICENSE`, Vorschaubild und
+Meta-Angaben. Gebaut und geprüft, aber noch nicht committet: Impressum, Datenschutzerklärung,
+Links darauf von jeder Seite, `robots.txt`, `sitemap.xml`, `llms.txt`. Es fehlen die
+Kontaktangaben für das Impressum, die nur der Betreiber festlegen kann.
+
+**D5 im Einzelnen.** Sechs Jobs, alle grün im ersten Lauf nach dem Push:
+[Lauf 34608472477](https://github.com/AdamBaranyi/tallyroom/actions/runs/34608472477). Werkzeuge,
+Funde und die einzeln begründeten Ausnahmen stehen in `docs/SECURITY.md`.
+
+**D6 im Einzelnen.** `infra/deploy.sh` ist fertig: Checkout eines Commits, Geheimnisse beim ersten
+Lauf auf dem Server erzeugt, Datenbanksicherung vor jeder Migration, Rollback über einen älteren
+Commit. Dazu auf dem Server `443/udp` in der Firewall freigeben. Caddy bietet HTTP/3 an, bisher ist
+dafür nur TCP offen, und Browser fallen dann still auf HTTP/2 zurück.
 
 **D8 im Einzelnen: Fallstudie.** Sie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
 Geschmack.
