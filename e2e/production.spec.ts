@@ -14,18 +14,26 @@ import { expect, test, type Page } from '@playwright/test';
  */
 
 /**
- * Chrome meldet jeden CSP-Verstoss als Fehler in der Konsole, auch über ein
- * vollständiges Neuladen hinweg — anders als ein Ereignis-Listener im
- * Dokument, der mit jedem Neuladen verschwindet. Der Rollenwechsel lädt neu.
+ * Jeder Konsolenfehler zählt, und jeder CSP-Verstoss.
+ *
+ * Nicht jeder Verstoss erscheint in der Konsole: Zods Probe mit
+ * `new Function` scheiterte still, meldete aber `securitypolicyviolation`.
+ * Dieser Test sah sie nicht, Lighthouse gegen den Server schon. Deshalb hört
+ * ein Skript im Dokument mit, und zwar auf jeder Seite neu — der
+ * Rollenwechsel lädt vollständig neu, ein einmal gesetzter Listener wäre
+ * danach weg.
  */
-function collectProblems(page: Page): string[] {
+async function collectProblems(page: Page): Promise<string[]> {
   const problems: string[] = [];
+  await page.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', (event) => {
+      console.error(
+        `CSP-Verstoss: ${event.violatedDirective} ${event.blockedURI} in ${event.sourceFile}`,
+      );
+    });
+  });
   page.on('console', (message) => {
-    if (message.type() !== 'error') return;
-    const text = message.text();
-    // Vor der Anmeldung fragt die Oberfläche nach der Sitzung und bekommt 401.
-    if (text.includes('status of 401')) return;
-    problems.push(text);
+    if (message.type() === 'error') problems.push(message.text());
   });
   page.on('pageerror', (error) => problems.push(error.message));
   return problems;
@@ -74,7 +82,7 @@ test('das Impressum nennt Anschrift und E-Mail', async ({ page }) => {
 });
 
 test('ein Demo-Durchgang ohne CSP-Verstoss und ohne Konsolenfehler', async ({ page }) => {
-  const problems = collectProblems(page);
+  const problems = await collectProblems(page);
 
   await page.goto('/');
   await page.getByRole('button', { name: 'Demo starten' }).click();
