@@ -1,6 +1,6 @@
 import { hashPassword, verifyPassword } from '@tallyroom/db/auth';
-import type { SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
-import { unauthenticated } from '../../lib/http-error.ts';
+import type { ChangePasswordInput, SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
+import { forbidden, unauthenticated, validationFailed } from '../../lib/http-error.ts';
 import type { AuthRepository, MembershipRecord, UserRecord } from './repository.ts';
 
 /**
@@ -18,6 +18,7 @@ function getDummyHash(): Promise<string> {
 export interface AuthService {
   authenticate: (email: string, password: string) => Promise<UserRecord>;
   buildSessionUser: (userId: string) => Promise<SessionUser>;
+  changePassword: (userId: string, sessionId: string, input: ChangePasswordInput) => Promise<void>;
 }
 
 function toSummary(record: MembershipRecord): WorkspaceSummary {
@@ -67,6 +68,36 @@ export function createAuthService(repository: AuthRepository): AuthService {
         displayName: user.displayName,
         workspaces: records.map(toSummary),
       };
+    },
+
+    /**
+     * Das bisherige Passwort ist der Nachweis, nicht die Sitzung allein: wer
+     * einen fremden, offenen Browser erwischt, soll das Konto nicht übernehmen
+     * können. Danach enden alle anderen Sitzungen dieses Kontos.
+     *
+     * Ein falsches bisheriges Passwort ist ein Eingabefehler (422), keine
+     * fehlende Anmeldung (401) — die Oberfläche beendet bei 401 die Sitzung.
+     */
+    async changePassword(userId, sessionId, input) {
+      if (await repository.isDemoAccount(userId)) {
+        throw forbidden({
+          de: 'In der Demo lässt sich das Passwort nicht ändern.',
+          en: 'The password cannot be changed in the demo.',
+        });
+      }
+
+      const user = await repository.findUserById(userId);
+      if (!user) throw unauthenticated();
+
+      if (!(await verifyPassword(user.passwordHash, input.currentPassword))) {
+        throw validationFailed(
+          { de: 'Das Passwort wurde nicht geändert.', en: 'The password was not changed.' },
+          { currentPassword: [{ de: 'Stimmt nicht', en: 'Incorrect' }] },
+        );
+      }
+
+      await repository.updatePasswordHash(userId, await hashPassword(input.newPassword));
+      await repository.endOtherSessions(userId, sessionId);
     },
   };
 }

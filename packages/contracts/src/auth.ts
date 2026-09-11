@@ -17,6 +17,34 @@ export const loginSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 
+/** Passwort ändern, mit dem bisherigen als Nachweis. */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(
+        1,
+        localized({
+          de: 'Bisheriges Passwort ist erforderlich',
+          en: 'Current password is required',
+        }),
+      )
+      .max(1024),
+    newPassword: z
+      .string()
+      .min(12, localized({ de: 'Mindestens 12 Zeichen', en: 'At least 12 characters' }))
+      .max(1024),
+  })
+  .refine((value) => value.newPassword !== value.currentPassword, {
+    ...localized({
+      de: 'Das neue Passwort muss sich vom bisherigen unterscheiden',
+      en: 'The new password must differ from the current one',
+    }),
+    path: ['newPassword'],
+  });
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
 /**
  * Was ein angemeldeter Nutzer über sich selbst erfährt. Enthält bewusst keine
  * Rolle auf oberster Ebene — Rollen hängen am Workspace, nicht am Konto.
