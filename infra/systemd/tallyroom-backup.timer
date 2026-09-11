@@ -1,0 +1,13 @@
+# Jede Nacht um 02:30 Zürcher Zeit, vor dem Fenster für Neustarts nach
+# Sicherheitsupdates um 03:30. War der Server um 02:30 aus, läuft die
+# Sicherung beim nächsten Start nach (Persistent).
+[Unit]
+Description=Tallyroom: nächtliche Sicherung
+
+[Timer]
+OnCalendar=*-*-* 02:30:00 Europe/Zurich
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

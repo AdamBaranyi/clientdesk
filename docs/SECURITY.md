@@ -127,6 +127,16 @@ des Servers. Die API läuft als Benutzer `bun` statt root, mit schreibgeschützt
 einzige Capability das Binden an Port 80 und 443. Jeder Dienst hat eine Speichergrenze, jedes Log
 eine Grössengrenze.
 
+**Sicherungen.** Sie enthalten Passwort-Hashes, Sitzungen und alles, was in der Anwendung steht,
+und liegen deshalb nur für root lesbar in `/var/backups/tallyroom` (Ordner `700`, Dateien `600`).
+Die Probe-Wiederherstellung läuft in einem internen Docker-Netz ohne Verbindung nach aussen, mit
+Passwörtern und Schlüsseln, die sie für jeden Lauf neu erzeugt und danach verwirft. Ablauf und
+Befehle in [BETRIEB.md](BETRIEB.md).
+
+**Passwort vergessen.** Ohne Mailversand setzt der Betreiber ein neues Passwort über die
+Kommandozeile (`admin:reset-password`). Es entsteht zufällig mit 24 Zeichen, nie als Argument —
+sonst stünde es in der Shell-Historie —, und jede Sitzung des Kontos endet.
+
 ## Automatische Prüfungen in der CI
 
 Beide laufen bei jedem Push im Job `sicherheit`. Ein Fehler des Scanners oder ein fehlendes Netz
@@ -182,6 +192,8 @@ Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 
 - **Rate-Limit** liegt im Prozessspeicher und trägt nur eine API-Instanz.
 - **Mehrfaktor-Authentisierung** ist bewusst nicht Teil des Umfangs.
+- **Sicherungen** liegen auf demselben Server wie die Anwendung. Eine Kopie ausser Haus fehlt
+  noch; sie wird verschlüsselt, bevor sie den Server verlässt.
 
 ## Prüfprotokoll
 

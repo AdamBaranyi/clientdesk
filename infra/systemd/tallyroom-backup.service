@@ -1,0 +1,13 @@
+# Sicherung von Datenbank und Dokumenten, ausgelöst von tallyroom-backup.timer.
+# Einrichtung und Kontrolle: siehe docs/BETRIEB.md, Abschnitt «Sicherung».
+[Unit]
+Description=Tallyroom: Sicherung von Datenbank und Dokumenten
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/tallyroom/infra/backup.sh
+# Die Anwendung hat Vorrang; die Sicherung nimmt, was übrig bleibt.
+Nice=10
+IOSchedulingClass=idle
