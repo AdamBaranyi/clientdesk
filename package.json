@@ -24,6 +24,7 @@
     "db:generate": "bun run --filter '@tallyroom/db' generate",
     "db:migrate": "bun run --filter '@tallyroom/db' migrate",
     "admin:create": "bun run --filter '@tallyroom/db' admin:create",
+    "admin:reset-password": "bun run --filter '@tallyroom/db' admin:reset-password",
     "seed:demo": "bun run --filter '@tallyroom/db' seed:demo",
     "seed:load": "bun run --filter '@tallyroom/db' seed:load",
     "measure": "bun --env-file=.env scripts/measure-performance.ts",
