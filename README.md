@@ -6,8 +6,10 @@ getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
 Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
 
-> **Stand: Meilenstein 5 von 6.** Alle Pflichtfunktionen stehen, samt isolierter Besucher-Demo
-> mit Rollenwechsel. Es fehlt das Deployment. Der genaue Stand steht in
+> **Stand: Meilenstein 6 von 6, Deployment in Arbeit.** Alle Pflichtfunktionen stehen, samt
+> isolierter Besucher-Demo mit Rollenwechsel, Kommandopalette und Playwright-Prüfungen über sechs
+> Breiten. Der Server ist eingerichtet, die Anwendung noch nicht ausgerollt. Der genaue Stand steht
+> in
 > [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
@@ -16,11 +18,12 @@ Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
 | ---------------------------- | ----------------------------------------------------------------------------- |
 | Laufzeit und Paketverwaltung | Bun 1.3.14                                                                    |
 | Frontend                     | React 19.2, TypeScript 6.0.3 strict, Vite 8, React Router 8, TanStack Query 5 |
-| Darstellung                  | Tailwind CSS 4.3, Lucide-Icons, Space Grotesk und JetBrains Mono              |
+| Darstellung                  | Tailwind CSS 4.3, Lucide-Icons, IBM Plex Sans und Mono vom eigenen Server     |
 | Backend                      | Express 5.2, TypeScript                                                       |
 | Daten                        | PostgreSQL 18, Drizzle ORM 0.45 mit versionierten Migrationen                 |
+| Dateien                      | Garage als S3-kompatibler Objektspeicher, privater Bucket                     |
 | Anmeldung                    | Serverseitige Sessions, PostgreSQL-Session-Store, Argon2id                    |
-| Tests                        | Vitest 5, Integrationstests gegen eine echte Testdatenbank                    |
+| Tests                        | Vitest 5 gegen eine echte Testdatenbank, Playwright 1.57 mit axe              |
 | Betrieb                      | Docker Compose, GitHub Actions                                                |
 
 TypeScript ist bewusst auf 6.0.3 gepinnt und nicht auf 7: `typescript-eslint` unterstützt derzeit
