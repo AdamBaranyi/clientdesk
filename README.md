@@ -4,7 +4,7 @@ SaaS-Dashboard mit Kundenportal für kleine Digitalagenturen. Ein Team führt Ku
 monatliche Serviceverträge, Anfragen und Dokumente an einem Ort zusammen; Kunden sehen über ein
 getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
-Portfolio-Projekt von Ádám Baranyi. Alle Daten in der Anwendung sind erfunden.
+Portfolio-Projekt von Adam Baranyi. Alle Daten in der Anwendung sind erfunden.
 
 > **Stand: Meilenstein 6 von 6, Deployment in Arbeit.** Alle Pflichtfunktionen stehen, samt
 > isolierter Besucher-Demo mit Rollenwechsel, Kommandopalette und Playwright-Prüfungen über sechs
@@ -103,7 +103,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-`bun run test` braucht die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.
+Die Integrationstests brauchen die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.
+`bun run test` liest die Datei nicht selbst, deshalb lokal: `bun --env-file=.env run vitest run`.
 
 ### Performance messen
 
