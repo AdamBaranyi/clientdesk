@@ -324,6 +324,8 @@ Fusszeile ausdrücklich eingeschlossen. Das alte Arbeitsband von 11 bis 14 px is
 - Seitentitel 20 → 24 px, damit die Überschrift über dem Fliesstext bleibt. Wortmarke 12 → 20 px,
   unter 400 Pixeln stufenlos bis 16 px — sonst passt sie nicht neben Sprach- und Themenschalter.
 - Diagrammachsen und Tooltip 11 und 12 → 16 px, Fusszeile mit Impressum und Datenschutz 11 → 16 px.
+- Urheberzeile und Rechtslinks stehen mittig statt links und rechts, auf jeder Breite — Wunsch
+  des Betreibers.
 - Folge der grösseren Schrift: die Grenze zwischen Tabelle und Karten liegt bei 1024 statt 640
   Pixeln, und die Grundregel für Umbrüche heisst `break-word` statt `anywhere`
   (DIAGNOSTICS Nummer 24).
