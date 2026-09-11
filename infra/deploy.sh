@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Deploy auf dem Server, bewusst von Hand ausgelöst:
 #
 #   sudo /opt/tallyroom/infra/deploy.sh          # Stand von origin/main
@@ -10,7 +10,11 @@
 # Reihenfolge: Daten und Speicher starten, Datenbank sichern, migrieren, dann
 # API und Caddy. Die Sicherung vor der Migration ist der Rückweg, falls eine
 # Migration schiefgeht — Migrationen laufen nur vorwärts.
-set -eu
+#
+# bash statt sh wegen pipefail: in `pg_dump | gzip` zählte sonst nur gzip.
+# Ein gescheiterter Dump ergab eine leere Sicherung, und der Deploy lief
+# weiter in die Migration, ohne Rückweg.
+set -euo pipefail
 
 cd "$(dirname "$0")/.."
 REF="${1:-main}"
