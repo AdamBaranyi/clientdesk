@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { MAX_DOCUMENT_BYTES, type TallyroomDocument } from '@tallyroom/contracts';
+import { retryPendingDeletions } from '../../apps/api/src/modules/documents/deletion-retry.ts';
 import { makePdfBytes } from '../helpers/fixtures.ts';
 import { buildScenario, type Scenario } from '../helpers/scenario.ts';
 import { startTestServer, type TestServer } from '../helpers/test-server.ts';
@@ -188,5 +189,34 @@ describe('Download und Löschen', () => {
       )
       .then((result) => result.rows);
     expect(row?.deletion_status).toBe('pending_deletion');
+    expect(server.storage.size()).toBe(1);
+
+    // Der Wiederholungslauf holt die Datei nach, sobald der Speicher wieder geht.
+    const result = await retryPendingDeletions(server.db, server.storage);
+    expect(result).toEqual({ attempted: 1, deleted: 1 });
+    expect(server.storage.size()).toBe(0);
+
+    const [after] = await server.db
+      .execute<{ deletion_status: string }>(
+        `SELECT deletion_status FROM documents WHERE id = '${created.id}'` as never,
+      )
+      .then((result) => result.rows);
+    expect(after?.deletion_status).toBe('deleted');
+  });
+
+  it('lässt eine weiterhin scheiternde Löschung für den nächsten Lauf stehen', async () => {
+    const created = await uploadOne();
+    const original = server.storage.delete;
+    server.storage.delete = async () => {
+      throw new Error('Speicher nicht erreichbar');
+    };
+
+    const csrf = await s.team.csrfToken();
+    await s.team.request(internal(`documents/${created.id}`), { method: 'DELETE', csrf });
+    const result = await retryPendingDeletions(server.db, server.storage);
+    server.storage.delete = original;
+
+    expect(result).toEqual({ attempted: 1, deleted: 0 });
+    expect(server.storage.size()).toBe(1);
   });
 });

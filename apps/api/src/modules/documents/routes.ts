@@ -6,6 +6,7 @@ import {
   documentVisibilitySchema,
   MAX_DOCUMENT_BYTES,
 } from '@tallyroom/contracts';
+import { rateLimit } from '../../middleware/rate-limit.ts';
 import type { AuthRepository } from '../auth/repository.ts';
 import {
   getWorkspace,
@@ -16,6 +17,8 @@ import {
 import type { DocumentService } from './service.ts';
 
 const idSchema = z.uuid();
+
+export const UPLOADS_PER_WINDOW = 30;
 
 const uploadQuerySchema = z.object({
   customerId: z.uuid(),
@@ -30,6 +33,14 @@ export function createDocumentRouter(
   const router = Router({ mergeParams: true });
   router.use(requireAuth, requireWorkspace(authRepository), requireInternal);
 
+  // Je Konto höchstens 30 Dateien in der Viertelstunde. Die Grenze steht vor
+  // dem Einlesen: ein gebremster Upload landet gar nicht erst im Speicher.
+  const uploadLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: UPLOADS_PER_WINDOW,
+    keyOf: (req) => req.session.userId ?? req.ip ?? 'unbekannt',
+  });
+
   router.get('/', async (req, res) => {
     const query = documentListQuerySchema.parse(req.query);
     const { workspaceId } = getWorkspace(req);
@@ -38,6 +49,7 @@ export function createDocumentRouter(
 
   router.post(
     '/',
+    uploadLimiter,
     // Rohes PDF im Body statt Multipart: eine Abhängigkeit weniger, und die
     // Grenze greift, bevor Daten im Speicher landen.
     raw({ type: ALLOWED_DOCUMENT_MIME, limit: MAX_DOCUMENT_BYTES }),
@@ -58,7 +70,7 @@ export function createDocumentRouter(
   );
 
   /** Nur in der Demo sinnvoll, aber überall erlaubt — es legt nichts Fremdes ab. */
-  router.post('/sample', async (req, res) => {
+  router.post('/sample', uploadLimiter, async (req, res) => {
     const { customerId } = z.object({ customerId: z.uuid() }).parse(req.query);
     const { workspaceId, userId } = getWorkspace(req);
     res.status(201).json(await service.addSample(workspaceId, userId, customerId));

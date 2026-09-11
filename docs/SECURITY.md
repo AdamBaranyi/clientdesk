@@ -39,6 +39,13 @@ Sitzungs-ID nach erfolgreicher Anmeldung gegen Session Fixation. Zwei Stunden In
 Cookie rollt bei Aktivität nach. Abmelden zerstört die Sitzung serverseitig — das alte Cookie wird
 danach abgewiesen, nicht nur im Browser gelöscht.
 
+**Passwort ändern.** Nur mit dem bisherigen Passwort als Nachweis, nicht mit der Sitzung allein:
+wer einen fremden, offenen Browser erwischt, soll das Konto nicht übernehmen können. Danach enden
+alle anderen Sitzungen des Kontos, die eigene bekommt eine neue ID. Ein falsches bisheriges
+Passwort antwortet mit 422 und nicht mit 401, weil die Oberfläche bei 401 die Sitzung beendet.
+Fünf Versuche je Konto und Viertelstunde, gezählt am Konto statt an der Adresse. In der Demo ist die
+Änderung gesperrt. Geprüft in `tests/integration/password-change.test.ts`.
+
 **CSRF.** Zwei Prüfungen für jeden schreibenden Request: ein an die Sitzung gebundenes Token im
 Header `X-CSRF-Token`, verglichen in konstanter Zeit, und die Herkunft aus `Origin` beziehungsweise
 `Referer` gegen `APP_ORIGIN`. Ein fehlender Origin-Header bei einem schreibenden Request wird
@@ -90,6 +97,12 @@ Der Objektspeicher ist Garage. Ohne Signatur antwortet er mit 403, eine Signatur
 Region weist er ab, und Website-Zugriff auf den Bucket ist aus. Geprüft beim Wechsel von MinIO am
 11.09.2026. Nach aussen ist nur der S3-Port offen, lokal an `127.0.0.1` gebunden. Der RPC-Port
 bleibt im Container-Netz.
+
+**Uploads und Löschungen.** Höchstens 30 Dateien je Konto und Viertelstunde. Die Grenze greift
+vor dem Einlesen des Inhalts, ein gebremster Upload landet also gar nicht erst im Speicher. Scheitert
+eine Löschung am Objektspeicher, steht das Dokument auf `pending_deletion`: für jeden Zugriff sofort
+weg. Ein Lauf alle 15 Minuten holt die Datei nach, bis zu 100 je Lauf; scheitert sie wieder, bleibt
+der Datensatz für den nächsten stehen. Bis zum 11.09.2026 blieb eine solche Datei für immer liegen.
 
 **Einladungen.** Nur der Hash des Tokens wird gespeichert; der Link erscheint genau einmal beim
 Anlegen. Rolle und Kundenbezug hängen an der Einladung, nicht am Request des Beitretenden. Die
@@ -165,10 +178,6 @@ Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 
 - **Rate-Limit** liegt im Prozessspeicher und trägt nur eine API-Instanz.
 - **Mehrfaktor-Authentisierung** ist bewusst nicht Teil des Umfangs.
-- **Wiederholungslauf für fehlgeschlagene Speicherlöschungen** ist nicht gebaut. Betroffene
-  Datensätze stehen auf `pending_deletion` und sind für jeden Zugriff bereits weg, die Datei
-  bleibt aber im Objektspeicher liegen.
-- **Rate-Limit auf Uploads** fehlt; begrenzt wird bisher nur die Anmeldung und die Einladung.
 
 ## Prüfprotokoll
 

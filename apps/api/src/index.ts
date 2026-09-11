@@ -4,6 +4,7 @@ import { loadEnv } from './config/env.ts';
 import { createLogger } from './lib/logger.ts';
 import { startDemoCleanup } from './modules/demo/cleanup.ts';
 import { createDemoRepository } from './modules/demo/repository.ts';
+import { startDeletionRetry } from './modules/documents/deletion-retry.ts';
 import { createS3Storage } from './storage/s3.ts';
 
 const env = loadEnv();
@@ -32,11 +33,13 @@ const server = app.listen(env.API_PORT, () => {
 const stopCleanup = env.DEMO_ENABLED
   ? startDemoCleanup(db, createDemoRepository(db), storage, logger)
   : () => {};
+const stopDeletionRetry = startDeletionRetry(db, storage, logger);
 
 /** Geordnetes Herunterfahren: laufende Requests beenden, dann den Pool schliessen. */
 async function shutdown(signal: string): Promise<void> {
   logger.info({ signal }, 'Beende API');
   stopCleanup();
+  stopDeletionRetry();
   server.close(() => {
     void pool.end().then(() => process.exit(0));
   });
