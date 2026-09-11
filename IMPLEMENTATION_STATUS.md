@@ -244,9 +244,9 @@ Plan vom 11.09.2026, in dieser Reihenfolge:
 | ------ | ---------------------------------------------------------------------------------------- | ------------ |
 | D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt     |
 | D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt     |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | als Nächstes |
-| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | offen        |
-| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | offen        |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt     |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt     |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | als Nächstes |
 | D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | offen        |
 | D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | offen        |
 | D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
@@ -272,11 +272,34 @@ gestartet, alle sechs Dokumente über die API als PDF geladen, eines angelegt un
 Objekte, byteweise gleich gross, jedes aktive Dokument der Datenbank hat seine Datei. Der alte
 MinIO-Container ist gestoppt, sein Volume bleibt, bis es jemand ausdrücklich löscht.
 
+**D2 und D3 im Einzelnen.** Ein `Dockerfile` mit zwei Zielen: `api` (Bun, nur
+Laufzeitabhängigkeiten, Benutzer `bun`) und `web` (Caddy mit dem statischen Build, ohne Bun und
+ohne Quelltext). `infra/compose.prod.yml` startet Caddy, API, PostgreSQL und Garage, Migrationen
+laufen als eigener Schritt über das Profil `tools`. Lokal geprüft mit einer eigenen
+Zertifizierungsstelle auf Port 8443:
+
+- Die API meldet sich gesund, antwortet auf SIGTERM mit geordnetem Herunterfahren und endet mit
+  Exit-Code 0, ebenso alle anderen Dienste
+- Migrationen und Admin-Befehl laufen aus demselben Image
+- Header und Cache-Regeln per `curl`: CSP, HSTS und die übrigen stehen auf der Oberfläche,
+  gehashte Dateien ein Jahr im Cache, Schriften 30 Tage, alles andere `no-cache`, kein `Server`-
+  und kein `Via`-Header
+- `e2e/production.spec.ts`: 2 von 2 grün, null CSP-Verstösse, gegengeprüft mit drei absichtlichen
+  Verstössen
+- Speicher im Leerlauf nach einer Demo: Caddy 37 MiB, API 85 MiB, PostgreSQL 37 MiB, Garage 5 MiB
+
+Unterwegs gefunden: Caddy sortiert gleichnamige `header`-Direktiven nach Pfad, eine Regel ohne Pfad
+lief zuletzt und überschrieb die Cache-Regeln für `/assets` und `/fonts`. Die Matcher schliessen
+einander jetzt aus.
+
 **D4 im Einzelnen: Pflichtseiten und Lighthouse (6b).** Lighthouse lässt sich erst gegen die
 laufende Domain prüfen und läuft deshalb in D6.
 
 - **Impressum und Datenschutzerklärung**, aus der Fusszeile verlinkt. Kurz und wahr: ein technisch
   erforderliches Sitzungs-Cookie, keine Analyse, keine Einbettungen, keine Anfragen an Dritte.
+  Vorher klären, was in den Logs landet: Caddy schreibt kein Zugriffsprotokoll, die API
+  protokolliert aber Anfragen samt weitergereichter Client-Adresse (`X-Forwarded-For`). Entweder
+  steht das in der Erklärung, oder die Adresse fliegt aus dem Log.
 - **Urheberrechtsvermerk** in der Fusszeile und `LICENSE` im Repository. Ohne Lizenzdatei sind alle
   Rechte vorbehalten — das ist für ein Portfoliostück richtig, sollte aber dastehen statt sich aus
   dem Schweigen zu ergeben. Die Schriftlizenz (SIL OFL 1.1, IBM Plex) liegt bereits bei den Dateien.
@@ -289,6 +312,9 @@ laufende Domain prüfen und läuft deshalb in D6.
   bereits gut. **WebMCP bewusst nicht** — die Anwendung liegt hinter einer Anmeldung, und einem
   Agenten Werkzeuge auf fremde Kundendaten zu geben wäre keine Verbesserung.
 
+**D6 im Einzelnen.** Auf dem Server zusätzlich `443/udp` in der Firewall freigeben. Caddy bietet
+HTTP/3 an, bisher ist dafür nur TCP offen, und Browser fallen dann still auf HTTP/2 zurück.
+
 **D8 im Einzelnen: Fallstudie.** Sie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
 Geschmack.
 
@@ -296,7 +322,6 @@ Geschmack.
 
 | Punkt                                   | Warum                                                                 | Wann                           |
 | --------------------------------------- | --------------------------------------------------------------------- | ------------------------------ |
-| Content Security Policy                 | Die benötigten Quellen stehen erst mit dem Deployment fest            | Meilenstein 6, D3              |
 | Secret- und Abhängigkeitsscan in der CI | Gehört zum Freigabeschritt                                            | Meilenstein 6, D5              |
 | IPv6 auf dem Server                     | Die Route des Anbieters ist fehlerhaft, siehe Diagnose 13             | sobald der Anbieter sie behebt |
 | Weitere Navigationseinträge             | Ein Menüpunkt ohne Seite wäre ein Versprechen, das die App nicht hält | mit der jeweiligen Funktion    |

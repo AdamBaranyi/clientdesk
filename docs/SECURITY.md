@@ -83,15 +83,28 @@ Anlegen. Rolle und Kundenbezug hängen an der Einladung, nicht am Request des Be
 Annahme entwertet die Einladung in derselben Transaktion, in der die Mitgliedschaft entsteht. Bei
 einem bestehenden Konto muss die angemeldete Identität zur eingeladenen Adresse passen.
 
+**Content Security Policy und Header.** Caddy setzt sie für die Oberfläche:
+`default-src 'self'`, Skripte, Styles, Schriften und Verbindungen nur vom eigenen Ursprung, kein
+`unsafe-inline`, `object-src 'none'`, `frame-ancestors 'none'`, dazu HSTS, `nosniff`, eine
+Referrer-Policy, eine Permissions-Policy ohne Kamera, Mikrofon, Standort und Zahlung, und
+`Cross-Origin-Opener-Policy: same-origin`. Möglich ist die strenge Fassung, weil die Schriften vom
+eigenen Server kommen und der Build kein Inline-Skript erzeugt. Die API setzt ihre Header selbst
+(helmet), Downloads tragen `default-src 'none'; sandbox`, und Caddy überschreibt dort nichts.
+`Server` und `Via` werden entfernt.
+
+**Container.** Nur Caddy veröffentlicht Ports; API, PostgreSQL und Garage sind nur im internen
+Netz erreichbar. Das ist mehr als Ordnung: Docker umgeht bei veröffentlichten Ports die Firewall
+des Servers. Die API läuft als Benutzer `bun` statt root, mit schreibgeschütztem Dateisystem
+(nur `/tmp` beschreibbar), ohne Linux-Capabilities und mit `no-new-privileges`. Caddy behält als
+einzige Capability das Binden an Port 80 und 443. Jeder Dienst hat eine Speichergrenze, jedes Log
+eine Grössengrenze.
+
 ## Offene Grenzen
 
 Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 
-- **Content Security Policy** ist noch nicht gesetzt (`contentSecurityPolicy: false` in Helmet).
-  Sie kommt mit dem Deployment in Meilenstein 6, wenn die tatsächlich benötigten Quellen feststehen.
-- **Secret-Scan und Abhängigkeitsscan** laufen noch nicht in der CI. Vorgesehen für Meilenstein 6.
-- **Schriften** werden von Google Fonts geladen. Für Datenschutz und eine strenge CSP sollen sie
-  selbst ausgeliefert werden — offen für Meilenstein 5.
+- **Secret-Scan und Abhängigkeitsscan** laufen noch nicht in der CI. Vorgesehen für Meilenstein 6,
+  Etappe D5.
 - **Rate-Limit** liegt im Prozessspeicher und trägt nur eine API-Instanz.
 - **Mehrfaktor-Authentisierung** ist bewusst nicht Teil des Umfangs.
 - **Wiederholungslauf für fehlgeschlagene Speicherlöschungen** ist nicht gebaut. Betroffene
@@ -105,6 +118,7 @@ Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 | ---------- | ---------------------------------------------------------------------------- | -------------- |
 | 09.09.2026 | Meilenstein 1: Mandantentrennung, Sitzung, CSRF, Fehlerantworten, Rate-Limit | 28 Tests grün  |
 | 09.09.2026 | Meilenstein 4: Kundenansicht, Uploads, Einladungen, Idempotenz               | 141 Tests grün |
+| 11.09.2026 | Produktionsaufbau lokal: Header, CSP, Demo-Durchgang, Download, Garage       | 2 von 2 grün   |
 
 Drei Befunde aus Meilenstein 4, alle behoben:
 
@@ -119,5 +133,5 @@ Reproduzieren:
 
 ```bash
 docker compose -f infra/docker-compose.yml up -d postgres_test
-bun run test
+bun --env-file=.env run vitest run
 ```

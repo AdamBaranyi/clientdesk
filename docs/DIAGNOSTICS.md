@@ -312,11 +312,31 @@ sind. Und bevor ein Befund an Dritte geht, einmal aus einem zweiten Netz prüfen
 
 ---
 
+## 15 · Caddy sortiert Header-Regeln nach Pfad, nicht nach Reihenfolge
+
+**Symptom.** Gehashte Dateien unter `/assets` sollten ein Jahr im Cache liegen, kamen aber mit
+`Cache-Control: no-cache`. Schriften ebenso.
+
+**Messung.** `curl -D -` auf eine Seite, eine gehashte Datei und eine Schrift: alle drei
+`no-cache`. In der Konfiguration stand die allgemeine Regel zuerst und die beiden Pfadregeln
+danach. Gelesen sieht das richtig aus.
+
+**Ursache.** Caddy ordnet gleichnamige Direktiven nach der Spezifität ihrer Pfad-Matcher. Die Regel
+ohne Pfad lief deshalb zuletzt und überschrieb die beiden anderen, egal wo sie in der Datei stand.
+
+**Korrektur.** Drei Matcher, die einander ausschliessen: `/assets/*`, `/fonts/*` und alles andere.
+Dann ist die Reihenfolge gleichgültig. Ein Kommentar in `infra/Caddyfile` sagt, warum.
+
+**Regel.** Header werden am ausgelieferten Ergebnis geprüft, nicht an der Konfiguration.
+
+---
+
 ## Was daraus als Werkzeug geblieben ist
 
-| Werkzeug                    | Hält fest                                           |
-| --------------------------- | --------------------------------------------------- |
-| `bun run verify`            | Format, Dateilänge, Lint samt `jsx-a11y`, Typen     |
-| `bun run test`              | 166 Unit- und Integrationstests                     |
-| `bun run test:e2e`          | 147 Prüfungen über sechs Breiten, davon 72 mit axe  |
-| `bun run check:bundle-size` | Erstlast 170 KB, CSS 8 KB, Diagramm 115 KB, je gzip |
+| Werkzeug                    | Hält fest                                                   |
+| --------------------------- | ----------------------------------------------------------- |
+| `bun run verify`            | Format, Dateilänge, Lint samt `jsx-a11y`, Typen             |
+| `bun run test`              | 166 Unit- und Integrationstests                             |
+| `bun run test:e2e`          | 147 Prüfungen über sechs Breiten, davon 72 mit axe          |
+| `bun run check:bundle-size` | Erstlast 170 KB, CSS 8 KB, Diagramm 115 KB, je gzip         |
+| `e2e/production.spec.ts`    | Header, CSP ohne Verstoss, Demo gegen den Produktionsaufbau |

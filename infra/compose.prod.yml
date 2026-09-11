@@ -1,0 +1,156 @@
+name: tallyroom-prod
+
+# Produktionsaufbau: Caddy, API, PostgreSQL, Garage.
+#
+# Caddy ist der einzige Dienst mit veröffentlichten Ports. Docker umgeht bei
+# veröffentlichten Ports die Firewall des Servers — deshalb veröffentlicht
+# ausser Caddy niemand etwas, und API, Datenbank und Speicher sind nur im
+# internen Netz erreichbar.
+#
+# Geheimnisse stehen in infra/.env.production, nie im Repository. Vorlage:
+# infra/.env.production.example. Aufruf immer mit dieser Datei:
+#   docker compose -f infra/compose.prod.yml --env-file infra/.env.production …
+#
+# Reihenfolge beim Deploy: Datenbank und Speicher starten, Migrationen als
+# eigener Schritt (Profil "tools"), dann API und Caddy. Die API migriert beim
+# Start bewusst nicht.
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '3'
+
+x-hardening: &hardening
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  caddy:
+    build:
+      context: ..
+      target: web
+    image: tallyroom-web:${TALLYROOM_VERSION:-local}
+    restart: unless-stopped
+    <<: *hardening
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:?SITE_ADDRESS fehlt}
+    ports:
+      - '${HTTP_PORT:-80}:80'
+      - '${HTTPS_PORT:-443}:443'
+      - '${HTTPS_PORT:-443}:443/udp'
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    mem_limit: 256m
+    logging: *logging
+
+  api:
+    build:
+      context: ..
+      target: api
+    image: tallyroom-api:${TALLYROOM_VERSION:-local}
+    restart: unless-stopped
+    <<: *hardening
+    init: true
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    environment: &api-env
+      NODE_ENV: production
+      API_PORT: 4000
+      TRUST_PROXY_HOPS: 1
+      APP_ORIGIN: ${APP_ORIGIN:?APP_ORIGIN fehlt}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET fehlt}
+      DATABASE_URL: postgresql://tallyroom:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD fehlt}@postgres:5432/tallyroom
+      S3_ENDPOINT: http://garage:3900
+      S3_REGION: garage
+      S3_BUCKET: tallyroom-documents
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:?S3_ACCESS_KEY_ID fehlt}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:?S3_SECRET_ACCESS_KEY fehlt}
+      DEMO_ENABLED: ${DEMO_ENABLED:-true}
+    healthcheck:
+      test:
+        - CMD
+        - bun
+        - -e
+        - "const r = await fetch('http://127.0.0.1:4000/api/v1/health/ready'); process.exit(r.ok ? 0 : 1)"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      garage:
+        condition: service_healthy
+    mem_limit: 512m
+    logging: *logging
+
+  # Migrationen und Verwaltungsbefehle, nur auf Aufruf:
+  #   docker compose … --profile tools run --rm migrate
+  #   docker compose … --profile tools run --rm migrate bun packages/db/src/cli/create-admin.ts --email …
+  migrate:
+    image: tallyroom-api:${TALLYROOM_VERSION:-local}
+    profiles: [tools]
+    <<: *hardening
+    command: ['bun', 'packages/db/src/migrate.ts']
+    environment: *api-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      garage:
+        condition: service_healthy
+    logging: *logging
+
+  postgres:
+    image: postgres:18.1-alpine
+    restart: unless-stopped
+    <<: *hardening
+    environment:
+      POSTGRES_USER: tallyroom
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD fehlt}
+      POSTGRES_DB: tallyroom
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U tallyroom -d tallyroom']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    mem_limit: 1g
+    logging: *logging
+
+  garage:
+    image: dxflrs/garage:v2.4.1
+    restart: unless-stopped
+    <<: *hardening
+    command: ['/garage', 'server', '--single-node', '--default-access-key', '--default-bucket']
+    environment:
+      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET:?GARAGE_RPC_SECRET fehlt}
+      GARAGE_DEFAULT_ACCESS_KEY: ${S3_ACCESS_KEY_ID:?S3_ACCESS_KEY_ID fehlt}
+      GARAGE_DEFAULT_SECRET_KEY: ${S3_SECRET_ACCESS_KEY:?S3_SECRET_ACCESS_KEY fehlt}
+      GARAGE_DEFAULT_BUCKET: tallyroom-documents
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+    healthcheck:
+      test: ['CMD', '/garage', 'status']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    mem_limit: 512m
+    logging: *logging
+
+volumes:
+  caddy_data:
+  caddy_config:
+  postgres_data:
+  garage_meta:
+  garage_data:

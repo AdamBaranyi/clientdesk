@@ -3,7 +3,7 @@
 Befunde, die beim Prüfen entstanden sind, stehen in [DIAGNOSTICS.md](DIAGNOSTICS.md) —
 mit Messung, Ursache und Korrektur, einschliesslich der drei Fehldiagnosen.
 
-Stand: 10.09.2026, nach der Design-Überarbeitung.
+Stand: 11.09.2026, nach dem Wechsel auf Garage und dem ersten Produktionsaufbau.
 
 ## Ausgeführt
 
@@ -12,8 +12,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 10.09.2026: **158 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
-allen vier Paketen sauber, 205 Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
+Ergebnis vom 11.09.2026: **166 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+allen vier Paketen sauber, 233 Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
 
 Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
 
@@ -32,7 +32,9 @@ bun run test:e2e        # alle sechs Breiten
 bun run test:e2e:ui     # zum Nachsehen, wenn etwas rot ist
 ```
 
-**12 Tests je Breite, 72 im Lauf, rund 22 Sekunden.**
+**147 Prüfungen im Lauf, rund 50 Sekunden** (11.09.2026). Dazu kommen 15 übersprungene: Die drei
+Messungen gegen Lastdaten laufen nur bei 1440 Pixeln, sechsmal dieselbe Zahl wäre keine
+zusätzliche Erkenntnis.
 
 Sechs Projekte, eines je Prüfbreite. **Es wird nie mitten im Test die Fenstergrösse verändert.**
 Manche Umgebungen ändern das Layout, ohne der Seite Bescheid zu sagen — dann feuert weder `resize`
@@ -60,11 +62,27 @@ mehr als die Grenze, und die Grenze ist richtig. Eine noch gültige Sitzung wird
 weiterverwendet, sonst verbraucht jeder Entwicklungslauf eine Demo. Das geht nur, weil diese Tests
 ausschliesslich lesen — **ein Test, der schreibt, darf diese Sitzung nicht benutzen.**
 
-### Noch nicht geprüft
+**Barrierefreiheit mit axe** (`e2e/a11y.spec.ts`) seit Meilenstein 6a: fünf Seiten in beiden
+Erscheinungsbildern, dazu der offene Dialog und die Kommandopalette mit Treffern. Null Verstösse.
 
-Es gibt **keine axe-Prüfung und keine Frontend-Messung**. Kontraste sind von Hand im Browser
-gemessen und in den Commit-Nachrichten festgehalten, aber nichts hält sie dort. Das ist der Rest
-von Meilenstein 6a.
+### Gegen den Produktionsaufbau
+
+```bash
+docker compose -f infra/compose.prod.yml --env-file <datei> up -d --build
+bunx playwright test -c playwright.production.config.ts
+```
+
+`e2e/production.spec.ts` läuft nicht gegen den Entwicklungsserver, sondern gegen Caddy, API,
+PostgreSQL und Garage aus `infra/compose.prod.yml`, lokal auf `https://localhost:8443`, später mit
+`PRODUCTION_URL` gegen den Server. Geprüft: die Sicherheitsheader samt Content Security Policy ohne
+`unsafe-inline`, dann eine Demo durch jede Seite der Teamansicht, eine Detailseite mit
+Seitenübergang, die Kommandopalette mit Treffern, ein Dokument über die API (PDF, Anhang,
+`sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Jeder Konsolenfehler lässt den
+Test scheitern, auch jeder CSP-Verstoss.
+
+Ergebnis vom 11.09.2026: **2 von 2 grün, null Verstösse.** Die Null ist gegengeprüft: Ein
+absichtlich eingeschleustes Inline-Skript, ein Inline-Style und ein fremdes Bild wurden alle drei
+als Verstoss erkannt. Ein Test, der nie scheitern kann, wäre sonst keiner.
 
 ### Was geprüft wird
 
@@ -200,7 +218,6 @@ Erscheinungsbild in Hell und Dunkel geprüft, Umschaltung wirkt sofort.
   drei Engines laufen.
 - **Reflow bei 400 % Zoom** ab 1280 Pixeln. Steht aus; die 320-Pixel-Messung deckt denselben
   Layoutzustand ab, ersetzt die Zoomprüfung aber nicht.
-- **Playwright-Abläufe** über die sechs Breiten. Vorgesehen ab Meilenstein 5.
 - **Barrierefreiheit insgesamt.** Tastaturbedienung, sichtbarer Fokus, beschriftete Felder,
   Sprungmarke und reduzierte Bewegung sind umgesetzt, aber nicht systematisch mit Screenreader
   geprüft.
