@@ -1,6 +1,37 @@
+import { Link } from 'react-router';
 import { DEMO_LIFETIME_MINUTES } from '@tallyroom/contracts';
 import { LegalPage, LegalSection, OperatorAddress } from './LegalPage.tsx';
 import { OPERATOR, PRIVACY_NOTICE_DATE } from './operator.ts';
+
+/**
+ * Ohne hinterlegte Adresse — lokal oder in der CI — verweist der Satz aufs
+ * Impressum. Ein Link mit leerem Text wäre für Screenreader stumm; genau das
+ * hat die CI gefunden, als lokal eine Adresse in der .env stand und dort
+ * keine. Im Produktions-Image ist die Adresse Pflicht.
+ */
+function ContactSentence() {
+  if (!OPERATOR.email) {
+    return (
+      <>
+        Eine Nachricht an die Adresse im{' '}
+        <Link to="/impressum" className="underline underline-offset-2">
+          Impressum
+        </Link>{' '}
+        genügt.
+      </>
+    );
+  }
+
+  return (
+    <>
+      Eine E-Mail an{' '}
+      <a href={`mailto:${OPERATOR.email}`} className="underline underline-offset-2">
+        {OPERATOR.email}
+      </a>{' '}
+      genügt.
+    </>
+  );
+}
 
 /**
  * Jede Aussage hier ist am laufenden Aufbau geprüft, nicht angenommen: was im
@@ -91,12 +122,8 @@ export function PrivacyPage() {
       <LegalSection title="Ihre Rechte">
         <p>
           Sie können Auskunft über Ihre Daten verlangen, ihre Berichtigung oder Löschung, und der
-          Bearbeitung widersprechen. Eine E-Mail an{' '}
-          <a href={`mailto:${OPERATOR.email}`} className="underline underline-offset-2">
-            {OPERATOR.email}
-          </a>{' '}
-          genügt. Beschwerden können Sie an den Eidgenössischen Datenschutz- und
-          Öffentlichkeitsbeauftragten (EDÖB) richten.
+          Bearbeitung widersprechen. <ContactSentence /> Beschwerden können Sie an den
+          Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) richten.
         </p>
       </LegalSection>
     </LegalPage>

@@ -331,6 +331,27 @@ Dann ist die Reihenfolge gleichgültig. Ein Kommentar in `infra/Caddyfile` sagt,
 
 ---
 
+## 16 · Lokal grün, in der CI rot: die eigene .env verdeckte einen leeren Link
+
+**Symptom.** axe meldete in der CI auf der Datenschutzseite `link-name`, „Links must have
+discernible text", bei allen sechs Breiten. Lokal liefen dieselben Prüfungen grün.
+
+**Messung.** Lokal mit leeren Impressum-Angaben gestartet
+(`VITE_OPERATOR_EMAIL= … bunx playwright test`): derselbe Befund, nur auf der Datenschutzseite,
+nicht im Impressum.
+
+**Ursache.** Die Angaben kommen aus der Umgebung. Lokal stand eine E-Mail-Adresse in der `.env`, in
+der CI keine. Das Impressum liess die leere Zeile weg, die Datenschutzseite setzte den Link
+trotzdem, mit leerem Text. Für einen Screenreader ist so ein Link stumm.
+
+**Korrektur.** Ohne Adresse verweist der Satz aufs Impressum. Beide Zustände sind geprüft: ohne
+Angaben 30 von 30 Prüfungen der Rechtsseiten, mit Angaben die volle Suite.
+
+**Regel.** Was aus der Umgebung kommt, hat mindestens zwei Zustände, und beide gehören geprüft. Die
+eigene `.env` ist nur einer davon.
+
+---
+
 ## Was daraus als Werkzeug geblieben ist
 
 | Werkzeug                    | Hält fest                                                   |
