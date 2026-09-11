@@ -284,18 +284,18 @@ es 149 KB. Die Messung zählt jetzt, was `index.html` anfordert, nicht eine einz
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
 
-| Etappe | Inhalt                                                                                   | Stand     |
-| ------ | ---------------------------------------------------------------------------------------- | --------- |
-| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt  |
-| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt  |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt  |
-| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt  |
-| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt  |
-| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt  |
-| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | in Arbeit |
-| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt  |
-| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen     |
-| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen     |
+| Etappe | Inhalt                                                                                   | Stand    |
+| ------ | ---------------------------------------------------------------------------------------- | -------- |
+| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt |
+| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt |
+| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | erledigt |
+| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt |
+| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen    |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen    |
 
 **Entscheide**
 
@@ -384,9 +384,14 @@ Gegen `https://tallyroom.adambaranyi.xyz` geprüft:
 - Lighthouse, je zwei Läufe: mobil Leistung 98 bis 99, Barrierefreiheit 100, Best
   Practices 93, SEO 100; Desktop 100, 100, 93, 100. LCP mobil 2.0 bis 2.1 s, TBT 0 ms, CLS 0
 
-Die 93 hatte zwei Ursachen, beide behoben und noch nicht auf dem Server: ein 401 von `/auth/me`
-bei jedem anonymen Besuch, rot in der Konsole, und die stille `eval`-Probe von Zod
-(DIAGNOSTICS Nummer 17). Offen für D6: zweiter Deploy, dann dieselben Prüfungen noch einmal.
+Die 93 hatte zwei Ursachen: ein 401 von `/auth/me` bei jedem anonymen Besuch, rot in der
+Konsole, und die stille `eval`-Probe von Zod (DIAGNOSTICS Nummer 17). Beide behoben, zweiter
+Deploy am selben Abend um 20:40, Stand `26c97b6`. Danach dieselben Prüfungen:
+
+- `e2e/production.spec.ts` in der geschärften Fassung: 3 von 3, kein CSP-Verstoss, kein
+  Konsolenfehler
+- Lighthouse, je zwei Läufe: mobil Leistung 98 bis 99, Barrierefreiheit, Best Practices und SEO
+  je 100; Desktop in allen vier Kategorien 100. LCP mobil 2.0 bis 2.1 s, TBT 0 bis 10 ms, CLS 0
 
 Bewusst so gelassen, weil der Nutzen den Eingriff nicht trägt:
 

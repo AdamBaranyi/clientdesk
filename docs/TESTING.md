@@ -122,6 +122,10 @@ Bild wurden alle drei als Verstoss erkannt, und der stille Verstoss von Zod läs
 Fassung gegen den alten Stand auf dem Server scheitern. Ein Test, der nie scheitern kann, wäre
 sonst keiner.
 
+Gegen den Server (`PRODUCTION_URL=https://tallyroom.adambaranyi.xyz`) am 11.09.2026 nach dem
+zweiten Deploy: **3 von 3 grün.** Lighthouse gegen dieselbe Adresse, je zwei Läufe: mobil
+Leistung 98 bis 99, die übrigen drei Kategorien 100; Desktop viermal 100.
+
 ### Was geprüft wird
 
 **Dateilängen-Zählweise** (`scripts/check-file-length.test.mjs`, 12 Tests) — leere Datei, mit und
