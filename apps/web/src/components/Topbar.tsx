@@ -34,19 +34,25 @@ export function Topbar({
         <button
           type="button"
           onClick={onOpenNavigation}
+          data-tour="navigation-toggle"
           className="flex size-11 shrink-0 items-center justify-center rounded-sm text-muted hover:text-ink lg:hidden"
         >
           <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
           <span className="sr-only">{m.openNavigation}</span>
         </button>
 
-        {/* Auf schmalen Geräten trägt die Kopfzeile nur den aktuellen Ort. */}
+        {/*
+          Auf schmalen Geräten trägt die Kopfzeile nur den aktuellen Ort. Unter
+          400 Pixeln bleibt dafür kaum Platz: aus «Tableau de bord» wurde «T…».
+          Dort steht der Ort nur für Screenreader; sichtbar nennt ihn die
+          Überschrift der Seite.
+        */}
         <nav aria-label={m.breadcrumbs} className="text-dense flex min-w-0 items-center gap-2">
           <span className="hidden truncate text-muted sm:inline">{workspace.name}</span>
           <span className="hidden text-muted sm:inline" aria-hidden="true">
             /
           </span>
-          <span className="font-condensed text-label truncate font-semibold tracking-[0.12em] uppercase">
+          <span className="font-condensed text-label truncate font-semibold tracking-[0.12em] uppercase max-[399px]:sr-only">
             {label}
           </span>
         </nav>
@@ -61,6 +67,7 @@ export function Topbar({
         <button
           type="button"
           onClick={onOpenSearch}
+          data-tour="palette"
           className="text-dense flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink"
         >
           <Search size={15} strokeWidth={1.8} aria-hidden="true" />

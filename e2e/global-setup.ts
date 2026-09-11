@@ -1,12 +1,13 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { chromium, type FullConfig } from '@playwright/test';
+import { chromium, type BrowserContext, type FullConfig } from '@playwright/test';
 import {
   AUTH_DIR,
   LOAD_STATE_FILE,
   LOAD_WORKSPACE_FILE,
   LOAD_ZUGANG,
   STATE_FILE,
+  TOUR_KEY,
   WORKSPACE_FILE,
 } from './paths.ts';
 
@@ -16,6 +17,8 @@ import {
  * dann fände das Setup den Knopf «Demo starten» nicht.
  */
 const LOCALE = 'de-CH';
+
+type StorageState = Awaited<ReturnType<BrowserContext['storageState']>>;
 
 /**
  * Startet genau eine Demo für den ganzen Lauf.
@@ -88,10 +91,36 @@ async function lastZugangVorbereiten(baseURL: string): Promise<void> {
   }
 }
 
+/**
+ * Der Rundgang öffnet sich in jeder neuen Demo einmal von selbst und läge
+ * dann als Dialog über jedem Test. Er ist hier als gesehen vermerkt;
+ * tour.spec.ts nimmt den Vermerk für sich wieder heraus.
+ *
+ * Auch in einer wiederverwendeten Sitzung, denn die kann von einem Lauf
+ * stammen, als es den Rundgang noch nicht gab.
+ */
+async function rundgangAlsGesehenVermerken(baseURL: string): Promise<void> {
+  const state = JSON.parse(await readFile(STATE_FILE, 'utf8')) as StorageState;
+  const origin = new URL(baseURL).origin;
+  let eintrag = state.origins.find((o) => o.origin === origin);
+  if (!eintrag) {
+    eintrag = { origin, localStorage: [] };
+    state.origins.push(eintrag);
+  }
+  eintrag.localStorage = [
+    ...eintrag.localStorage.filter((item) => item.name !== TOUR_KEY),
+    { name: TOUR_KEY, value: 'done' },
+  ];
+  await writeFile(STATE_FILE, JSON.stringify(state), 'utf8');
+}
+
 async function globalSetup(config: FullConfig): Promise<void> {
   const baseURL = config.projects[0]?.use.baseURL ?? 'http://localhost:5173';
   await lastZugangVorbereiten(baseURL);
-  if (await bestehendeSitzungLaeuftNoch(baseURL)) return;
+  if (await bestehendeSitzungLaeuftNoch(baseURL)) {
+    await rundgangAlsGesehenVermerken(baseURL);
+    return;
+  }
 
   const browser = await chromium.launch();
   const context = await browser.newContext({ baseURL, locale: LOCALE });
@@ -125,6 +154,7 @@ async function globalSetup(config: FullConfig): Promise<void> {
   await writeFile(WORKSPACE_FILE, JSON.stringify({ workspaceId: treffer[1] }), 'utf8');
 
   await browser.close();
+  await rundgangAlsGesehenVermerken(baseURL);
 }
 
 export default globalSetup;

@@ -81,6 +81,15 @@ test('ein Demo-Durchgang ohne CSP-Verstoss und ohne Konsolenfehler', async ({ pa
   await expect(page).toHaveURL(/\/app\/[^/]+\//);
   await page.waitForLoadState('networkidle');
 
+  // Eine neue Demo beginnt mit dem Rundgang, einmal ganz durch.
+  const tour = page.getByRole('dialog', { name: 'Rundgang durch die Demo' });
+  await expect(tour).toBeVisible();
+  for (let step = 1; step < 6; step++) {
+    await tour.getByRole('button', { name: 'Weiter' }).click();
+  }
+  await tour.getByRole('button', { name: 'Loslegen' }).click();
+  await expect(tour).toBeHidden();
+
   const teamPages = await visitEveryLinkIn(page, 'Hauptnavigation');
   expect(teamPages.length).toBeGreaterThanOrEqual(6);
 

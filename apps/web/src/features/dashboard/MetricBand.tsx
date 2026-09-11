@@ -32,7 +32,7 @@ export function MetricBand({ data, base }: Props) {
   const stichtag = formatDate(data.contractDate);
 
   return (
-    <section aria-label={m.metrics.label} className="flex flex-col">
+    <section aria-label={m.metrics.label} data-tour="metrics" className="flex flex-col">
       <div aria-hidden className="motion-rule h-px w-full bg-line" />
 
       <div className="grid gap-6 pt-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,9fr)_repeat(3,minmax(0,4fr))]">

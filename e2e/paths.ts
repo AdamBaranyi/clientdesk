@@ -10,3 +10,6 @@ export const LOAD_ZUGANG = {
   email: 'last@tallyroom.test',
   passwort: 'Lastdaten-Passwort-2026',
 };
+
+/** Vermerk «Rundgang gesehen», wie `TOUR_STORAGE_KEY` in apps/web/src/features/tour/tour-state.ts. */
+export const TOUR_KEY = 'tallyroom.tour';

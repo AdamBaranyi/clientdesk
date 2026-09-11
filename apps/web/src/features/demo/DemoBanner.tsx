@@ -1,8 +1,10 @@
-import { Clock, FlaskConical, UserRound, Users } from 'lucide-react';
+import { Clock, FlaskConical, Signpost, UserRound, Users } from 'lucide-react';
 import type { WorkspaceSummary } from '@tallyroom/contracts';
 import { workspacePath } from '../../lib/paths.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useMessages } from '../../i18n/messages.ts';
+import { tourMessages } from '../tour/messages.ts';
+import { useTourRestart } from '../tour/tour-state.ts';
 import { useDemoStatus, useSwitchIdentity } from './api.ts';
 import { demoMessages } from './messages.ts';
 
@@ -14,6 +16,8 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
   const status = useDemoStatus(workspace.id, workspace.isDemo);
   const switchIdentity = useSwitchIdentity(workspace.id);
   const m = useMessages(demoMessages);
+  const tour = useMessages(tourMessages);
+  const restartTour = useTourRestart();
 
   /**
    * Nach dem Wechsel wird die Seite vollständig neu geladen, nicht nur
@@ -40,19 +44,33 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
 
   return (
     <div className="flex flex-col gap-3 border-b border-line bg-raised px-3 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-        <span className="font-condensed text-label inline-flex items-center gap-1.5 font-semibold tracking-[0.12em] uppercase">
-          <FlaskConical size={14} strokeWidth={2} aria-hidden="true" />
-          {m.label}
-        </span>
-        <span className="text-muted">{m.notice}</span>
-        <span className="inline-flex items-center gap-1.5 font-mono text-muted">
-          <Clock size={12} strokeWidth={2} aria-hidden="true" />
-          {m.minutesLeft(status.data.minutesLeft)}
-        </span>
-      </p>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+          <span className="font-condensed text-label inline-flex items-center gap-1.5 font-semibold tracking-[0.12em] uppercase">
+            <FlaskConical size={14} strokeWidth={2} aria-hidden="true" />
+            {m.label}
+          </span>
+          <span className="text-muted">{m.notice}</span>
+          <span className="inline-flex items-center gap-1.5 font-mono text-muted">
+            <Clock size={12} strokeWidth={2} aria-hidden="true" />
+            {m.minutesLeft(status.data.minutesLeft)}
+          </span>
+        </p>
+        {/* Nur in der Teamansicht; im Kundenportal gibt es keinen Rundgang. */}
+        {restartTour && (
+          <button
+            type="button"
+            onClick={restartTour}
+            data-tour="tour-restart"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-sm border border-line px-2.5 text-xs font-medium text-muted transition-colors hover:text-ink"
+          >
+            <Signpost size={13} strokeWidth={2} aria-hidden="true" />
+            {tour.restart}
+          </button>
+        )}
+      </div>
 
-      <div className="flex flex-wrap items-center gap-2">
+      <div data-tour="role-switch" className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-medium text-muted">{m.view}</span>
         {[...team, ...clients].map((identity) => (
           <button

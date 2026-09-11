@@ -60,7 +60,11 @@ export function Sidebar({ workspace, onNavigate }: SidebarProps) {
         </span>
       </div>
 
-      <nav aria-label={m.mainNavigation} className="mt-4 flex flex-col gap-0.5">
+      <nav
+        aria-label={m.mainNavigation}
+        data-tour="navigation"
+        className="mt-4 flex flex-col gap-0.5"
+      >
         {NAV_ITEMS.map((item) => (
           <NavItem
             key={item.to}
