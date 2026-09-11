@@ -18,6 +18,11 @@ export const portalMessages = defineMessages({
       contracts: 'Verträge',
       requests: 'Anfragen',
       documents: 'Dokumente',
+      account: 'Konto',
+    },
+    account: {
+      title: 'Konto',
+      lead: 'Ihr Zugang zu diesem Kundenportal.',
     },
     overview: {
       loading: 'Übersicht wird geladen …',
@@ -110,6 +115,11 @@ export const portalMessages = defineMessages({
       contracts: 'Contracts',
       requests: 'Requests',
       documents: 'Documents',
+      account: 'Account',
+    },
+    account: {
+      title: 'Account',
+      lead: 'Your access to this client portal.',
     },
     overview: {
       loading: 'Loading overview …',

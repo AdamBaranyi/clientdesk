@@ -12,6 +12,7 @@ import { CustomerListPage } from './features/customers/CustomerListPage.tsx';
 import { DashboardPage } from './features/dashboard/DashboardPage.tsx';
 import { ProjectDetailPage } from './features/projects/ProjectDetailPage.tsx';
 import { DocumentListPage } from './features/documents/DocumentListPage.tsx';
+import { PortalAccountPage } from './features/portal/PortalAccountPage.tsx';
 import { PortalShell } from './features/portal/PortalShell.tsx';
 import {
   PortalContractsPage,
@@ -134,6 +135,7 @@ function PortalRoutes({ user }: { user: SessionUser }) {
           element={<PortalRequestDetailPage workspace={workspace} />}
         />
         <Route path="documents" element={<PortalDocumentsPage workspace={workspace} />} />
+        <Route path="account" element={<PortalAccountPage workspace={workspace} />} />
         <Route path="*" element={<Navigate to={portalPath(workspace.id, 'overview')} replace />} />
       </Route>
     </Routes>

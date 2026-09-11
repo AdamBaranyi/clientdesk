@@ -7,6 +7,7 @@ import {
   Menu,
   MessageSquare,
   Paperclip,
+  UserRound,
   X,
 } from 'lucide-react';
 import { Outlet, useNavigate } from 'react-router';
@@ -33,6 +34,7 @@ const NAV_ITEMS = [
   { to: 'contracts', icon: FileText },
   { to: 'requests', icon: MessageSquare },
   { to: 'documents', icon: Paperclip },
+  { to: 'account', icon: UserRound },
 ] as const;
 
 interface Props {

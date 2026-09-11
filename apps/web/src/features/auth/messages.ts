@@ -27,6 +27,17 @@ export const authMessages = defineMessages({
       accepting: 'Wird angenommen …',
       failed: 'Die Einladung konnte nicht angenommen werden.',
     },
+    password: {
+      title: 'Passwort ändern',
+      current: 'Bisheriges Passwort',
+      next: 'Neues Passwort',
+      nextHint: 'Mindestens 12 Zeichen',
+      submit: 'Passwort ändern',
+      saving: 'Wird geändert …',
+      done: 'Passwort geändert. Auf anderen Geräten ist das Konto jetzt abgemeldet.',
+      failed: 'Das Passwort konnte nicht geändert werden. Bitte später erneut versuchen.',
+      demo: 'In der Demo lässt sich das Passwort nicht ändern. Die Konten hier gibt es nur für eine Stunde.',
+    },
   },
   en: {
     login: {
@@ -53,6 +64,17 @@ export const authMessages = defineMessages({
       submit: 'Accept invitation',
       accepting: 'Accepting …',
       failed: 'The invitation could not be accepted.',
+    },
+    password: {
+      title: 'Change password',
+      current: 'Current password',
+      next: 'New password',
+      nextHint: 'At least 12 characters',
+      submit: 'Change password',
+      saving: 'Changing …',
+      done: 'Password changed. The account is now signed out on other devices.',
+      failed: 'The password could not be changed. Please try again later.',
+      demo: 'The password cannot be changed in the demo. The accounts here only exist for an hour.',
     },
   },
 });

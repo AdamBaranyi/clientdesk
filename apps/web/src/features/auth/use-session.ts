@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
-import { sessionUserSchema, type LoginInput, type SessionUser } from '@tallyroom/contracts';
+import {
+  sessionUserSchema,
+  type ChangePasswordInput,
+  type LoginInput,
+  type SessionUser,
+} from '@tallyroom/contracts';
 import { apiRequest, ApiRequestError, resetCsrfToken } from '../../lib/api.ts';
 
 const SESSION_KEY = ['session'] as const;
@@ -64,5 +69,14 @@ export function useLogout() {
       queryClient.setQueryData(SESSION_KEY, null);
       void queryClient.invalidateQueries();
     },
+  });
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (input: ChangePasswordInput) =>
+      apiRequest<void>('/auth/password', { method: 'POST', body: input }),
+    // Die Sitzungs-ID rotiert dabei, das alte CSRF-Token gilt nicht mehr.
+    onSuccess: () => resetCsrfToken(),
   });
 }
