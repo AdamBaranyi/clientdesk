@@ -44,14 +44,21 @@ export function createAuthService(repository: AuthRepository): AuthService {
       const matches = await verifyPassword(storedHash, password);
 
       if (!user || !matches) {
-        throw unauthenticated('E-Mail oder Passwort ist falsch.');
+        throw unauthenticated({
+          de: 'E-Mail oder Passwort ist falsch.',
+          en: 'Email or password is incorrect.',
+        });
       }
       return user;
     },
 
     async buildSessionUser(userId) {
       const user = await repository.findUserById(userId);
-      if (!user) throw unauthenticated('Konto existiert nicht mehr.');
+      if (!user)
+        throw unauthenticated({
+          de: 'Konto existiert nicht mehr.',
+          en: 'This account no longer exists.',
+        });
 
       const records = await repository.listMemberships(userId);
       return {

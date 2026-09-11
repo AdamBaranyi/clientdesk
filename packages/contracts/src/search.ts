@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
 
 /**
  * Die gebündelte Suche hinter der Kommandopalette.
@@ -16,7 +17,11 @@ export const searchQuerySchema = z.object({
    * praktisch den ganzen Bestand zurück — das ist keine Suche, sondern eine
    * Volltabelle über vier Tabellen.
    */
-  q: z.string().trim().min(2, 'Mindestens zwei Zeichen').max(100),
+  q: z
+    .string()
+    .trim()
+    .min(2, localized({ de: 'Mindestens zwei Zeichen', en: 'At least two characters' }))
+    .max(100),
 });
 
 export type SearchQuery = z.infer<typeof searchQuerySchema>;

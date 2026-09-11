@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import type { ApiError } from '@tallyroom/contracts';
+import { inCurrentLocale, type ApiError } from '@tallyroom/contracts';
 import { HttpError, type FieldErrors } from '../lib/http-error.ts';
 
 function fieldErrorsFromZod(error: ZodError): FieldErrors {
@@ -14,7 +14,11 @@ function fieldErrorsFromZod(error: ZodError): FieldErrors {
 
 export function notFoundHandler(_req: Request, res: Response): void {
   const body: ApiError = {
-    error: { code: 'NOT_FOUND', message: 'Route nicht gefunden.', requestId: _req.requestId },
+    error: {
+      code: 'NOT_FOUND',
+      message: inCurrentLocale({ de: 'Route nicht gefunden.', en: 'Route not found.' }),
+      requestId: _req.requestId,
+    },
   };
   res.status(404).json(body);
 }
@@ -39,18 +43,40 @@ export function errorHandler(
   // für etwas, das der Aufrufer falsch gemacht hat.
   const parserType = (error as { type?: string } | null)?.type;
   if (parserType === 'entity.too.large') {
-    respond(res, req, 'VALIDATION_FAILED', 413, 'Die Datei ist zu gross.', {
-      file: ['Grössengrenze überschritten'],
-    });
+    respond(
+      res,
+      req,
+      'VALIDATION_FAILED',
+      413,
+      inCurrentLocale({ de: 'Die Datei ist zu gross.', en: 'The file is too large.' }),
+      { file: [inCurrentLocale({ de: 'Grössengrenze überschritten', en: 'Size limit exceeded' })] },
+    );
     return;
   }
   if (parserType === 'entity.parse.failed' || parserType === 'encoding.unsupported') {
-    respond(res, req, 'VALIDATION_FAILED', 422, 'Der Anfrageinhalt ist unlesbar.', undefined);
+    respond(
+      res,
+      req,
+      'VALIDATION_FAILED',
+      422,
+      inCurrentLocale({
+        de: 'Der Anfrageinhalt ist unlesbar.',
+        en: 'The request body is unreadable.',
+      }),
+      undefined,
+    );
     return;
   }
 
   if (error instanceof ZodError) {
-    respond(res, req, 'VALIDATION_FAILED', 422, 'Eingabe ungültig.', fieldErrorsFromZod(error));
+    respond(
+      res,
+      req,
+      'VALIDATION_FAILED',
+      422,
+      inCurrentLocale({ de: 'Eingabe ungültig.', en: 'Invalid input.' }),
+      fieldErrorsFromZod(error),
+    );
     return;
   }
 
@@ -61,7 +87,14 @@ export function errorHandler(
   }
 
   req.log.error({ err: error }, 'Unbehandelter Fehler');
-  respond(res, req, 'INTERNAL', 500, 'Unerwarteter Serverfehler.', undefined);
+  respond(
+    res,
+    req,
+    'INTERNAL',
+    500,
+    inCurrentLocale({ de: 'Unerwarteter Serverfehler.', en: 'Unexpected server error.' }),
+    undefined,
+  );
 }
 
 function respond(

@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
 export const REQUEST_PRIORITY = ['normal', 'high'] as const;
 export type RequestPriority = (typeof REQUEST_PRIORITY)[number];
@@ -31,8 +33,8 @@ export function isAllowedTransition(from: RequestStatus, to: RequestStatus): boo
 export const requestInputSchema = z.object({
   customerId: z.uuid(),
   projectId: z.uuid().nullish(),
-  subject: z.string().trim().min(1, 'Betreff ist erforderlich').max(200),
-  body: z.string().trim().min(1, 'Nachricht ist erforderlich').max(8000),
+  subject: z.string().trim().min(1, localized(VALIDATION.subjectRequired)).max(200),
+  body: z.string().trim().min(1, localized(VALIDATION.messageRequired)).max(8000),
   priority: z.enum(REQUEST_PRIORITY).default('normal'),
   assignedTo: z.uuid().nullish(),
 });
@@ -43,8 +45,8 @@ export type RequestFormValues = z.input<typeof requestInputSchema>;
 /** Was ein Kundenbenutzer beim Erstellen schicken darf — ohne Zuweisung und Priorität. */
 export const clientRequestInputSchema = z.object({
   projectId: z.uuid().nullish(),
-  subject: z.string().trim().min(1, 'Betreff ist erforderlich').max(200),
-  body: z.string().trim().min(1, 'Nachricht ist erforderlich').max(8000),
+  subject: z.string().trim().min(1, localized(VALIDATION.subjectRequired)).max(200),
+  body: z.string().trim().min(1, localized(VALIDATION.messageRequired)).max(8000),
 });
 
 export type ClientRequestInput = z.infer<typeof clientRequestInputSchema>;
@@ -67,7 +69,11 @@ export const COMMENT_VISIBILITY = ['public', 'internal'] as const;
 export type CommentVisibility = (typeof COMMENT_VISIBILITY)[number];
 
 export const commentInputSchema = z.object({
-  body: z.string().trim().min(1, 'Kommentar darf nicht leer sein').max(8000),
+  body: z
+    .string()
+    .trim()
+    .min(1, localized({ de: 'Kommentar darf nicht leer sein', en: 'A comment cannot be empty' }))
+    .max(8000),
   visibility: z.enum(COMMENT_VISIBILITY).default('internal'),
 });
 

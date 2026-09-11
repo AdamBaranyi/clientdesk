@@ -1,37 +1,58 @@
-import { ERROR_STATUS, type ErrorCode } from '@tallyroom/contracts';
+import {
+  ERROR_STATUS,
+  inCurrentLocale,
+  type ErrorCode,
+  type Localized,
+} from '@tallyroom/contracts';
 
 export type FieldErrors = Record<string, string[]>;
+export type LocalizedFieldErrors = Record<string, Localized[]>;
 
 /**
  * Einziger Weg, einen Fehler mit definiertem Code an den Client zu geben.
  * Alles andere landet als INTERNAL ohne Detailinformationen.
+ *
+ * Meldungen gibt es nur in allen Sprachen zugleich. Ein einzelner String wird
+ * vom Compiler abgelehnt — sonst stünde irgendwann eine deutsche Meldung in
+ * der englischen Oberfläche. Aufgelöst wird in der Sprache des Requests.
  */
 export class HttpError extends Error {
   readonly code: ErrorCode;
   readonly status: number;
   readonly fieldErrors: FieldErrors | undefined;
 
-  constructor(code: ErrorCode, message: string, fieldErrors?: FieldErrors) {
-    super(message);
+  constructor(code: ErrorCode, message: Localized, fieldErrors?: LocalizedFieldErrors) {
+    super(inCurrentLocale(message));
     this.name = 'HttpError';
     this.code = code;
     this.status = ERROR_STATUS[code];
-    this.fieldErrors = fieldErrors;
+    this.fieldErrors = fieldErrors ? resolveFieldErrors(fieldErrors) : undefined;
   }
 }
 
-export const unauthenticated = (message = 'Nicht angemeldet.'): HttpError =>
-  new HttpError('UNAUTHENTICATED', message);
+function resolveFieldErrors(fieldErrors: LocalizedFieldErrors): FieldErrors {
+  return Object.fromEntries(
+    Object.entries(fieldErrors).map(([field, messages]) => [field, messages.map(inCurrentLocale)]),
+  );
+}
 
-export const forbidden = (message = 'Diese Aktion ist nicht erlaubt.'): HttpError =>
-  new HttpError('FORBIDDEN', message);
+export const unauthenticated = (
+  message: Localized = { de: 'Nicht angemeldet.', en: 'Not signed in.' },
+): HttpError => new HttpError('UNAUTHENTICATED', message);
+
+export const forbidden = (
+  message: Localized = { de: 'Diese Aktion ist nicht erlaubt.', en: 'This action is not allowed.' },
+): HttpError => new HttpError('FORBIDDEN', message);
 
 /**
  * Fremde und unbekannte Objekte liefern beide 404. Ein 403 würde verraten,
  * dass die ID existiert.
  */
-export const notFound = (message = 'Nicht gefunden.'): HttpError =>
-  new HttpError('NOT_FOUND', message);
+export const notFound = (
+  message: Localized = { de: 'Nicht gefunden.', en: 'Not found.' },
+): HttpError => new HttpError('NOT_FOUND', message);
 
-export const validationFailed = (message: string, fieldErrors?: FieldErrors): HttpError =>
-  new HttpError('VALIDATION_FAILED', message, fieldErrors);
+export const validationFailed = (
+  message: Localized,
+  fieldErrors?: LocalizedFieldErrors,
+): HttpError => new HttpError('VALIDATION_FAILED', message, fieldErrors);

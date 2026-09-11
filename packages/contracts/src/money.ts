@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
 
 /**
  * Geld wird durchgehend als Ganzzahl in Rappen geführt. Gleitkomma hat bei
@@ -7,10 +8,18 @@ import { z } from 'zod';
  */
 export const amountMinorSchema = z
   .number()
-  .int('Betrag muss in ganzen Rappen angegeben werden')
-  .min(0, 'Betrag darf nicht negativ sein')
+  .int(
+    localized({
+      de: 'Betrag muss in ganzen Rappen angegeben werden',
+      en: 'Amount must be given in whole rappen',
+    }),
+  )
+  .min(0, localized({ de: 'Betrag darf nicht negativ sein', en: 'Amount cannot be negative' }))
   // Eine Milliarde Rappen sind zehn Millionen Franken — als Schutz vor Tippfehlern.
-  .max(1_000_000_000, 'Betrag ist unrealistisch hoch');
+  .max(
+    1_000_000_000,
+    localized({ de: 'Betrag ist unrealistisch hoch', en: 'Amount is unrealistically high' }),
+  );
 
 /** Formatiert Rappen als Schweizer Betrag, zum Beispiel 485000 zu "4'850.00". */
 export function formatAmountMinor(minor: number): string {

@@ -63,7 +63,7 @@ export function createContractService(
     onDate: string,
   ): Promise<Row> {
     const row = await repository.findById(workspaceId, contractId, onDate);
-    if (!row) throw notFound('Vertrag nicht gefunden.');
+    if (!row) throw notFound({ de: 'Vertrag nicht gefunden.', en: 'Contract not found.' });
     return row as Row;
   }
 
@@ -120,14 +120,26 @@ export function createContractService(
 
       const customer = await repository.findAssignableCustomer(workspaceId, input.customerId);
       if (!customer) {
-        throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
-          customerId: ['Unbekannter Kunde'],
-        });
+        throw validationFailed(
+          {
+            de: 'Kunde gehört nicht zu diesem Workspace.',
+            en: 'This customer does not belong to this workspace.',
+          },
+          {
+            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+          },
+        );
       }
       if (customer.archivedAt) {
-        throw validationFailed('Für einen archivierten Kunden kann kein Vertrag entstehen.', {
-          customerId: ['Kunde ist archiviert'],
-        });
+        throw validationFailed(
+          {
+            de: 'Für einen archivierten Kunden kann kein Vertrag entstehen.',
+            en: 'An archived customer cannot get a new contract.',
+          },
+          {
+            customerId: [{ de: 'Kunde ist archiviert', en: 'Customer is archived' }],
+          },
+        );
       }
 
       const id = await db.transaction(async (tx) => {
@@ -146,7 +158,11 @@ export function createContractService(
           })
           .returning({ id: serviceContracts.id, name: serviceContracts.name });
 
-        if (!created) throw new HttpError('INTERNAL', 'Vertrag konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Vertrag konnte nicht angelegt werden.',
+            en: 'The contract could not be created.',
+          });
 
         await tx.insert(contractRates).values({
           workspaceId,
@@ -182,9 +198,20 @@ export function createContractService(
 
       if (fields.endDate !== undefined && fields.endDate !== null) {
         if (fields.endDate <= existing.startDate) {
-          throw validationFailed('Das Enddatum muss nach dem Beginn liegen.', {
-            endDate: ['Liegt vor oder auf dem Vertragsbeginn'],
-          });
+          throw validationFailed(
+            {
+              de: 'Das Enddatum muss nach dem Beginn liegen.',
+              en: 'The end date must be after the start.',
+            },
+            {
+              endDate: [
+                {
+                  de: 'Liegt vor oder auf dem Vertragsbeginn',
+                  en: 'Is on or before the contract start',
+                },
+              ],
+            },
+          );
         }
       }
 
@@ -222,10 +249,10 @@ export function createContractService(
           .returning({ id: serviceContracts.id });
 
         if (updated.length === 0) {
-          throw new HttpError(
-            'VERSION_CONFLICT',
-            'Der Vertrag wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
-          );
+          throw new HttpError('VERSION_CONFLICT', {
+            de: 'Der Vertrag wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
+            en: 'Someone else has changed this contract in the meantime. Please reload.',
+          });
         }
 
         await recordActivity(tx, {
@@ -254,21 +281,43 @@ export function createContractService(
       const existing = await requireContract(workspaceId, contractId, input.effectiveFrom);
 
       if (input.effectiveFrom < existing.startDate) {
-        throw validationFailed('Die Preisversion kann nicht vor dem Vertragsbeginn gelten.', {
-          effectiveFrom: ['Liegt vor dem Vertragsbeginn'],
-        });
+        throw validationFailed(
+          {
+            de: 'Die Preisversion kann nicht vor dem Vertragsbeginn gelten.',
+            en: 'A price version cannot apply before the contract starts.',
+          },
+          {
+            effectiveFrom: [
+              { de: 'Liegt vor dem Vertragsbeginn', en: 'Is before the contract start' },
+            ],
+          },
+        );
       }
       if (existing.endDate !== null && input.effectiveFrom >= existing.endDate) {
-        throw validationFailed('Die Preisversion läge nach dem Vertragsende.', {
-          effectiveFrom: ['Liegt am oder nach dem Enddatum'],
-        });
+        throw validationFailed(
+          {
+            de: 'Die Preisversion läge nach dem Vertragsende.',
+            en: 'This price version would start after the contract ends.',
+          },
+          {
+            effectiveFrom: [
+              { de: 'Liegt am oder nach dem Enddatum', en: 'Is on or after the end date' },
+            ],
+          },
+        );
       }
 
       const rates = await repository.listRates(workspaceId, contractId);
       if (rates.some((rate) => rate.effectiveFrom === input.effectiveFrom)) {
-        throw validationFailed('Für dieses Datum gibt es bereits eine Preisversion.', {
-          effectiveFrom: ['Datum ist bereits belegt'],
-        });
+        throw validationFailed(
+          {
+            de: 'Für dieses Datum gibt es bereits eine Preisversion.',
+            en: 'There is already a price version for this date.',
+          },
+          {
+            effectiveFrom: [{ de: 'Datum ist bereits belegt', en: 'Date is already taken' }],
+          },
+        );
       }
 
       await db.transaction(async (tx) => {

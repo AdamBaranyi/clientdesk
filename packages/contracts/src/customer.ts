@@ -1,12 +1,16 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
 /** Nur Name ist Pflicht. Keine angenommenen Adresspflichten. */
 export const customerInputSchema = z.object({
-  name: z.string().trim().min(1, 'Name ist erforderlich').max(200),
+  name: z.string().trim().min(1, localized(VALIDATION.nameRequired)).max(200),
   contactName: z.string().trim().max(200).nullish(),
-  email: z.union([z.email('Keine gültige E-Mail-Adresse'), z.literal('')]).nullish(),
+  email: z.union([z.email(localized(VALIDATION.invalidEmail)), z.literal('')]).nullish(),
   phone: z.string().trim().max(60).nullish(),
-  website: z.union([z.url('Keine gültige URL'), z.literal('')]).nullish(),
+  website: z
+    .union([z.url(localized({ de: 'Keine gültige URL', en: 'Not a valid URL' })), z.literal('')])
+    .nullish(),
   internalNote: z.string().trim().max(4000).nullish(),
 });
 

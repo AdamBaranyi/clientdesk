@@ -1,12 +1,18 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
 export const MILESTONE_STATUS = ['open', 'done'] as const;
 export type MilestoneStatus = (typeof MILESTONE_STATUS)[number];
 
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum im Format JJJJ-MM-TT erwartet');
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, localized(VALIDATION.isoDate));
 
 export const milestoneInputSchema = z.object({
-  title: z.string().trim().min(1, 'Titel ist erforderlich').max(200),
+  title: z
+    .string()
+    .trim()
+    .min(1, localized({ de: 'Titel ist erforderlich', en: 'Title is required' }))
+    .max(200),
   description: z.string().trim().max(2000).nullish(),
   dueDate: isoDate.nullish(),
 });

@@ -87,7 +87,7 @@ export function createPortalService(
   return {
     async overview(scope: PortalScope): Promise<PortalOverview> {
       const customer = await repository.customer(scope.workspaceId, scope.customerId);
-      if (!customer) throw notFound('Kunde nicht gefunden.');
+      if (!customer) throw notFound({ de: 'Kunde nicht gefunden.', en: 'Customer not found.' });
 
       const [projects, requests, documents] = await Promise.all([
         projectsWithMilestones(scope),
@@ -125,7 +125,7 @@ export function createPortalService(
       requestId: string,
     ): Promise<{ request: ClientRequest; comments: ClientComment[] }> {
       const row = await repository.request(scope.workspaceId, scope.customerId, requestId);
-      if (!row) throw notFound('Anfrage nicht gefunden.');
+      if (!row) throw notFound({ de: 'Anfrage nicht gefunden.', en: 'Request not found.' });
 
       const comments = await repository.publicComments(scope.workspaceId, requestId);
       return {
@@ -160,9 +160,12 @@ export function createPortalService(
       if (input.projectId) {
         const allowed = await repository.assignableProjects(scope.workspaceId, scope.customerId);
         if (!allowed.some((project) => project.id === input.projectId)) {
-          throw validationFailed('Dieses Projekt steht nicht zur Auswahl.', {
-            projectId: ['Unbekanntes Projekt'],
-          });
+          throw validationFailed(
+            { de: 'Dieses Projekt steht nicht zur Auswahl.', en: 'This project is not available.' },
+            {
+              projectId: [{ de: 'Unbekanntes Projekt', en: 'Unknown project' }],
+            },
+          );
         }
       }
 
@@ -194,7 +197,11 @@ export function createPortalService(
           })
           .returning({ id: serviceRequests.id });
 
-        if (!created) throw new HttpError('INTERNAL', 'Anfrage konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Anfrage konnte nicht angelegt werden.',
+            en: 'The request could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId: scope.workspaceId,
@@ -223,7 +230,7 @@ export function createPortalService(
       body: string,
     ): Promise<{ request: ClientRequest; comments: ClientComment[] }> {
       const existing = await repository.request(scope.workspaceId, scope.customerId, requestId);
-      if (!existing) throw notFound('Anfrage nicht gefunden.');
+      if (!existing) throw notFound({ de: 'Anfrage nicht gefunden.', en: 'Request not found.' });
 
       await db.transaction(async (tx) => {
         await tx.insert(requestComments).values({
@@ -277,10 +284,14 @@ export function createPortalService(
     async downloadDocument(scope: PortalScope, documentId: string) {
       const rows = await repository.documents(scope.workspaceId, scope.customerId);
       const row = rows.find((entry) => entry.id === documentId);
-      if (!row) throw notFound('Dokument nicht gefunden.');
+      if (!row) throw notFound({ de: 'Dokument nicht gefunden.', en: 'Document not found.' });
 
       const object = await storage.get(row.objectKey);
-      if (!object) throw notFound('Die Datei ist im Speicher nicht mehr vorhanden.');
+      if (!object)
+        throw notFound({
+          de: 'Die Datei ist im Speicher nicht mehr vorhanden.',
+          en: 'The file is no longer in storage.',
+        });
       return { originalName: row.originalName, bytes: object.bytes };
     },
   };

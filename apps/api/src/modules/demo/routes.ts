@@ -16,7 +16,7 @@ export function createDemoRouter(service: DemoService, env: Env): Router {
 
   /** Ohne DEMO_ENABLED existiert der ganze Bereich nicht. */
   router.use((_req, _res, next) => {
-    next(env.DEMO_ENABLED ? undefined : notFound('Nicht gefunden.'));
+    next(env.DEMO_ENABLED ? undefined : notFound({ de: 'Nicht gefunden.', en: 'Not found.' }));
   });
 
   // Eine Demo ist teuer: sie legt einen vollständigen Datenbestand samt

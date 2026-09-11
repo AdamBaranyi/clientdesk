@@ -1,3 +1,4 @@
+export * from './i18n.ts';
 export * from './auth.ts';
 export * from './customer.ts';
 export * from './dashboard.ts';

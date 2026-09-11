@@ -66,9 +66,15 @@ export function createInvitationService(db: Database, appOrigin: string) {
           .where(and(eq(customers.workspaceId, workspaceId), eq(customers.id, input.customerId)))
           .limit(1);
         if (!customer) {
-          throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
-            customerId: ['Unbekannter Kunde'],
-          });
+          throw validationFailed(
+            {
+              de: 'Kunde gehört nicht zu diesem Workspace.',
+              en: 'This customer does not belong to this workspace.',
+            },
+            {
+              customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+            },
+          );
         }
       }
 
@@ -79,9 +85,15 @@ export function createInvitationService(db: Database, appOrigin: string) {
         .where(and(eq(memberships.workspaceId, workspaceId), eq(users.normalizedEmail, email)))
         .limit(1);
       if (alreadyMember) {
-        throw validationFailed('Dieses Konto ist bereits Mitglied dieses Workspace.', {
-          email: ['Bereits Mitglied'],
-        });
+        throw validationFailed(
+          {
+            de: 'Dieses Konto ist bereits Mitglied dieses Workspace.',
+            en: 'This account is already a member of this workspace.',
+          },
+          {
+            email: [{ de: 'Bereits Mitglied', en: 'Already a member' }],
+          },
+        );
       }
 
       const token = randomBytes(32).toString('base64url');
@@ -101,7 +113,11 @@ export function createInvitationService(db: Database, appOrigin: string) {
           })
           .returning({ id: invitations.id, createdAt: invitations.createdAt });
 
-        if (!created) throw new HttpError('INTERNAL', 'Einladung konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Einladung konnte nicht angelegt werden.',
+            en: 'The invitation could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -115,7 +131,11 @@ export function createInvitationService(db: Database, appOrigin: string) {
       });
 
       const entry = (await this.list(workspaceId)).find((item) => item.id === id);
-      if (!entry) throw new HttpError('INTERNAL', 'Einladung nicht auffindbar.');
+      if (!entry)
+        throw new HttpError('INTERNAL', {
+          de: 'Einladung nicht auffindbar.',
+          en: 'The invitation cannot be found.',
+        });
 
       // Das Klartext-Token verlässt den Server genau hier, ein einziges Mal.
       return { ...entry, inviteUrl: `${appOrigin}/join/${token}` };
@@ -132,7 +152,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
           ),
         )
         .returning({ id: invitations.id });
-      if (deleted.length === 0) throw notFound('Einladung nicht gefunden.');
+      if (deleted.length === 0)
+        throw notFound({ de: 'Einladung nicht gefunden.', en: 'Invitation not found.' });
     },
 
     async preview(token: string): Promise<InvitationPreview> {
@@ -170,7 +191,10 @@ export function createInvitationService(db: Database, appOrigin: string) {
 
       // Unbekannt, verbraucht und abgelaufen sind für den Aufrufer dasselbe.
       if (!record || record.acceptedAt !== null || record.expiresAt.getTime() < Date.now()) {
-        throw notFound('Diese Einladung ist ungültig oder abgelaufen.');
+        throw notFound({
+          de: 'Diese Einladung ist ungültig oder abgelaufen.',
+          en: 'This invitation is invalid or has expired.',
+        });
       }
       return record;
     },
@@ -197,9 +221,10 @@ export function createInvitationService(db: Database, appOrigin: string) {
       // Adresse passen — sonst könnte ein fremder Link ein anderes Konto in
       // den Workspace holen.
       if (existingAccount && sessionUserId !== existingAccount.id) {
-        throw forbidden(
-          'Zu dieser E-Mail gibt es bereits ein Konto. Bitte zuerst damit anmelden und den Link erneut öffnen.',
-        );
+        throw forbidden({
+          de: 'Zu dieser E-Mail gibt es bereits ein Konto. Bitte zuerst damit anmelden und den Link erneut öffnen.',
+          en: 'An account already exists for this email. Sign in with it first, then open the link again.',
+        });
       }
 
       return db.transaction(async (tx) => {
@@ -209,7 +234,11 @@ export function createInvitationService(db: Database, appOrigin: string) {
           .where(and(eq(invitations.id, record.id), isNull(invitations.acceptedAt)))
           .returning({ id: invitations.id });
 
-        if (consumed.length === 0) throw notFound('Diese Einladung wurde bereits verwendet.');
+        if (consumed.length === 0)
+          throw notFound({
+            de: 'Diese Einladung wurde bereits verwendet.',
+            en: 'This invitation has already been used.',
+          });
 
         let userId = existingAccount?.id;
         if (!userId) {
@@ -221,7 +250,11 @@ export function createInvitationService(db: Database, appOrigin: string) {
               passwordHash: await hashPassword(input.password),
             })
             .returning({ id: users.id });
-          if (!created) throw new HttpError('INTERNAL', 'Konto konnte nicht angelegt werden.');
+          if (!created)
+            throw new HttpError('INTERNAL', {
+              de: 'Konto konnte nicht angelegt werden.',
+              en: 'The account could not be created.',
+            });
           userId = created.id;
         }
 

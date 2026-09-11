@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { amountMinorSchema } from './money.ts';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
 export const CONTRACT_CONFIRMATION = ['draft', 'confirmed'] as const;
 export type ContractConfirmation = (typeof CONTRACT_CONFIRMATION)[number];
@@ -11,12 +13,16 @@ export type ContractConfirmation = (typeof CONTRACT_CONFIRMATION)[number];
 export const CONTRACT_VISIBLE_STATUS = ['draft', 'planned', 'active', 'ended'] as const;
 export type ContractVisibleStatus = (typeof CONTRACT_VISIBLE_STATUS)[number];
 
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum im Format JJJJ-MM-TT erwartet');
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, localized(VALIDATION.isoDate));
 
 export const contractInputSchema = z
   .object({
     customerId: z.uuid(),
-    name: z.string().trim().min(1, 'Bezeichnung ist erforderlich').max(200),
+    name: z
+      .string()
+      .trim()
+      .min(1, localized({ de: 'Bezeichnung ist erforderlich', en: 'Name is required' }))
+      .max(200),
     startDate: isoDate,
     /** Exklusiv: am Enddatum selbst zählt der Vertrag nicht mehr. */
     endDate: isoDate.nullish(),
@@ -32,7 +38,10 @@ export const contractInputSchema = z
     monthlyAmountMinor: amountMinorSchema,
   })
   .refine((value) => !value.endDate || value.endDate > value.startDate, {
-    message: 'Das Enddatum muss nach dem Beginn liegen',
+    ...localized({
+      de: 'Das Enddatum muss nach dem Beginn liegen',
+      en: 'The end date must be after the start',
+    }),
     path: ['endDate'],
   });
 

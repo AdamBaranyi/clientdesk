@@ -51,10 +51,10 @@ export async function findExistingResult(
   if (existing.expiresAt.getTime() < Date.now()) return null;
 
   if (existing.requestHash !== scope.requestHash) {
-    throw new HttpError(
-      'IDEMPOTENCY_CONFLICT',
-      'Derselbe Idempotency-Key wurde bereits mit anderem Inhalt verwendet.',
-    );
+    throw new HttpError('IDEMPOTENCY_CONFLICT', {
+      de: 'Derselbe Idempotency-Key wurde bereits mit anderem Inhalt verwendet.',
+      en: 'The same idempotency key was already used with different content.',
+    });
   }
   return existing.resultReference;
 }

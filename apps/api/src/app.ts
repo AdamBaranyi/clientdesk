@@ -9,6 +9,7 @@ import type { DocumentStorage } from './storage/types.ts';
 import { csrfProtection } from './middleware/csrf.ts';
 import { errorHandler, notFoundHandler } from './middleware/error-handler.ts';
 import { requestContext } from './middleware/request-context.ts';
+import { requestLocale } from './middleware/request-locale.ts';
 import { createSessionMiddleware } from './middleware/session.ts';
 import { createAuthRepository } from './modules/auth/repository.ts';
 import { createAuthRouter } from './modules/auth/routes.ts';
@@ -69,6 +70,8 @@ export function createApp({ env, db, pool, logger, storage }: AppDependencies): 
     helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'same-site' } }),
   );
   app.use(requestContext(log));
+  // Vor Sitzung und CSRF: auch deren Ablehnungen kommen in der gewählten Sprache.
+  app.use(requestLocale());
   app.use(pinoHttp({ logger: log, quietReqLogger: true, serializers: requestLogSerializers }));
   app.use(express.json({ limit: '256kb' }));
   app.use(createSessionMiddleware(env, pool));

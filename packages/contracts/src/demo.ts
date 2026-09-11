@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Localized } from './i18n.ts';
 import { MEMBERSHIP_ROLES } from './workspace.ts';
 
 /**
@@ -14,11 +15,11 @@ export const DEMO_LIMITS = {
 
 export type DemoLimitedEntity = keyof typeof DEMO_LIMITS;
 
-export const DEMO_LIMIT_LABELS: Record<DemoLimitedEntity, string> = {
-  customers: 'Kunden',
-  projects: 'Projekte',
-  contracts: 'Verträge',
-  requests: 'Anfragen',
+export const DEMO_LIMIT_LABELS: Record<DemoLimitedEntity, Localized> = {
+  customers: { de: 'Kunden', en: 'customers' },
+  projects: { de: 'Projekte', en: 'projects' },
+  contracts: { de: 'Verträge', en: 'contracts' },
+  requests: { de: 'Anfragen', en: 'requests' },
 };
 
 /** Lebensdauer einer Demo. Danach räumt ein Lauf sie samt Dateien weg. */

@@ -1,18 +1,23 @@
 import { z } from 'zod';
 import { MEMBERSHIP_ROLES } from './workspace.ts';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
 /** Einladungen laufen ab. Eine Woche ist lang genug und kurz genug. */
 export const INVITATION_TTL_HOURS = 168;
 
 export const invitationInputSchema = z
   .object({
-    email: z.email('Keine gültige E-Mail-Adresse').max(320),
+    email: z.email(localized(VALIDATION.invalidEmail)).max(320),
     role: z.enum(MEMBERSHIP_ROLES),
     /** Bei Rolle client Pflicht, sonst verboten. */
     customerId: z.uuid().nullish(),
   })
   .refine((value) => (value.role === 'client') === Boolean(value.customerId), {
-    message: 'Ein Kundenzugang braucht genau einen zugeordneten Kunden',
+    ...localized({
+      de: 'Ein Kundenzugang braucht genau einen zugeordneten Kunden',
+      en: 'A client login needs exactly one assigned customer',
+    }),
     path: ['customerId'],
   });
 
@@ -56,7 +61,10 @@ export type InvitationPreview = z.infer<typeof invitationPreviewSchema>;
 
 export const acceptInvitationSchema = z.object({
   displayName: z.string().trim().min(1).max(200).optional(),
-  password: z.string().min(12, 'Mindestens 12 Zeichen').max(1024),
+  password: z
+    .string()
+    .min(12, localized({ de: 'Mindestens 12 Zeichen', en: 'At least 12 characters' }))
+    .max(1024),
 });
 
 export type AcceptInvitation = z.infer<typeof acceptInvitationSchema>;

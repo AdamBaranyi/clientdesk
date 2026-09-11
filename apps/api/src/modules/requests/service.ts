@@ -61,7 +61,7 @@ export function createRequestService(
 ) {
   async function require(workspaceId: string, requestId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, requestId);
-    if (!row) throw notFound('Anfrage nicht gefunden.');
+    if (!row) throw notFound({ de: 'Anfrage nicht gefunden.', en: 'Request not found.' });
     return row as Row;
   }
 
@@ -74,9 +74,17 @@ export function createRequestService(
     if (!projectId) return;
     const matches = await repository.projectBelongsToCustomer(workspaceId, projectId, customerId);
     if (!matches) {
-      throw validationFailed('Das Projekt gehört nicht zu diesem Kunden.', {
-        projectId: ['Projekt passt nicht zum Kunden'],
-      });
+      throw validationFailed(
+        {
+          de: 'Das Projekt gehört nicht zu diesem Kunden.',
+          en: 'This project does not belong to this customer.',
+        },
+        {
+          projectId: [
+            { de: 'Projekt passt nicht zum Kunden', en: 'Project does not match the customer' },
+          ],
+        },
+      );
     }
   }
 
@@ -126,9 +134,15 @@ export function createRequestService(
 
       const customer = await repository.customerExists(workspaceId, input.customerId);
       if (!customer) {
-        throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
-          customerId: ['Unbekannter Kunde'],
-        });
+        throw validationFailed(
+          {
+            de: 'Kunde gehört nicht zu diesem Workspace.',
+            en: 'This customer does not belong to this workspace.',
+          },
+          {
+            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+          },
+        );
       }
       await assertProjectMatches(workspaceId, input.projectId, input.customerId);
 
@@ -162,7 +176,11 @@ export function createRequestService(
           })
           .returning({ id: serviceRequests.id });
 
-        if (!created) throw new HttpError('INTERNAL', 'Anfrage konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Anfrage konnte nicht angelegt werden.',
+            en: 'The request could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -215,10 +233,10 @@ export function createRequestService(
           .returning({ id: serviceRequests.id });
 
         if (updated.length === 0) {
-          throw new HttpError(
-            'VERSION_CONFLICT',
-            'Die Anfrage wurde inzwischen geändert. Bitte neu laden.',
-          );
+          throw new HttpError('VERSION_CONFLICT', {
+            de: 'Die Anfrage wurde inzwischen geändert. Bitte neu laden.',
+            en: 'This request has been changed in the meantime. Please reload.',
+          });
         }
 
         await recordActivity(tx, {
@@ -243,9 +261,15 @@ export function createRequestService(
     ): Promise<ServiceRequest> {
       const existing = await require(workspaceId, requestId);
       if (!isAllowedTransition(existing.status, status)) {
-        throw validationFailed(`Übergang von ${existing.status} zu ${status} ist nicht erlaubt.`, {
-          status: ['Nicht erlaubter Übergang'],
-        });
+        throw validationFailed(
+          {
+            de: `Übergang von ${existing.status} zu ${status} ist nicht erlaubt.`,
+            en: `Changing from ${existing.status} to ${status} is not allowed.`,
+          },
+          {
+            status: [{ de: 'Nicht erlaubter Übergang', en: 'Transition not allowed' }],
+          },
+        );
       }
 
       await db.transaction(async (tx) => {
@@ -262,10 +286,10 @@ export function createRequestService(
           .returning({ id: serviceRequests.id });
 
         if (updated.length === 0) {
-          throw new HttpError(
-            'VERSION_CONFLICT',
-            'Die Anfrage wurde inzwischen geändert. Bitte neu laden.',
-          );
+          throw new HttpError('VERSION_CONFLICT', {
+            de: 'Die Anfrage wurde inzwischen geändert. Bitte neu laden.',
+            en: 'This request has been changed in the meantime. Please reload.',
+          });
         }
 
         await recordActivity(tx, {

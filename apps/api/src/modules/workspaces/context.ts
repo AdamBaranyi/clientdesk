@@ -39,13 +39,13 @@ export function requireWorkspace(repository: AuthRepository) {
 
     const parsed = workspaceIdSchema.safeParse(req.params.workspaceId);
     if (!parsed.success) {
-      next(notFound('Workspace nicht gefunden.'));
+      next(notFound({ de: 'Workspace nicht gefunden.', en: 'Workspace not found.' }));
       return;
     }
 
     const membership = await repository.findMembership(userId, parsed.data);
     if (!membership) {
-      next(notFound('Workspace nicht gefunden.'));
+      next(notFound({ de: 'Workspace nicht gefunden.', en: 'Workspace not found.' }));
       return;
     }
 
@@ -61,7 +61,8 @@ export function requireWorkspace(repository: AuthRepository) {
 }
 
 export function getWorkspace(req: Request): WorkspaceContext {
-  if (!req.workspace) throw unauthenticated('Kein Workspace-Kontext.');
+  if (!req.workspace)
+    throw unauthenticated({ de: 'Kein Workspace-Kontext.', en: 'No workspace context.' });
   return req.workspace;
 }
 
@@ -69,7 +70,7 @@ export function getWorkspace(req: Request): WorkspaceContext {
 export function requireInternal(req: Request, _res: Response, next: NextFunction): void {
   const context = getWorkspace(req);
   if (!isInternalRole(context.role)) {
-    next(notFound('Nicht gefunden.'));
+    next(notFound({ de: 'Nicht gefunden.', en: 'Not found.' }));
     return;
   }
   next();
@@ -78,7 +79,12 @@ export function requireInternal(req: Request, _res: Response, next: NextFunction
 export function requireOwner(req: Request, _res: Response, next: NextFunction): void {
   const context = getWorkspace(req);
   if (context.role !== 'owner') {
-    next(forbidden('Diese Aktion ist Owner-Konten vorbehalten.'));
+    next(
+      forbidden({
+        de: 'Diese Aktion ist Owner-Konten vorbehalten.',
+        en: 'Only owner accounts can do this.',
+      }),
+    );
     return;
   }
   next();

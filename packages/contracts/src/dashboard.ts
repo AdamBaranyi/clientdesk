@@ -1,6 +1,8 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum im Format JJJJ-MM-TT erwartet');
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, localized(VALIDATION.isoDate));
 
 export const dashboardQuerySchema = z.object({
   /** Steuert ausschliesslich die Vertragskennzahlen. */

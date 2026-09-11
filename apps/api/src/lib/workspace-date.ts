@@ -1,3 +1,4 @@
+import { currentLocale, type Locale } from '@tallyroom/contracts';
 /**
  * „Heute" ist das Kalenderdatum in der Zeitzone des Workspace, nicht die des
  * Servers. Ein Meilenstein gilt in Zürich als überfällig, sobald es dort der
@@ -19,20 +20,11 @@ export function isBefore(date: string, reference: string): boolean {
   return date < reference;
 }
 
-const MONTH_LABELS = [
-  'Jan',
-  'Feb',
-  'Mär',
-  'Apr',
-  'Mai',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Okt',
-  'Nov',
-  'Dez',
-] as const;
+/** Monatskürzel für die Achse des Verlaufs, in der Sprache des Requests. */
+const MONTH_LABELS: Record<Locale, readonly string[]> = {
+  de: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+};
 
 export interface MonthPoint {
   /** Datum, zu dem gerechnet wird. */
@@ -72,7 +64,7 @@ export function monthEndPoints(today: string, count: number): MonthPoint[] {
       date: isCurrentMonth
         ? today
         : `${pointYear}-${pad(pointMonth)}-${pad(lastDayOfMonth(pointYear, pointMonth))}`,
-      label: MONTH_LABELS[pointMonth - 1] ?? '?',
+      label: MONTH_LABELS[currentLocale()][pointMonth - 1] ?? '?',
       isCurrentMonth,
     });
   }

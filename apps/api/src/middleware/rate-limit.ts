@@ -54,7 +54,12 @@ export function rateLimit(options: RateLimitOptions) {
     if (bucket.count > options.max) {
       const retryAfter = Math.ceil((bucket.resetAt - now) / 1000);
       res.setHeader('Retry-After', String(retryAfter));
-      next(new HttpError('RATE_LIMITED', 'Zu viele Versuche. Bitte später erneut probieren.'));
+      next(
+        new HttpError('RATE_LIMITED', {
+          de: 'Zu viele Versuche. Bitte später erneut probieren.',
+          en: 'Too many attempts. Please try again later.',
+        }),
+      );
       return;
     }
 

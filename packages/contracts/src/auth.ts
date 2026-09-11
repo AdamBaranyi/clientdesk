@@ -1,9 +1,18 @@
 import { z } from 'zod';
 import { workspaceSummarySchema } from './workspace.ts';
+import { localized } from './i18n.ts';
 
 export const loginSchema = z.object({
-  email: z.string().trim().min(1, 'E-Mail ist erforderlich').max(320).toLowerCase(),
-  password: z.string().min(1, 'Passwort ist erforderlich').max(1024),
+  email: z
+    .string()
+    .trim()
+    .min(1, localized({ de: 'E-Mail ist erforderlich', en: 'Email is required' }))
+    .max(320)
+    .toLowerCase(),
+  password: z
+    .string()
+    .min(1, localized({ de: 'Passwort ist erforderlich', en: 'Password is required' }))
+    .max(1024),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

@@ -47,10 +47,10 @@ export function createDemoService(
     async createSession(): Promise<{ workspaceId: string; ownerUserId: string; expiresAt: Date }> {
       const active = await repository.activeDemoCount();
       if (active >= MAX_ACTIVE_DEMOS) {
-        throw new HttpError(
-          'RATE_LIMITED',
-          'Derzeit laufen zu viele Demos. Bitte in einigen Minuten erneut versuchen.',
-        );
+        throw new HttpError('RATE_LIMITED', {
+          de: 'Derzeit laufen zu viele Demos. Bitte in einigen Minuten erneut versuchen.',
+          en: 'Too many demos are running right now. Please try again in a few minutes.',
+        });
       }
 
       const suffix = randomUUID().slice(0, 8);
@@ -64,7 +64,11 @@ export function createDemoService(
           .insert(workspaces)
           .values({ name: 'Alpenblick & Partner (Demo)', isDemo: true, expiresAt })
           .returning({ id: workspaces.id });
-        if (!workspace) throw new HttpError('INTERNAL', 'Demo konnte nicht angelegt werden.');
+        if (!workspace)
+          throw new HttpError('INTERNAL', {
+            de: 'Demo konnte nicht angelegt werden.',
+            en: 'The demo could not be created.',
+          });
 
         const internalIds: string[] = [];
         for (const identity of INTERNAL_IDENTITIES) {
@@ -76,7 +80,11 @@ export function createDemoService(
               passwordHash: unusablePassword,
             })
             .returning({ id: users.id });
-          if (!user) throw new HttpError('INTERNAL', 'Demo-Konto konnte nicht angelegt werden.');
+          if (!user)
+            throw new HttpError('INTERNAL', {
+              de: 'Demo-Konto konnte nicht angelegt werden.',
+              en: 'The demo account could not be created.',
+            });
 
           await tx
             .insert(memberships)
@@ -85,7 +93,11 @@ export function createDemoService(
         }
 
         const ownerUserId = internalIds[0];
-        if (!ownerUserId) throw new HttpError('INTERNAL', 'Demo-Owner fehlt.');
+        if (!ownerUserId)
+          throw new HttpError('INTERNAL', {
+            de: 'Demo-Owner fehlt.',
+            en: 'The demo owner is missing.',
+          });
 
         await seedWorkspaceContent(tx, {
           workspaceId: workspace.id,
@@ -109,7 +121,8 @@ export function createDemoService(
 
     async status(workspaceId: string, currentUserId: string): Promise<DemoStatus> {
       const workspace = await repository.findWorkspace(workspaceId);
-      if (!workspace?.isDemo || !workspace.expiresAt) throw notFound('Keine Demo.');
+      if (!workspace?.isDemo || !workspace.expiresAt)
+        throw notFound({ de: 'Keine Demo.', en: 'Not a demo.' });
 
       const rows = await repository.identities(workspaceId);
       return {
@@ -132,17 +145,20 @@ export function createDemoService(
       targetUserId: string,
     ): Promise<void> {
       const workspace = await repository.findWorkspace(workspaceId);
-      if (!workspace?.isDemo) throw notFound('Keine Demo.');
+      if (!workspace?.isDemo) throw notFound({ de: 'Keine Demo.', en: 'Not a demo.' });
       if (workspace.expiresAt && workspace.expiresAt.getTime() < Date.now()) {
-        throw notFound('Diese Demo ist abgelaufen.');
+        throw notFound({ de: 'Diese Demo ist abgelaufen.', en: 'This demo has expired.' });
       }
 
       const identities = await repository.identities(workspaceId);
       if (!identities.some((identity) => identity.userId === currentUserId)) {
-        throw notFound('Keine Demo.');
+        throw notFound({ de: 'Keine Demo.', en: 'Not a demo.' });
       }
       if (!identities.some((identity) => identity.userId === targetUserId)) {
-        throw forbidden('Diese Identität gehört nicht zu dieser Demo.');
+        throw forbidden({
+          de: 'Diese Identität gehört nicht zu dieser Demo.',
+          en: 'This identity does not belong to this demo.',
+        });
       }
     },
   };

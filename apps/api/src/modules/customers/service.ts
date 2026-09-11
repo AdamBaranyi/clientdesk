@@ -1,3 +1,4 @@
+import { sameInAllLocales } from '@tallyroom/contracts';
 import { and, eq, sql } from 'drizzle-orm';
 import { customers, type Database } from '@tallyroom/db';
 import type {
@@ -57,7 +58,7 @@ export function createCustomerService(
 ) {
   async function requireCustomer(workspaceId: string, customerId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, customerId);
-    if (!row) throw notFound('Kunde nicht gefunden.');
+    if (!row) throw notFound({ de: 'Kunde nicht gefunden.', en: 'Customer not found.' });
     return row as Row;
   }
 
@@ -104,7 +105,11 @@ export function createCustomerService(
           })
           .returning({ id: customers.id, name: customers.name });
 
-        if (!created) throw new HttpError('INTERNAL', 'Kunde konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Kunde konnte nicht angelegt werden.',
+            en: 'The customer could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -165,10 +170,10 @@ export function createCustomerService(
           .returning({ id: customers.id });
 
         if (updated.length === 0) {
-          throw new HttpError(
-            'VERSION_CONFLICT',
-            'Der Kunde wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
-          );
+          throw new HttpError('VERSION_CONFLICT', {
+            de: 'Der Kunde wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
+            en: 'Someone else has changed this customer in the meantime. Please reload.',
+          });
         }
 
         await recordActivity(tx, {
@@ -201,11 +206,17 @@ export function createCustomerService(
         const blockers = await repository.archiveBlockers(workspaceId, customerId);
         const total = blockers.runningProjects + blockers.activeContracts + blockers.openRequests;
         if (total > 0) {
-          throw validationFailed('Der Kunde kann noch nicht archiviert werden.', {
-            runningProjects: [String(blockers.runningProjects)],
-            activeContracts: [String(blockers.activeContracts)],
-            openRequests: [String(blockers.openRequests)],
-          });
+          throw validationFailed(
+            {
+              de: 'Der Kunde kann noch nicht archiviert werden.',
+              en: 'This customer cannot be archived yet.',
+            },
+            {
+              runningProjects: [sameInAllLocales(String(blockers.runningProjects))],
+              activeContracts: [sameInAllLocales(String(blockers.activeContracts))],
+              openRequests: [sameInAllLocales(String(blockers.openRequests))],
+            },
+          );
         }
 
         await tx

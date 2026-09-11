@@ -36,14 +36,24 @@ export function csrfProtection(env: Env) {
 
     const origin = req.get('origin') ?? originFromReferer(req.get('referer'));
     if (origin !== env.APP_ORIGIN) {
-      next(new HttpError('CSRF_FAILED', 'Herkunft der Anfrage ist nicht erlaubt.'));
+      next(
+        new HttpError('CSRF_FAILED', {
+          de: 'Herkunft der Anfrage ist nicht erlaubt.',
+          en: 'The origin of this request is not allowed.',
+        }),
+      );
       return;
     }
 
     const provided = req.get(HEADER);
     const expected = req.session.csrfSecret;
     if (!provided || !expected || !constantTimeEquals(provided, expected)) {
-      next(new HttpError('CSRF_FAILED', 'CSRF-Token fehlt oder ist ungültig.'));
+      next(
+        new HttpError('CSRF_FAILED', {
+          de: 'CSRF-Token fehlt oder ist ungültig.',
+          en: 'The CSRF token is missing or invalid.',
+        }),
+      );
       return;
     }
 

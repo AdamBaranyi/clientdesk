@@ -19,7 +19,7 @@ export function createMilestoneService(db: Database, repository: ProjectReposito
     today: string,
   ): Promise<void> {
     const project = await repository.findById(workspaceId, projectId, today);
-    if (!project) throw notFound('Projekt nicht gefunden.');
+    if (!project) throw notFound({ de: 'Projekt nicht gefunden.', en: 'Project not found.' });
   }
 
   async function listFor(
@@ -66,7 +66,11 @@ export function createMilestoneService(db: Database, repository: ProjectReposito
           })
           .returning({ id: milestones.id, title: milestones.title });
 
-        if (!created) throw new HttpError('INTERNAL', 'Meilenstein konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Meilenstein konnte nicht angelegt werden.',
+            en: 'The milestone could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -93,7 +97,8 @@ export function createMilestoneService(db: Database, repository: ProjectReposito
       input: MilestoneUpdate,
     ): Promise<Milestone[]> {
       const existing = await repository.findMilestone(workspaceId, milestoneId);
-      if (!existing) throw notFound('Meilenstein nicht gefunden.');
+      if (!existing)
+        throw notFound({ de: 'Meilenstein nicht gefunden.', en: 'Milestone not found.' });
 
       await db.transaction(async (tx) => {
         await tx

@@ -58,7 +58,7 @@ export function createProjectService(
     today: string,
   ): Promise<ProjectRow> {
     const row = await repository.findById(workspaceId, projectId, today);
-    if (!row) throw notFound('Projekt nicht gefunden.');
+    if (!row) throw notFound({ de: 'Projekt nicht gefunden.', en: 'Project not found.' });
     return row as ProjectRow;
   }
 
@@ -105,14 +105,26 @@ export function createProjectService(
 
       const customer = await repository.findAssignableCustomer(workspaceId, input.customerId);
       if (!customer) {
-        throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
-          customerId: ['Unbekannter Kunde'],
-        });
+        throw validationFailed(
+          {
+            de: 'Kunde gehört nicht zu diesem Workspace.',
+            en: 'This customer does not belong to this workspace.',
+          },
+          {
+            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+          },
+        );
       }
       if (customer.archivedAt) {
-        throw validationFailed('Für einen archivierten Kunden kann kein Projekt entstehen.', {
-          customerId: ['Kunde ist archiviert'],
-        });
+        throw validationFailed(
+          {
+            de: 'Für einen archivierten Kunden kann kein Projekt entstehen.',
+            en: 'An archived customer cannot get a new project.',
+          },
+          {
+            customerId: [{ de: 'Kunde ist archiviert', en: 'Customer is archived' }],
+          },
+        );
       }
 
       const id = await db.transaction(async (tx) => {
@@ -131,7 +143,11 @@ export function createProjectService(
           })
           .returning({ id: projects.id, name: projects.name });
 
-        if (!created) throw new HttpError('INTERNAL', 'Projekt konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Projekt konnte nicht angelegt werden.',
+            en: 'The project could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -163,8 +179,11 @@ export function createProjectService(
         const open = await repository.openMilestoneCount(workspaceId, projectId);
         if (open > 0 && !completionReason) {
           throw validationFailed(
-            `Noch ${open} offene Meilensteine. Zum Abschliessen ist eine Begründung nötig.`,
-            { completionReason: ['Begründung erforderlich'] },
+            {
+              de: `Noch ${open} offene Meilensteine. Zum Abschliessen ist eine Begründung nötig.`,
+              en: `${open} milestones are still open. Closing the project needs a reason.`,
+            },
+            { completionReason: [{ de: 'Begründung erforderlich', en: 'Reason required' }] },
           );
         }
       }
@@ -204,10 +223,10 @@ export function createProjectService(
           .returning({ id: projects.id });
 
         if (updated.length === 0) {
-          throw new HttpError(
-            'VERSION_CONFLICT',
-            'Das Projekt wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
-          );
+          throw new HttpError('VERSION_CONFLICT', {
+            de: 'Das Projekt wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
+            en: 'Someone else has changed this project in the meantime. Please reload.',
+          });
         }
 
         if (status !== undefined && status !== existing.status) {

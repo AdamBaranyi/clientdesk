@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { localized } from './i18n.ts';
+import { VALIDATION } from './validation-messages.ts';
 
 export const PROJECT_STATUS = ['planned', 'active', 'paused', 'completed', 'archived'] as const;
 export type ProjectStatus = (typeof PROJECT_STATUS)[number];
@@ -6,12 +8,12 @@ export type ProjectStatus = (typeof PROJECT_STATUS)[number];
 /** Status, die als „laufend" gelten und eine Archivierung des Kunden blockieren. */
 export const RUNNING_PROJECT_STATUS: readonly ProjectStatus[] = ['planned', 'active', 'paused'];
 
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum im Format JJJJ-MM-TT erwartet');
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, localized(VALIDATION.isoDate));
 
 export const projectInputSchema = z
   .object({
     customerId: z.uuid(),
-    name: z.string().trim().min(1, 'Name ist erforderlich').max(200),
+    name: z.string().trim().min(1, localized(VALIDATION.nameRequired)).max(200),
     description: z.string().trim().max(4000).nullish(),
     internalNote: z.string().trim().max(4000).nullish(),
     ownerUserId: z.uuid().nullish(),
@@ -20,7 +22,10 @@ export const projectInputSchema = z
     clientVisible: z.boolean().default(false),
   })
   .refine((value) => !value.targetDate || value.targetDate >= value.startDate, {
-    message: 'Zieltermin darf nicht vor dem Start liegen',
+    ...localized({
+      de: 'Zieltermin darf nicht vor dem Start liegen',
+      en: 'The target date cannot be before the start',
+    }),
     path: ['targetDate'],
   });
 

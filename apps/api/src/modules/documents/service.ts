@@ -66,7 +66,8 @@ export function createDocumentService(
    */
   async function require(workspaceId: string, documentId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, documentId);
-    if (!row || row.deletionStatus !== 'active') throw notFound('Dokument nicht gefunden.');
+    if (!row || row.deletionStatus !== 'active')
+      throw notFound({ de: 'Dokument nicht gefunden.', en: 'Document not found.' });
     return row as Row;
   }
 
@@ -89,9 +90,15 @@ export function createDocumentService(
       assertAcceptablePdf(input.bytes, input.contentType);
 
       if (!(await repository.customerExists(workspaceId, input.customerId))) {
-        throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
-          customerId: ['Unbekannter Kunde'],
-        });
+        throw validationFailed(
+          {
+            de: 'Kunde gehört nicht zu diesem Workspace.',
+            en: 'This customer does not belong to this workspace.',
+          },
+          {
+            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+          },
+        );
       }
       if (input.projectId) {
         const matches = await repository.projectBelongsToCustomer(
@@ -100,9 +107,17 @@ export function createDocumentService(
           input.customerId,
         );
         if (!matches) {
-          throw validationFailed('Das Projekt gehört nicht zu diesem Kunden.', {
-            projectId: ['Projekt passt nicht zum Kunden'],
-          });
+          throw validationFailed(
+            {
+              de: 'Das Projekt gehört nicht zu diesem Kunden.',
+              en: 'This project does not belong to this customer.',
+            },
+            {
+              projectId: [
+                { de: 'Projekt passt nicht zum Kunden', en: 'Project does not match the customer' },
+              ],
+            },
+          );
         }
       }
 
@@ -128,7 +143,11 @@ export function createDocumentService(
           })
           .returning({ id: documents.id, originalName: documents.originalName });
 
-        if (!created) throw new HttpError('INTERNAL', 'Dokument konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Dokument konnte nicht angelegt werden.',
+            en: 'The document could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -154,9 +173,15 @@ export function createDocumentService(
       customerId: string,
     ): Promise<TallyroomDocument> {
       if (!(await repository.customerExists(workspaceId, customerId))) {
-        throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
-          customerId: ['Unbekannter Kunde'],
-        });
+        throw validationFailed(
+          {
+            de: 'Kunde gehört nicht zu diesem Workspace.',
+            en: 'This customer does not belong to this workspace.',
+          },
+          {
+            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+          },
+        );
       }
 
       const bytes = makeSimplePdf('Beispieldokument — erfundener Inhalt zu Vorführzwecken');
@@ -177,7 +202,11 @@ export function createDocumentService(
             clientVisible: false,
           })
           .returning({ id: documents.id });
-        if (!created) throw new HttpError('INTERNAL', 'Dokument konnte nicht angelegt werden.');
+        if (!created)
+          throw new HttpError('INTERNAL', {
+            de: 'Dokument konnte nicht angelegt werden.',
+            en: 'The document could not be created.',
+          });
 
         await recordActivity(tx, {
           workspaceId,
@@ -197,7 +226,11 @@ export function createDocumentService(
     async read(workspaceId: string, documentId: string) {
       const row = await require(workspaceId, documentId);
       const object = await storage.get(row.objectKey);
-      if (!object) throw notFound('Die Datei ist im Speicher nicht mehr vorhanden.');
+      if (!object)
+        throw notFound({
+          de: 'Die Datei ist im Speicher nicht mehr vorhanden.',
+          en: 'The file is no longer in storage.',
+        });
       return { document: toDto(row), bytes: object.bytes };
     },
 

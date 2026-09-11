@@ -42,10 +42,10 @@ export function createDemoLimits(db: Database) {
      */
     async assertUploadAllowed(workspaceId: string): Promise<void> {
       if (!(await isDemo(workspaceId))) return;
-      throw new HttpError(
-        'FORBIDDEN',
-        'In der Demo werden keine eigenen Dateien angenommen. Nutzen Sie das enthaltene Beispieldokument.',
-      );
+      throw new HttpError('FORBIDDEN', {
+        de: 'In der Demo werden keine eigenen Dateien angenommen. Nutzen Sie das enthaltene Beispieldokument.',
+        en: 'The demo does not accept your own files. Use the included sample document.',
+      });
     },
 
     async assertBelowLimit(workspaceId: string, entity: DemoLimitedEntity): Promise<void> {
@@ -61,8 +61,11 @@ export function createDemoLimits(db: Database) {
       if ((row?.value ?? 0) >= limit) {
         throw new HttpError(
           'VALIDATION_FAILED',
-          `In der Demo sind höchstens ${limit} ${DEMO_LIMIT_LABELS[entity]} möglich.`,
-          { limit: [`Grenze von ${limit} erreicht`] },
+          {
+            de: `In der Demo sind höchstens ${limit} ${DEMO_LIMIT_LABELS[entity].de} möglich.`,
+            en: `The demo allows at most ${limit} ${DEMO_LIMIT_LABELS[entity].en}.`,
+          },
+          { limit: [{ de: `Grenze von ${limit} erreicht`, en: `Limit of ${limit} reached` }] },
         );
       }
     },
