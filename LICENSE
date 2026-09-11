@@ -1,0 +1,22 @@
+Copyright (c) 2026 Ádám Baranyi. Alle Rechte vorbehalten.
+
+Der Quelltext dieses Repositorys ist öffentlich, damit er gelesen und beurteilt
+werden kann. Das ist keine Lizenz: Nutzung, Veränderung und Weitergabe, ganz
+oder in Teilen, sind ohne schriftliche Erlaubnis nicht gestattet.
+
+Bestandteile Dritter stehen unter ihren eigenen Lizenzen:
+
+- Die Schriften IBM Plex Sans, IBM Plex Sans Condensed und IBM Plex Mono unter
+  der SIL Open Font License 1.1, siehe apps/web/public/fonts/OFL.txt
+- Die Abhängigkeiten aus package.json und bun.lock unter ihren jeweiligen
+  Lizenzen
+
+---
+
+Copyright (c) 2026 Ádám Baranyi. All rights reserved.
+
+The source code in this repository is public so that it can be read and
+assessed. This is not a licence: use, modification and distribution, in whole
+or in part, require written permission. Third-party components remain under
+their own licences; the IBM Plex fonts are licensed under the SIL Open Font
+License 1.1 (apps/web/public/fonts/OFL.txt).
