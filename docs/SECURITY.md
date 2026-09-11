@@ -53,8 +53,15 @@ Umgebungsvariablen werden beim Start einmal geprüft; ein Platzhalter-`SESSION_S
 Start ab.
 
 **Fehler und Logs.** Antworten haben die Form `{ error: { code, message, requestId } }` ohne
-Interna. Logs tragen Request-ID, Route, Status und Laufzeit; Cookie-, Authorization- und
-CSRF-Header sowie Passwortfelder werden entfernt.
+Interna. Ein Request-Log trägt genau Request-ID, Methode, Pfad, Status und Laufzeit. Bis zum
+11.09.2026 standen dort alle Header ausser den geschwärzten, also auch die Client-Adresse aus
+`X-Forwarded-For`, die Browserkennung und die Query, in der ein Suchbegriff oft ein Kundenname ist.
+Die Schwärzung für Cookie-, Authorization- und CSRF-Header sowie Passwortfelder bleibt als zweite
+Sicherung bestehen. Caddy schreibt kein Zugriffsprotokoll.
+
+**IP-Adressen.** Gespeichert werden sie nirgends. Das Rate-Limit hält eine Adresse im
+Prozessspeicher, solange ihr Zeitfenster läuft, und verwirft sie spätestens eine Minute danach.
+Vorher wurde erst ab 5'000 Einträgen aufgeräumt, auf einer ruhigen Seite also nie.
 
 **Geheimnisse.** Nur Platzhalter in `.env.example`, `.env` ist ignoriert.
 

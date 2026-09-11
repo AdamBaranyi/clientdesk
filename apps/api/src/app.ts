@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import { pinoHttp } from 'pino-http';
 import type { Database, Pool } from '@tallyroom/db';
 import type { Env } from './config/env.ts';
-import { createLogger, type Logger } from './lib/logger.ts';
+import { createLogger, requestLogSerializers, type Logger } from './lib/logger.ts';
 import { createS3Storage } from './storage/s3.ts';
 import type { DocumentStorage } from './storage/types.ts';
 import { csrfProtection } from './middleware/csrf.ts';
@@ -69,7 +69,7 @@ export function createApp({ env, db, pool, logger, storage }: AppDependencies): 
     helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'same-site' } }),
   );
   app.use(requestContext(log));
-  app.use(pinoHttp({ logger: log, quietReqLogger: true }));
+  app.use(pinoHttp({ logger: log, quietReqLogger: true, serializers: requestLogSerializers }));
   app.use(express.json({ limit: '256kb' }));
   app.use(createSessionMiddleware(env, pool));
   app.use(csrfProtection(env));

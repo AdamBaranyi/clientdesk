@@ -13,16 +13,33 @@ export interface RateLimitOptions {
   keyOf?: (req: Request) => string;
 }
 
+/** So oft fliegen abgelaufene Einträge aus dem Speicher. */
+const SWEEP_INTERVAL_MS = 60_000;
+
 /**
  * Bewusst im Prozessspeicher: bei einer einzelnen API-Instanz reicht das und
  * spart eine weitere Abhängigkeit. Bei mehreren Instanzen gehört der Zähler in
  * einen gemeinsamen Speicher — vermerkt in docs/ARCHITECTURE.md.
+ *
+ * Der Schlüssel ist meist eine IP-Adresse. Sie bleibt nur so lange im
+ * Speicher, wie ihr Zeitfenster läuft, und höchstens eine Minute darüber —
+ * so steht es in der Datenschutzerklärung. Vorher wurde erst ab 5'000
+ * Einträgen aufgeräumt; auf einer ruhigen Seite blieb eine Adresse damit
+ * beliebig lange liegen.
  */
 export function rateLimit(options: RateLimitOptions) {
   const buckets = new Map<string, Bucket>();
   const keyOf = options.keyOf ?? ((req: Request) => req.ip ?? 'unbekannt');
 
-  return (req: Request, res: Response, next: NextFunction): void => {
+  // unref: der Takt allein hält den Prozess nicht am Leben.
+  setInterval(() => {
+    const now = Date.now();
+    for (const [key, bucket] of buckets) {
+      if (bucket.resetAt <= now) buckets.delete(key);
+    }
+  }, SWEEP_INTERVAL_MS).unref();
+
+  const middleware = (req: Request, res: Response, next: NextFunction): void => {
     const now = Date.now();
     const key = keyOf(req);
     const bucket = buckets.get(key);
@@ -41,13 +58,9 @@ export function rateLimit(options: RateLimitOptions) {
       return;
     }
 
-    // Abgelaufene Einträge gelegentlich aufräumen, damit die Map nicht wächst.
-    if (buckets.size > 5_000) {
-      for (const [entryKey, entry] of buckets) {
-        if (entry.resetAt <= now) buckets.delete(entryKey);
-      }
-    }
-
     next();
   };
+
+  /** Wie viele Schlüssel gerade im Speicher liegen. Für den Test der Aufbewahrung. */
+  return Object.assign(middleware, { trackedKeys: () => buckets.size });
 }
