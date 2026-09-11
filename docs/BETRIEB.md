@@ -29,16 +29,18 @@ steht.
 ### Einrichten, einmalig
 
 ```bash
-ssh -t vps1 'sudo sh -c "install -m 644 /opt/tallyroom/infra/systemd/tallyroom-backup.service /opt/tallyroom/infra/systemd/tallyroom-backup.timer /etc/systemd/system/ && systemctl daemon-reload && systemctl enable --now tallyroom-backup.timer && systemctl list-timers tallyroom-backup.timer"'
+ssh -t vps1 'sudo sh -c "install -m 644 /opt/tallyroom/infra/systemd/tallyroom-backup.service /opt/tallyroom/infra/systemd/tallyroom-backup.timer /etc/systemd/system/ && systemctl daemon-reload && systemctl enable --now tallyroom-backup.timer && systemctl list-timers --no-pager tallyroom-backup.timer"'
 ```
 
 ### Kontrollieren
 
 ```bash
-ssh -t vps1 'sudo systemctl list-timers tallyroom-backup.timer; sudo journalctl -u tallyroom-backup -n 20 --no-pager'
+ssh -t vps1 'sudo systemctl list-timers --no-pager tallyroom-backup.timer; sudo journalctl -u tallyroom-backup -n 20 --no-pager'
 ```
 
-Die erste Zeile zeigt den nächsten und den letzten Lauf, die zweite das Ergebnis. Eine
+Die erste Zeile zeigt den nächsten und den letzten Lauf, die zweite das Ergebnis. `--no-pager`
+gehört dazu: über `ssh -t` öffnet systemd sonst eine Blätteransicht, und alles Folgende wartet,
+bis jemand `q` drückt. Eine
 gescheiterte Sicherung meldet heute niemand von selbst — siehe «Offen» unten.
 
 ## Probe-Wiederherstellung

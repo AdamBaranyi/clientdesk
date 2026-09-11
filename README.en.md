@@ -16,8 +16,9 @@ A portfolio project by Adam Baranyi. All data in the application is made up.
 > Docker Compose and Let's Encrypt.
 >
 > **Status: milestone 6 of 6.** All required features are in place, including an isolated visitor
-> demo with role switching and a command palette. Deployment stages D0 to D6 are done; D7 (backups
-> with a real restore test) and D8 (server guide, rollback, case study) are still open. The detailed
+> demo with role switching and a command palette. Deployment stages D0 to D7 are done, including
+> nightly backups and a passed restore drill on the server; D8 (server guide, rollback, case study)
+> is still open. The detailed
 > status is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) (German).
 
 ## Tech stack

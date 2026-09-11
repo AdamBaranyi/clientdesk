@@ -142,6 +142,9 @@ Objekte in der neuen Garage mit derselben Prüfsumme. Gegenprobe: ein aus dem Ar
 Dokument, Schlusszeile und Prüfsummen passend nachgeführt, lässt die Probe mit «Aktive Dokumente
 ohne Datei im Archiv: 1» scheitern. Danach blieben keine Container und kein Netz zurück.
 
+Auf dem Server am selben Abend, mit der ersten Sicherung aus dem systemd-Timer: **Probe
+bestanden**, 16 Tabellen, 18 aktive Dokumente mit Datei, 18 Objekte gleich.
+
 ### Was geprüft wird
 
 **Dateilängen-Zählweise** (`scripts/check-file-length.test.mjs`, 12 Tests) — leere Datei, mit und

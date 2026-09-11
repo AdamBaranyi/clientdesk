@@ -16,9 +16,10 @@ Portfolio-Projekt von Adam Baranyi. Alle Daten in der Anwendung sind erfunden.
 > mit Caddy, Docker Compose und Let's Encrypt.
 >
 > **Stand: Meilenstein 6 von 6.** Alle Pflichtfunktionen stehen, samt isolierter Besucher-Demo mit
-> Rollenwechsel und Kommandopalette. Vom Deployment sind die Etappen D0 bis D6 erledigt; offen sind
-> D7 (Sicherung mit echtem Restore-Test) und D8 (Server-Anleitung, Rollback, Fallstudie). Der
-> genaue Stand steht in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+> Rollenwechsel und Kommandopalette. Vom Deployment sind die Etappen D0 bis D7 erledigt, samt
+> nächtlicher Sicherung und bestandener Probe-Wiederherstellung auf dem Server; offen ist D8
+> (Server-Anleitung, Rollback, Fallstudie). Der genaue Stand steht in
+> [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
 
