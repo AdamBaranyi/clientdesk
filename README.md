@@ -117,7 +117,7 @@ bun run test     # Unit- und Integrationstests
 Die Integrationstests brauchen die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.
 `bun run test` liest die Datei nicht selbst, deshalb lokal: `bun --env-file=.env run vitest run`.
 
-Stand 11.09.2026: 207 Unit- und Integrationstests, 210 Playwright-Prüfungen über sechs Breiten
+Stand 11.09.2026: 207 Unit- und Integrationstests, 228 Playwright-Prüfungen über sechs Breiten
 (samt axe, allen vier Sprachen und dem Rundgang) und eine Produktionsprüfung gegen den Liveserver
 mit 3 von 3. Einzelheiten in [docs/TESTING.md](docs/TESTING.md).
 

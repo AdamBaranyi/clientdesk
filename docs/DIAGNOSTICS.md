@@ -421,12 +421,56 @@ Scan läuft vor einem Push jetzt ohne Pipe, und der Exit-Code wird ausdrücklich
 
 ---
 
+## 20 · Die Barrierefreiheitsprüfung lief nie ohne Bewegung
+
+**Symptom.** Ein neuer Test für den Nebel der Startseite verlangte bei reduzierter Bewegung, dass
+es keinen Pause-Knopf gibt. Er fand einen, bei allen sechs Breiten.
+
+**Messung.** Dieselbe Seite in einem von Hand gestarteten Browser mit `reducedMotion: 'reduce'`:
+kein Knopf, der Nebel steht still. Die Seite war richtig, der Test nicht.
+
+**Ursache.** `test.use({ reducedMotion: 'reduce' })` sieht aus wie eine Testoption, ist aber
+keine: in Playwright 1.57 gehört die Einstellung unter `contextOptions`. `test.use` übergeht
+Unbekanntes ohne Warnung. Dieselbe Zeile stand seit Meilenstein 6a in `e2e/a11y.spec.ts`; axe
+lief dort also nie ohne Bewegung, obwohl Kommentar und Doku das sagten. Aufgefallen ist es nicht,
+weil die Prüfung laufende Bewegungen ohnehin ans Ende setzt. TypeScript hätte die Zeile sofort
+gemeldet — aber die Tests liefen durch keinen Typecheck.
+
+**Korrektur.** `contextOptions: { reducedMotion: 'reduce' }` in beiden Dateien, und
+`bun run typecheck` prüft jetzt auch `e2e/` und die Playwright-Konfigurationen
+(`tsconfig.e2e.json`). Der erste Lauf fand noch eine zweite Stelle: `className` ist bei SVG kein
+Text.
+
+**Regel.** Testcode ist Code. Was keinen Typecheck durchläuft, kann still das Falsche prüfen.
+
+---
+
+## 21 · Der Nebel verschwand im Entwicklungsmodus
+
+**Symptom.** Auf dem Entwicklungsserver stand die Startseite ohne Nebel da, ohne Fehler in der
+Konsole. Im Produktionsbau war er da.
+
+**Messung.** Shader übersetzt, Programm gebunden, `createFog` auf einer Probeleinwand in Ordnung.
+Nur auf der Seite selbst lieferte es `null`.
+
+**Ursache.** React startet Effekte im Entwicklungsmodus zur Probe zweimal: aufbauen, abräumen,
+wieder aufbauen. Beim Abräumen verwarf der Nebel seinen WebGL-Kontext absichtlich
+(`WEBGL_lose_context`). Der zweite Aufbau bekam dieselbe Leinwand mit einem toten Kontext, der
+Shader liess sich nicht mehr übersetzen, und die Komponente gab still auf.
+
+**Korrektur.** Der Kontext wird nicht mehr verworfen; mit der Leinwand verschwindet er ohnehin.
+
+**Regel.** Aufräumen muss so sein, dass ein erneuter Aufbau danach funktioniert. React prüft das
+im Entwicklungsmodus absichtlich.
+
+---
+
 ## Was daraus als Werkzeug geblieben ist
 
 | Werkzeug                    | Hält fest                                                    |
 | --------------------------- | ------------------------------------------------------------ |
 | `bun run verify`            | Format, Dateilänge, Lint samt `jsx-a11y`, Typen              |
 | `bun run test`              | 196 Unit- und Integrationstests                              |
-| `bun run test:e2e`          | 210 Prüfungen über sechs Breiten, samt axe und vier Sprachen |
+| `bun run test:e2e`          | 228 Prüfungen über sechs Breiten, samt axe und vier Sprachen |
 | `bun run check:bundle-size` | Erstlast 142 KB, CSS 8 KB, Diagramm 115 KB, je gzip          |
 | `e2e/production.spec.ts`    | Header, CSP ohne Verstoss auch ohne Konsoleneintrag, Demo    |

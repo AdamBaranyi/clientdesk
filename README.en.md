@@ -117,7 +117,7 @@ The integration tests need the test database running and `TEST_DATABASE_URL` fro
 `bun run test` does not read that file itself, so run them locally with
 `bun --env-file=.env run vitest run`.
 
-As of 11.09.2026: 207 unit and integration tests, 210 Playwright checks across six widths
+As of 11.09.2026: 207 unit and integration tests, 228 Playwright checks across six widths
 (including axe, all four languages and the tour) and a production check against the live server,
 3 of 3 passing. Details in [docs/TESTING.md](docs/TESTING.md) (German).
 

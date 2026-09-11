@@ -46,7 +46,7 @@ bun run test:e2e        # alle sechs Breiten
 bun run test:e2e:ui     # zum Nachsehen, wenn etwas rot ist
 ```
 
-**210 Prüfungen im Lauf, rund 85 Sekunden** (11.09.2026). Dazu kommen 60 übersprungene,
+**228 Prüfungen im Lauf, rund zwei Minuten** (11.09.2026). Dazu kommen 60 übersprungene,
 alle mit Absicht: Die drei Messungen gegen Lastdaten und die sechs Sprachprüfungen laufen nur bei
 1440 Pixeln, die drei Breitenprüfungen der Übersetzungen nur bei 320. Sechsmal dieselbe Zahl
 wäre keine zusätzliche Erkenntnis.
@@ -81,6 +81,17 @@ ausschliesslich lesen — **ein Test, der schreibt, darf diese Sitzung nicht ben
 **Barrierefreiheit mit axe** (`e2e/a11y.spec.ts`) seit Meilenstein 6a: sieben Seiten, samt Impressum
 und Datenschutz, in beiden
 Erscheinungsbildern, dazu der offene Dialog und die Kommandopalette mit Treffern. Null Verstösse.
+Seit dem 11.09.2026 wirklich ohne Bewegung — vorher wurde die Einstellung still übergangen
+(DIAGNOSTICS Nummer 20).
+
+**Nebel der Startseite** (`e2e/landing.spec.ts`, alle sechs Breiten): er blendet hinter dem Text
+auf, die Überschrift wartet nicht darauf; «Bewegung anhalten» hält ihn wirklich an — zwei
+Aufnahmen der Leinwand im Abstand von 700 ms sind dann gleich, vorher verschieden — und die Wahl
+gilt nach dem Neuladen; bei reduzierter Bewegung steht er still, und es gibt keinen Knopf.
+Kontrast gemessen, weil axe Text über einer Leinwand nicht beurteilen kann: an der ungünstigsten
+Stelle von sechs Momenten, bei sieben Breiten und in beiden Erscheinungsbildern mindestens 5.44:1
+für grauen Fliesstext. Lighthouse gegen den lokalen Produktionsbau mit Nebel: mobil dreimal 98, Blockade 0 bis 20 ms;
+Desktop in allen vier Kategorien 100.
 
 **Sprachen** (`e2e/language.spec.ts`, `e2e/widths.spec.ts`): Ein Browser mit `en-GB`, `fr-CH`,
 `it-CH` oder `rm-CH` bekommt Englisch, Französisch, Italienisch oder Deutsch. Die Wahl gilt sofort,

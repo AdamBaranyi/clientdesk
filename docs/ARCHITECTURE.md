@@ -142,6 +142,14 @@ allein über die Migrationen startet. Drizzle löscht dort nur Zeilen, beim Aufr
 Demos und nach einem Passwortwechsel. Angelegt und geändert werden sie ausschliesslich von
 connect-pg-simple.
 
+**Nebel im Hero, selbst gebaut.** Die Startseite zeigt einen fliessenden Farbnebel in Kobalt. Das
+Vorbild, der «Fog»-Effekt von Vanta.js, braucht three.js: 155 KB gzip, mehr als die ganze
+Startseite, und Vanta wird seit 2023 nicht mehr gepflegt. Ein eigener Fragment-Shader leistet
+dasselbe mit 2.9 KB, nachgeladen, sobald der Browser nichts mehr zu tun hat. Er rechnet in einem
+Drittel der Auflösung und höchstens 30-mal je Sekunde, steht still, wenn niemand hinsieht, und
+hinter dem Text mischt er höchstens 18 Prozent Farbe bei. Nur auf der Startseite: in der App wäre
+Dauerbewegung hinter Zahlen eine Störung, keine Stimmung.
+
 **Nachladen nach Bereich.** Die Startseite lädt nur Startseite, Anmeldung und Einladung.
 Teamansicht, Kundenportal und Rechtsseiten sind eigene Bündel und kommen beim ersten Aufruf, das
 Diagramm innerhalb der Teamansicht noch einmal getrennt. Ein Besucher der Startseite braucht keine

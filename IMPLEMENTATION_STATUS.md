@@ -3,7 +3,7 @@
 Stand: 11.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · live unter
 <https://tallyroom.adambaranyi.xyz> · Meilenstein 6: D0 bis D7 erledigt, D8 in Arbeit
 
-207 Unit- und Integrationstests · 210 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
+207 Unit- und Integrationstests · 228 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
 und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
@@ -279,6 +279,28 @@ es 149 KB. Die Messung zählt jetzt, was `index.html` anfordert, nicht eine einz
 - Lokal gebaut war die Oberfläche eine Entwicklungsfassung von React: Bun lädt `.env` mit
   `NODE_ENV=development` automatisch, und Vite übernimmt das. Das Bauskript setzt jetzt
   `NODE_ENV=production`, sonst misst der lokale Budgetcheck etwas anderes als die CI.
+
+## Erledigt — Startseite mit Nebel (11.09.2026)
+
+Wunsch des Betreibers: die Startseite lebendiger, mit Farbe und Bewegung, und Lighthouse bleibt
+grün. Der Weg dahin, samt verworfener Stände:
+
+- Drei Hintergründe im Prototyp — Höhenlinien, Messraster, Farbfeld — hat der Betreiber
+  verworfen: zu sehr das, was jede generierte Seite hat.
+- Eine Szene, die die Freigabe ins Kundenportal vorspielt, war ihm zu wenig Gestaltung.
+- Vanta.js, GSAP und Lenis geprüft. Vanta: der Look passt, die Bibliothek nicht (155 KB, seit 2023
+  ungepflegt). GSAP: gut, für diesen einen Moment aber 32 KB zu viel. Lenis: weiches Scrollen passt
+  weder zur kurzen Startseite noch zur App.
+- Gebaut: der Fog-Look als eigener Shader, 2.9 KB, in Kobalt. Kobalt war bisher reine Datenfarbe;
+  der Betreiber hat die Regel für diesen einen Ort erweitert (tokens.css).
+
+Aufbau: Text links auf ruhigem Grund, der Nebel ist rechts das Bild, ohne Text darauf. Die ruhige
+Fläche folgt dem gemessenen Textblock, bei 320 wie bei 1440 Pixeln. Die Kenndaten stehen jetzt
+unter den Knöpfen. Pause-Knopf wegen WCAG 2.2.2, die Wahl gilt je Browser; bei reduzierter
+Bewegung steht der Nebel still. Nur auf der Startseite.
+
+Nebenbei gefunden: Die Barrierefreiheitsprüfung lief nie wirklich ohne Bewegung, und die
+E2E-Tests liefen durch keinen Typecheck (DIAGNOSTICS Nummer 20). Beides behoben.
 
 ## Offen — Meilenstein 6: Deployment
 
