@@ -25,21 +25,26 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /*
-   * Typoskala, bewusst zweiteilig.
+   * Typoskala: ein Arbeitsgrad, darüber vier Stufen.
    *
-   * Arbeitsband 11–14 px, linear in Einzelschritten: ein Datenblatt braucht
-   * im Kleinen Auflösung, keine Abstufung. Eine geometrische Skala liefert
-   * hier entweder 10,5 px oder gar nichts.
+   * Keine Schrift unter 16 px, auf keiner Breite (CLAUDE.md, Regel 8). Bis
+   * zum 12.09.2026 stand hier ein eigenes Band von 11 bis 14 px für
+   * Einheiten, Spaltenköpfe und Tabellenzellen. Es war sauber gestuft und
+   * trotzdem schwer zu lesen, gerade in Kopf- und Fusszeile. Lesbarkeit
+   * schlägt Dichte.
    *
-   * Displayband ab 14 px geometrisch mit Faktor 1,5: oben zählen Sprünge.
-   * Grösste zu Fliesstext = 72:14, also 5,1:1. Vorher waren es 1,7:1.
+   * Den Unterschied, den vorher die Grösse trug, tragen jetzt Schnitt,
+   * Versalien und Farbe: Spaltenköpfe in Condensed und Versalien, Zahlen in
+   * Mono, Nebensachen in --muted. Die Grösse ist für alles dieselbe.
+   *
+   * Darüber Sprünge, die man sieht: 16, 24, 32, 48, 72.
+   *
+   * Durchgesetzt zweimal: scripts/check-font-floor.mjs im Quelltext,
+   * e2e/font-size.spec.ts an der fertig gerechneten Schrift im Browser.
    */
-  --text-micro: 11px; /* Einheiten, Achsen, Teilstriche */
-  --text-label: 12px; /* Spaltenköpfe, Einheitszeilen (condensed, Versalien) */
-  --text-dense: 13px; /* Tabellenzellen */
-  --text-body: 14px; /* Fliesstext, Bedienelemente */
+  --text-body: 16px; /* alles, was man liest: Fliesstext, Tabellen, Label, Bedienelemente */
 
-  --text-section: 21px; /* Abschnittstitel */
+  --text-section: 24px; /* Abschnittstitel */
   --text-page: 32px; /* Seitentitel */
   --text-figure: 48px; /* die Zähler auf der Messlatte */
   --text-hero: 72px; /* die Leitzahl, und die Startseite */

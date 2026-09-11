@@ -36,7 +36,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'contracts')}
-        className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-body text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
         {m.detail.back}
@@ -45,7 +45,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <RecordHeading>{contract.name}</RecordHeading>
-          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted">
+          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-body text-muted">
             <span>{contract.customerName}</span>
             <ContractStatusBadge status={contract.visibleStatus} />
           </div>
@@ -66,7 +66,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
       {conflict && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-body text-danger"
         >
           {m.detail.conflict}
         </p>
@@ -94,13 +94,13 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
         {contract.publicDescription && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.detail.serviceDescription}
             </dt>
-            <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
+            <dd className="mt-1.5 max-w-[70ch] text-body whitespace-pre-line">
               {contract.publicDescription}
             </dd>
-            <p className="mt-2 text-xs text-muted">
+            <p className="mt-2 text-body text-muted">
               {contract.clientVisible ? m.detail.visibleInPortal : m.detail.notShared}
             </p>
           </div>
@@ -108,10 +108,10 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
         {contract.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.internalNote}
             </dt>
-            <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
+            <dd className="mt-1.5 max-w-[70ch] text-body whitespace-pre-line">
               {contract.internalNote}
             </dd>
           </div>
@@ -121,7 +121,7 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
       <Card>
         <CardHeader
           title={m.detail.priceVersions}
-          action={<span className="text-xs text-muted">{m.detail.priceVersionsHint}</span>}
+          action={<span className="text-body text-muted">{m.detail.priceVersionsHint}</span>}
         />
         {rates.isPending && <LoadingState label={m.detail.priceVersionsLoading} />}
         {rates.data && contractId && (
@@ -135,8 +135,8 @@ export function ContractDetailPage({ workspace }: { workspace: WorkspaceSummary 
 function Entry({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
-      <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">{label}</dt>
-      <dd className="mt-1.5 font-mono text-sm">{value}</dd>
+      <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">{label}</dt>
+      <dd className="mt-1.5 font-mono text-body">{value}</dd>
     </div>
   );
 }

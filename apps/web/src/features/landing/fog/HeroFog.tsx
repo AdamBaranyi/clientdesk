@@ -129,7 +129,7 @@ export function HeroFog() {
           // Deckender Grund: auf 70 Prozent kam grauer Text über dem kräftigsten
           // Nebel rechnerisch nur auf 4.2:1.
           className={[
-            'text-dense absolute right-[max(1rem,calc((100%-1180px)/2))] bottom-6 inline-flex min-h-11 items-center gap-2',
+            'text-body absolute right-[max(1rem,calc((100%-1180px)/2))] bottom-6 inline-flex min-h-11 items-center gap-2',
             'rounded-sm border px-3 font-medium sm:min-h-9',
             'ease-state transition-colors duration-[var(--dur-snap)]',
             paused
@@ -137,7 +137,7 @@ export function HeroFog() {
               : 'border-line bg-bg text-muted hover:text-ink',
           ].join(' ')}
         >
-          <Pause size={13} strokeWidth={2} aria-hidden="true" />
+          <Pause size={16} strokeWidth={2} aria-hidden="true" />
           {m.motionToggle}
         </button>
       )}

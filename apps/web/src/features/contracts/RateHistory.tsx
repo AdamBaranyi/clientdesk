@@ -59,12 +59,12 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
             className="flex flex-wrap items-baseline justify-between gap-3 border-t border-line-soft px-4 py-3 sm:px-5"
           >
             <span className="flex items-baseline gap-3">
-              <span className="font-mono text-sm">
+              <span className="font-mono text-body">
                 {m.rates.effectiveFrom(formatDate(rate.effectiveFrom))}
               </span>
-              {index === 0 && <span className="text-xs text-muted">{m.rates.firstVersion}</span>}
+              {index === 0 && <span className="text-body text-muted">{m.rates.firstVersion}</span>}
             </span>
-            <span className="font-mono text-sm font-medium">
+            <span className="font-mono text-body font-medium">
               CHF {formatAmountMinor(rate.monthlyAmountMinor)}
             </span>
           </li>
@@ -102,7 +102,7 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
       </form>
 
       {message && (
-        <p role="alert" className="px-4 pb-4 text-sm text-danger sm:px-5">
+        <p role="alert" className="px-4 pb-4 text-body text-danger sm:px-5">
           {message}
         </p>
       )}

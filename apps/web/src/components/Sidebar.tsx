@@ -43,18 +43,18 @@ export function Sidebar({ workspace, onNavigate }: SidebarProps) {
 
   return (
     <div className="flex h-full flex-col bg-[var(--sidebar-bg)] p-3">
-      <Wordmark name="Tallyroom" />
+      <Wordmark name="Tallyroom" className="px-2.5" />
 
       <div className="flex items-center gap-2.5 border border-line bg-surface px-2.5 py-2.5">
         <span
-          className="text-micro flex size-6 shrink-0 items-center justify-center border border-line font-mono font-medium text-muted"
+          className="text-body flex size-6 shrink-0 items-center justify-center border border-line font-mono font-medium text-muted"
           aria-hidden="true"
         >
           {initials(workspace.name)}
         </span>
         <span className="flex min-w-0 flex-col">
-          <span className="text-dense truncate font-medium">{workspace.name}</span>
-          <span className="font-condensed text-micro tracking-[0.14em] text-muted uppercase">
+          <span className="text-body truncate font-medium">{workspace.name}</span>
+          <span className="font-condensed text-body tracking-[0.06em] text-muted uppercase">
             {roles[workspace.role]}
           </span>
         </span>

@@ -40,7 +40,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'requests')}
-        className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-body text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
         {m.backToList}
@@ -52,7 +52,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
             <PriorityBadge priority={request.priority} />
             <RecordHeading>{request.subject}</RecordHeading>
           </span>
-          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted">
+          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-body text-muted">
             <span>{request.customerName}</span>
             {request.projectName && <span>· {request.projectName}</span>}
             <RequestStatusBadge status={request.status} />
@@ -67,7 +67,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
               type="button"
               disabled={changeStatus.isPending}
               onClick={() => changeStatus.mutate({ status: next, version: request.version })}
-              className="min-h-11 rounded-sm border border-line px-3 text-sm font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
+              className="min-h-11 rounded-sm border border-line px-3 text-body font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
             >
               {statusLabels[next]}
             </button>
@@ -78,7 +78,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
       {conflict && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-body text-danger"
         >
           {m.conflict}
         </p>
@@ -88,18 +88,20 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader
           title={m.concern}
           action={
-            <span className="text-xs text-muted">
+            <span className="text-body text-muted">
               {request.createdByName ? m.recordedBy(request.createdByName) : m.fromPortal}
             </span>
           }
         />
-        <p className="max-w-[75ch] px-4 pb-5 text-sm whitespace-pre-line sm:px-5">{request.body}</p>
+        <p className="max-w-[75ch] px-4 pb-5 text-body whitespace-pre-line sm:px-5">
+          {request.body}
+        </p>
       </Card>
 
       <Card>
         <CardHeader
           title={m.history}
-          action={<span className="text-xs text-muted">{m.historyHint}</span>}
+          action={<span className="text-body text-muted">{m.historyHint}</span>}
         />
         {comments.isPending && <LoadingState label={m.commentsLoading} />}
         {comments.data && requestId && (

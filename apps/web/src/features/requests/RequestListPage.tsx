@@ -57,8 +57,8 @@ export function RequestListPage({ workspace }: { workspace: WorkspaceSummary }) 
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.title}</h1>
-          <p className="mt-1 text-sm text-muted">{m.lead}</p>
+          <h1 className="text-section font-semibold tracking-[-0.02em]">{m.title}</h1>
+          <p className="mt-1 text-body text-muted">{m.lead}</p>
         </div>
         <Button variant="primary" disabled={availableCustomers.length === 0} onClick={openDialog}>
           <Plus size={16} strokeWidth={2} aria-hidden="true" />

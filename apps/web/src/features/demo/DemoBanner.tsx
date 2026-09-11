@@ -45,8 +45,8 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
   return (
     <div className="flex flex-col gap-3 border-b border-line bg-raised px-3 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-          <span className="font-condensed text-label inline-flex items-center gap-1.5 font-semibold tracking-[0.12em] uppercase">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body">
+          <span className="font-condensed text-body inline-flex items-center gap-1.5 font-semibold tracking-[0.06em] uppercase">
             <FlaskConical size={14} strokeWidth={2} aria-hidden="true" />
             {m.label}
           </span>
@@ -62,7 +62,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
             type="button"
             onClick={restartTour}
             data-tour="tour-restart"
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-sm border border-line px-2.5 text-xs font-medium text-muted transition-colors hover:text-ink"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-sm border border-line px-2.5 text-body font-medium text-muted transition-colors hover:text-ink"
           >
             <Signpost size={13} strokeWidth={2} aria-hidden="true" />
             {tour.restart}
@@ -71,7 +71,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
       </div>
 
       <div data-tour="role-switch" className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-muted">{m.view}</span>
+        <span className="text-body font-medium text-muted">{m.view}</span>
         {[...team, ...clients].map((identity) => (
           <button
             key={identity.userId}
@@ -80,7 +80,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
             onClick={() => switchTo(identity.userId, identity.role)}
             aria-pressed={identity.current}
             className={[
-              'inline-flex min-h-11 items-center gap-1.5 rounded-sm border px-2.5 text-xs font-medium transition-colors',
+              'inline-flex min-h-11 items-center gap-1.5 rounded-sm border px-2.5 text-body font-medium transition-colors',
               identity.current
                 ? 'border-ink bg-surface text-ink'
                 : 'border-line text-muted hover:text-ink',

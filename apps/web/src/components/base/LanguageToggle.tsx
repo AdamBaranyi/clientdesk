@@ -35,12 +35,13 @@ export function LanguageToggle() {
     <div className="relative inline-flex h-11 items-center gap-1 rounded-sm border border-line bg-surface px-2 text-muted hover:text-ink has-[:focus-visible]:[outline:2px_solid_var(--focus-ring)] has-[:focus-visible]:[outline-offset:2px] sm:h-8">
       <span
         aria-hidden="true"
-        className="font-condensed text-label font-semibold tracking-[0.08em] text-ink"
+        className="font-condensed text-body font-semibold tracking-[0.06em] text-ink"
       >
         {locale.toUpperCase()}
       </span>
       <ChevronDown size={12} strokeWidth={2} aria-hidden="true" />
       <select
+        name="locale"
         aria-label={LABEL[locale]}
         value={locale}
         onChange={(event) => {

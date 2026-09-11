@@ -37,9 +37,9 @@ export function CustomerRows({ customers, basePath }: Props) {
             >
               <span className="font-medium">{customer.name}</span>
               {customer.contactName && (
-                <span className="text-dense text-muted">{customer.contactName}</span>
+                <span className="text-body text-muted">{customer.contactName}</span>
               )}
-              <span className="text-micro flex flex-wrap items-center gap-3 text-muted">
+              <span className="text-body flex flex-wrap items-center gap-3 text-muted">
                 <span>{m.runningProjectCount(customer.activeProjectCount)}</span>
                 {customer.archivedAt && <ArchivedBadge />}
               </span>

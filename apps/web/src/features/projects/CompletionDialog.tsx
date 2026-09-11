@@ -27,7 +27,7 @@ export function CompletionDialog({ open, openMilestones, pending, onConfirm, onC
   return (
     <Dialog open={open} title={m.completion.title} onClose={onClose}>
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-muted">
+        <p className="text-body text-muted">
           {m.completion.openMilestones(openMilestones)} {m.completion.explain}
         </p>
 

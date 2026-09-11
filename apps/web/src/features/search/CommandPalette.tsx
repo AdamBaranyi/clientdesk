@@ -79,6 +79,7 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
       <div className="flex w-full max-w-[560px] flex-col border border-line bg-surface">
         <input
           ref={eingabe}
+          id="palette-eingabe"
           value={term}
           onChange={(event) => setTerm(event.target.value)}
           onKeyDown={onKeyDown}
@@ -100,7 +101,7 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
           onHover={setMarkiert}
         />
 
-        <p className="text-micro flex items-center gap-4 border-t border-line px-4 py-2 text-muted">
+        <p className="text-body flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line px-4 py-2 text-muted">
           <span>
             <Taste>↑</Taste> <Taste>↓</Taste> {m.keys.select}
           </span>
@@ -136,12 +137,12 @@ function Ergebnisse({ hits, markiert, term, laedt, onSelect, onHover }: Ergebnis
   const kurz = term.trim().length < MIN_TERM_LENGTH;
 
   if (kurz) {
-    return <p className="text-dense px-4 py-6 text-muted">{m.tooShort(MIN_TERM_LENGTH)}</p>;
+    return <p className="text-body px-4 py-6 text-muted">{m.tooShort(MIN_TERM_LENGTH)}</p>;
   }
 
   if (hits.length === 0) {
     return (
-      <p className="text-dense px-4 py-6 text-muted" role="status">
+      <p className="text-body px-4 py-6 text-muted" role="status">
         {laedt ? m.searching : m.noResults(term.trim())}
       </p>
     );
@@ -175,12 +176,12 @@ function Ergebnisse({ hits, markiert, term, laedt, onSelect, onHover }: Ergebnis
             index === markiert ? 'bg-raised' : '',
           ].join(' ')}
         >
-          <span className="font-condensed text-label w-16 shrink-0 tracking-[0.1em] text-muted uppercase">
+          <span className="font-condensed text-body w-24 shrink-0 tracking-[0.06em] text-muted uppercase">
             {m.kind[hit.kind]}
           </span>
-          <span className="text-dense min-w-0 flex-1 truncate text-ink">{hit.title}</span>
+          <span className="text-body min-w-0 flex-1 truncate text-ink">{hit.title}</span>
           {hit.subtitle && (
-            <span className="text-micro shrink-0 truncate text-muted">{hit.subtitle}</span>
+            <span className="text-body shrink-0 truncate text-muted">{hit.subtitle}</span>
           )}
         </li>
       ))}

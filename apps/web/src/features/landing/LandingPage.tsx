@@ -46,7 +46,7 @@ export function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <link rel="canonical" href={`${SITE_URL}/`} />
-      <header className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
+      <header className="flex items-end justify-between gap-2 border-b border-line px-3 sm:gap-3 sm:px-6">
         <Wordmark name="Tallyroom" />
         <div className="flex items-center gap-2 pb-4">
           <LanguageToggle />
@@ -56,7 +56,7 @@ export function LandingPage() {
               Hero — hier wegzulassen kostet nichts, überlaufen zu lassen schon. */}
           <Link
             to="/login"
-            className="text-dense hidden min-h-11 items-center rounded-sm border border-line px-3 font-medium text-muted hover:text-ink sm:inline-flex"
+            className="text-body hidden min-h-11 items-center rounded-sm border border-line px-3 font-medium text-muted hover:text-ink sm:inline-flex"
           >
             {m.signIn}
           </Link>
@@ -119,10 +119,10 @@ export function LandingPage() {
                     key={fact.label}
                     className="flex items-baseline justify-between gap-4 border-b border-line py-3"
                   >
-                    <dt className="font-condensed text-label font-semibold tracking-[0.12em] text-muted uppercase">
+                    <dt className="font-condensed text-body font-semibold tracking-[0.06em] text-muted uppercase">
                       {fact.label}
                     </dt>
-                    <dd className="text-dense text-right font-mono tabular-nums">{fact.value}</dd>
+                    <dd className="text-body text-right font-mono tabular-nums">{fact.value}</dd>
                   </div>
                 ))}
               </dl>

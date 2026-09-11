@@ -12,7 +12,7 @@ export function ContractValueTable({ history }: { history: MonthlyValuePoint[] }
   const m = useMessages(dashboardMessages);
   return (
     <details className="border border-line-soft px-3 py-2">
-      <summary className="font-condensed text-label cursor-pointer font-semibold tracking-[0.08em] text-muted uppercase">
+      <summary className="font-condensed text-body cursor-pointer font-semibold tracking-[0.06em] text-muted uppercase">
         {m.history.tableToggle}
       </summary>
       <table className="mt-3 w-full border-collapse">
@@ -28,7 +28,7 @@ export function ContractValueTable({ history }: { history: MonthlyValuePoint[] }
               <Cell lead>
                 {point.label}
                 {point.isCurrentMonth && (
-                  <span className="text-micro ml-2 text-muted">{m.history.currentMonth}</span>
+                  <span className="text-body ml-2 text-muted">{m.history.currentMonth}</span>
                 )}
               </Cell>
               <Cell numeric>{formatDate(point.date)}</Cell>

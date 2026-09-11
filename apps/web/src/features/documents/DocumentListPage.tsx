@@ -63,8 +63,8 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.title}</h1>
-          <p className="mt-1 max-w-[62ch] text-sm text-muted">
+          <h1 className="text-section font-semibold tracking-[-0.02em]">{m.title}</h1>
+          <p className="mt-1 max-w-[62ch] text-body text-muted">
             {workspace.isDemo ? m.leadDemo : m.lead(MAX_DOCUMENT_BYTES / (1024 * 1024))}
           </p>
         </div>
@@ -89,6 +89,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
         )}
         <input
           ref={fileInput}
+          id="dokument-datei"
           type="file"
           accept="application/pdf"
           onChange={onFileChosen}
@@ -100,21 +101,21 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
       {uploadMessage && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-body text-danger"
         >
           {uploadMessage}
         </p>
       )}
 
       <div className="flex flex-col gap-1.5 sm:max-w-xs">
-        <label htmlFor="dokument-kunde" className="text-xs font-medium text-muted">
+        <label htmlFor="dokument-kunde" className="text-body font-medium text-muted">
           {m.customer}
         </label>
         <select
           id="dokument-kunde"
           value={customerId}
           onChange={(event) => setCustomerId(event.target.value)}
-          className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
+          className="text-body min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
         >
           <option value="">{m.allCustomers}</option>
           {available.map((customer) => (
@@ -124,7 +125,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
           ))}
         </select>
         {customerId === '' && firstCustomer && (
-          <p className="text-xs text-muted">{m.uploadTarget(firstCustomer.name)}</p>
+          <p className="text-body text-muted">{m.uploadTarget(firstCustomer.name)}</p>
         )}
       </div>
 
@@ -148,7 +149,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
               >
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <span className="font-medium break-words">{document.originalName}</span>
-                  <span className="flex flex-wrap items-center gap-3 text-xs text-muted">
+                  <span className="flex flex-wrap items-center gap-3 text-body text-muted">
                     <span>{document.customerName}</span>
                     <span className="font-mono">{formatSize(document.sizeBytes)}</span>
                     <span className="font-mono">{formatDate(document.createdAt.slice(0, 10))}</span>
@@ -171,7 +172,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
                 <div className="flex flex-wrap items-center gap-2">
                   <a
                     href={documentDownloadUrl(workspace.id, document.id)}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-body font-medium text-muted no-underline hover:text-ink"
                   >
                     <Download size={15} strokeWidth={1.8} aria-hidden="true" />
                     {m.open}

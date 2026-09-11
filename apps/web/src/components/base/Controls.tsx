@@ -16,6 +16,7 @@ export function SearchField({ value, onChange, placeholder, label }: SearchField
       <Search size={16} strokeWidth={1.8} className="shrink-0 text-muted" aria-hidden="true" />
       <input
         type="search"
+        name="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}

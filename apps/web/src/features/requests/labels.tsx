@@ -15,7 +15,7 @@ export function RequestStatusBadge({ status }: { status: RequestStatus }) {
   return (
     <span
       className={[
-        'inline-flex items-center gap-2 text-xs font-medium whitespace-nowrap',
+        'inline-flex items-center gap-2 text-body font-medium whitespace-nowrap',
         style.text,
       ].join(' ')}
     >
@@ -30,7 +30,7 @@ export function PriorityBadge({ priority }: { priority: RequestPriority }) {
   if (priority === 'normal') return null;
   // Versalien per CSS: Screenreader lesen „Hoch" als Wort, nicht buchstabiert.
   return (
-    <span className="text-micro inline-flex shrink-0 items-center rounded-sm border border-danger px-1.5 py-0.5 font-condensed font-semibold tracking-[0.12em] text-danger uppercase">
+    <span className="text-body inline-flex shrink-0 items-center rounded-sm border border-danger px-1.5 py-0.5 font-condensed font-semibold tracking-[0.06em] text-danger uppercase">
       {m.requestPriority.high}
     </span>
   );

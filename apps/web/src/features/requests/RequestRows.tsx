@@ -46,12 +46,10 @@ export function RequestRows({ requests, basePath, showCustomer = true }: Props) 
                 <PriorityBadge priority={request.priority} />
                 <span className="font-medium">{request.subject}</span>
               </span>
-              {showCustomer && (
-                <span className="text-dense text-muted">{request.customerName}</span>
-              )}
+              {showCustomer && <span className="text-body text-muted">{request.customerName}</span>}
               <span className="flex flex-wrap items-center gap-3">
                 <RequestStatusBadge status={request.status} />
-                <span className="text-micro text-muted">{relativeTime(request.updatedAt, m)}</span>
+                <span className="text-body text-muted">{relativeTime(request.updatedAt, m)}</span>
               </span>
             </Link>
           </CardItem>

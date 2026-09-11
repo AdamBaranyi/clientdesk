@@ -57,7 +57,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'projects')}
-        className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-body text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
         {m.detail.back}
@@ -66,10 +66,10 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <RecordHeading>{project.name}</RecordHeading>
-          <p className="mt-1.5 text-sm text-muted">{project.customerName}</p>
+          <p className="mt-1.5 text-body text-muted">{project.customerName}</p>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="projekt-status" className="text-xs font-medium text-muted">
+          <label htmlFor="projekt-status" className="text-body font-medium text-muted">
             {m.status}
           </label>
           <select
@@ -77,7 +77,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
             value={project.status}
             disabled={update.isPending}
             onChange={(event) => changeStatus(event.target.value as ProjectStatus)}
-            className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
+            className="text-body min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
           >
             {PROJECT_STATUS.map((option) => (
               <option key={option} value={option}>
@@ -91,7 +91,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
       {conflict && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-4 py-3 text-body text-danger"
         >
           {m.detail.conflict}
         </p>
@@ -101,7 +101,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader title={m.detail.overview} />
         <dl className="grid grid-cols-1 gap-x-6 gap-y-4 px-4 pb-5 sm:grid-cols-3 sm:px-5">
           <div>
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.status}
             </dt>
             <dd className="mt-1.5">
@@ -109,16 +109,16 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
             </dd>
           </div>
           <div>
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.detail.start}
             </dt>
-            <dd className="mt-1.5 font-mono text-sm">{formatDate(project.startDate)}</dd>
+            <dd className="mt-1.5 font-mono text-body">{formatDate(project.startDate)}</dd>
           </div>
           <div>
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.targetDate}
             </dt>
-            <dd className="mt-1.5 font-mono text-sm">
+            <dd className="mt-1.5 font-mono text-body">
               {project.targetDate ? formatDate(project.targetDate) : '—'}
             </dd>
           </div>
@@ -126,10 +126,10 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
         {project.description && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.description}
             </dt>
-            <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
+            <dd className="mt-1.5 max-w-[70ch] text-body whitespace-pre-line">
               {project.description}
             </dd>
           </div>
@@ -137,10 +137,10 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
         {project.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.internalNote}
             </dt>
-            <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
+            <dd className="mt-1.5 max-w-[70ch] text-body whitespace-pre-line">
               {project.internalNote}
             </dd>
           </div>
@@ -151,7 +151,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         <CardHeader
           title={m.detail.milestones}
           action={
-            <span className="text-xs text-muted">
+            <span className="text-body text-muted">
               {project.milestoneCount === 0
                 ? m.noMilestonesYet
                 : m.detail.milestonesDone(project.milestonesDone, project.milestoneCount)}

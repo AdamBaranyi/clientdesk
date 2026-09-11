@@ -77,10 +77,10 @@ export function PortalShell({ user, workspace }: Props) {
       </a>
 
       <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line bg-[var(--sidebar-bg)] p-3 lg:flex lg:flex-col">
-        <Wordmark name={m.shell.wordmark} />
+        <Wordmark name={m.shell.wordmark} className="px-2.5" />
         <div className="mb-4 border border-line bg-surface px-2.5 py-2.5">
-          <p className="text-dense truncate font-medium">{workspace.name}</p>
-          <p className="font-condensed text-micro tracking-[0.14em] text-muted uppercase">
+          <p className="text-body truncate font-medium">{workspace.name}</p>
+          <p className="font-condensed text-body tracking-[0.06em] text-muted uppercase">
             {m.shell.yourAccess}
           </p>
         </div>
@@ -108,7 +108,7 @@ export function PortalShell({ user, workspace }: Props) {
               <X size={18} strokeWidth={1.8} aria-hidden="true" />
               <span className="sr-only">{m.shell.close}</span>
             </button>
-            <Wordmark name={m.shell.wordmark} />
+            <Wordmark name={m.shell.wordmark} className="px-2.5" />
             {navigation}
             <div className="mt-auto flex flex-col items-start gap-1 px-2.5 pt-4">
               <LanguageToggle />
@@ -129,17 +129,17 @@ export function PortalShell({ user, workspace }: Props) {
               <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
               <span className="sr-only">{m.shell.openNavigation}</span>
             </button>
-            <span className="truncate text-[13px] text-muted">{workspace.name}</span>
+            <span className="truncate text-body text-muted">{workspace.name}</span>
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
             <ThemeToggle />
-            <span className="hidden text-[13px] text-muted md:inline">{user.displayName}</span>
+            <span className="hidden text-body text-muted md:inline">{user.displayName}</span>
             <button
               type="button"
               onClick={() => logout.mutate()}
               disabled={logout.isPending}
-              className="flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-[13px] font-medium text-muted hover:text-ink disabled:opacity-60"
+              className="flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-body font-medium text-muted hover:text-ink disabled:opacity-60"
             >
               <LogOut size={15} strokeWidth={1.8} aria-hidden="true" />
               <span className="hidden sm:inline">{m.shell.signOut}</span>

@@ -19,7 +19,9 @@ export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
   const entry = PROJECT_STYLES[status];
   const label = useMessages(domainMessages).projectStatus[status];
   return (
-    <span className={['inline-flex items-center gap-2 text-xs font-medium', entry.text].join(' ')}>
+    <span
+      className={['inline-flex items-center gap-2 text-body font-medium', entry.text].join(' ')}
+    >
       <span className={['size-1.5 shrink-0', entry.dot].join(' ')} aria-hidden="true" />
       {label}
     </span>
@@ -30,7 +32,7 @@ export function ArchivedBadge() {
   const m = useMessages(shellMessages);
 
   return (
-    <span className="inline-flex items-center gap-2 text-xs font-medium text-muted">
+    <span className="inline-flex items-center gap-2 text-body font-medium text-muted">
       <span className="size-1.5 shrink-0 bg-faint" aria-hidden="true" />
       {m.archived}
     </span>

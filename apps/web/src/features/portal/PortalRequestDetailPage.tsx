@@ -48,40 +48,46 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <Link
         to={portalPath(workspace.id, 'requests')}
-        className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-body text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
         {r.all}
       </Link>
 
       <div>
-        <h1 className="text-xl font-semibold tracking-[-0.02em]">{request.subject}</h1>
+        <h1 className="text-section font-semibold tracking-[-0.02em]">{request.subject}</h1>
         <div className="mt-1.5 flex flex-wrap items-center gap-3">
           <RequestStatusBadge status={request.status} />
-          {request.projectName && <span className="text-sm text-muted">{request.projectName}</span>}
+          {request.projectName && (
+            <span className="text-body text-muted">{request.projectName}</span>
+          )}
         </div>
       </div>
 
       <Card>
         <CardHeader title={r.body} />
-        <p className="max-w-[75ch] px-4 pb-5 text-sm whitespace-pre-line sm:px-5">{request.body}</p>
+        <p className="max-w-[75ch] px-4 pb-5 text-body whitespace-pre-line sm:px-5">
+          {request.body}
+        </p>
       </Card>
 
       <Card>
         <CardHeader title={m.history} />
         {comments.length === 0 && (
-          <p className="px-4 pb-4 text-sm text-muted sm:px-5">{m.noReply}</p>
+          <p className="px-4 pb-4 text-body text-muted sm:px-5">{m.noReply}</p>
         )}
         <ul className="flex flex-col">
           {comments.map((comment) => (
             <li key={comment.id} className="border-t border-line-soft px-4 py-4 sm:px-5">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm font-medium">{comment.authorName ?? m.teamFallback}</span>
-                <span className="font-mono text-xs text-muted">
+                <span className="text-body font-medium">
+                  {comment.authorName ?? m.teamFallback}
+                </span>
+                <span className="font-mono text-body text-muted">
                   {formatMoment(comment.createdAt, locale)}
                 </span>
               </div>
-              <p className="mt-2 max-w-[75ch] text-sm whitespace-pre-line">{comment.body}</p>
+              <p className="mt-2 max-w-[75ch] text-body whitespace-pre-line">{comment.body}</p>
             </li>
           ))}
         </ul>
@@ -91,7 +97,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
           className="flex flex-col gap-3 border-t border-line-soft px-4 py-4 sm:px-5"
         >
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="portal-antwort" className="text-sm font-medium">
+            <label htmlFor="portal-antwort" className="text-body font-medium">
               {m.reply}
             </label>
             <textarea
@@ -102,7 +108,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
               className="text-body w-full resize-y rounded-sm border border-line bg-surface px-3 py-2.5 text-ink"
             />
             {request.status === 'waiting_customer' && (
-              <p className="text-xs text-warning">{m.waitingHint}</p>
+              <p className="text-body text-warning">{m.waitingHint}</p>
             )}
           </div>
           <div className="flex justify-end">

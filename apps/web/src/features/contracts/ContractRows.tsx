@@ -32,7 +32,7 @@ function Amount({ contract }: { contract: ServiceContract }) {
     // Bei einem geplanten Vertrag gibt es sehr wohl einen Preis — er gilt am
     // Stichtag nur noch nicht. „Kein Preis" würde einen Datenfehler nahelegen.
     return (
-      <span className="text-micro whitespace-nowrap">
+      <span className="text-body whitespace-nowrap">
         {contract.visibleStatus === 'planned' ? m.rows.fromContractStart : m.noPrice}
       </span>
     );
@@ -59,16 +59,16 @@ export function ContractRows({ contracts, basePath, showCustomer = true }: Props
             >
               <span className="flex flex-wrap items-baseline justify-between gap-2">
                 <span className="font-medium">{contract.name}</span>
-                <span className="text-dense font-mono tabular-nums text-muted">
+                <span className="text-body font-mono tabular-nums text-muted">
                   <Amount contract={contract} />
                 </span>
               </span>
               {showCustomer && (
-                <span className="text-dense text-muted">{contract.customerName}</span>
+                <span className="text-body text-muted">{contract.customerName}</span>
               )}
               <span className="flex flex-wrap items-center gap-3">
                 <ContractStatusBadge status={contract.visibleStatus} />
-                <span className="text-micro font-mono tabular-nums text-muted">
+                <span className="text-body font-mono tabular-nums text-muted">
                   {term(contract, m.rows.openTerm)}
                 </span>
               </span>

@@ -38,7 +38,7 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
   return (
     <div className="flex flex-col">
       {milestones.length === 0 && (
-        <p className="px-4 pb-4 text-sm text-muted sm:px-5">{m.milestones.empty}</p>
+        <p className="px-4 pb-4 text-body text-muted sm:px-5">{m.milestones.empty}</p>
       )}
 
       <ul className="flex flex-col">
@@ -75,13 +75,13 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
             <div className="flex min-w-0 flex-1 flex-col gap-1 pt-2">
               <span
                 className={[
-                  'text-sm font-medium',
+                  'text-body font-medium',
                   milestone.status === 'done' ? 'text-muted line-through' : '',
                 ].join(' ')}
               >
                 {milestone.title}
               </span>
-              <span className="flex flex-wrap items-center gap-3 text-xs">
+              <span className="flex flex-wrap items-center gap-3 text-body">
                 {milestone.dueDate ? (
                   <span className="font-mono text-muted">{formatDate(milestone.dueDate)}</span>
                 ) : (
@@ -129,7 +129,7 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
       </form>
 
       {add.isError && (
-        <p role="alert" className="px-4 pb-4 text-sm text-danger sm:px-5">
+        <p role="alert" className="px-4 pb-4 text-body text-danger sm:px-5">
           {m.milestones.addFailed}
         </p>
       )}

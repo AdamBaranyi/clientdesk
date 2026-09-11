@@ -25,7 +25,7 @@ export function ArchiveSection({ workspace, customer }: Props) {
       <Card>
         <CardHeader title={m.status.archived} />
         <div className="flex flex-col gap-3 px-4 pb-4 sm:px-5">
-          <p className="max-w-[62ch] text-sm text-muted">{m.archive.archivedDetail}</p>
+          <p className="max-w-[62ch] text-body text-muted">{m.archive.archivedDetail}</p>
           <div>
             <Button
               variant="secondary"
@@ -48,12 +48,12 @@ export function ArchiveSection({ workspace, customer }: Props) {
     <Card>
       <CardHeader title={m.archive.title} />
       <div className="flex flex-col gap-3 px-4 pb-4 sm:px-5">
-        {blockers.isPending && <p className="text-sm text-muted">{m.archive.checking}</p>}
+        {blockers.isPending && <p className="text-body text-muted">{m.archive.checking}</p>}
 
         {blocked && counts && (
           <div className="rounded-sm border border-line bg-raised px-3 py-3">
-            <p className="text-sm font-medium">{m.archive.blocked}</p>
-            <ul className="mt-2 flex flex-col gap-1 text-sm text-muted">
+            <p className="text-body font-medium">{m.archive.blocked}</p>
+            <ul className="mt-2 flex flex-col gap-1 text-body text-muted">
               {counts.runningProjects > 0 && (
                 <li>{m.runningProjectCount(counts.runningProjects)}</li>
               )}
@@ -66,11 +66,11 @@ export function ArchiveSection({ workspace, customer }: Props) {
         )}
 
         {!blocked && counts && (
-          <p className="max-w-[62ch] text-sm text-muted">{m.archive.nothingBlocks}</p>
+          <p className="max-w-[62ch] text-body text-muted">{m.archive.nothingBlocks}</p>
         )}
 
         {action.isError && (
-          <p role="alert" className="text-sm text-danger">
+          <p role="alert" className="text-body text-danger">
             {m.archive.failed}
           </p>
         )}

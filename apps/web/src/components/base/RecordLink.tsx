@@ -77,7 +77,7 @@ export function RecordHeading({ children }: { children: ReactNode }) {
 
   return (
     <h1
-      className="text-xl font-semibold tracking-[-0.02em]"
+      className="text-section font-semibold tracking-[-0.02em]"
       style={{ viewTransitionName: RECORD_TITLE }}
     >
       {children}

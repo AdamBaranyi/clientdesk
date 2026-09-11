@@ -62,14 +62,14 @@ export function ProjectForm({
       {message && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
         >
           {message}
         </p>
       )}
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="projekt-kunde" className="text-sm font-medium">
+        <label htmlFor="projekt-kunde" className="text-body font-medium">
           {m.customer}
         </label>
         <select
@@ -83,7 +83,7 @@ export function ProjectForm({
             </option>
           ))}
         </select>
-        {errors.customerId && <p className="text-sm text-danger">{errors.customerId.message}</p>}
+        {errors.customerId && <p className="text-body text-danger">{errors.customerId.message}</p>}
       </div>
 
       <TextField
@@ -126,7 +126,7 @@ export function ProjectForm({
         {...form.register('internalNote')}
       />
 
-      <label className="flex items-start gap-3 text-sm">
+      <label className="flex items-start gap-3 text-body">
         <input
           type="checkbox"
           {...form.register('clientVisible')}
@@ -134,7 +134,7 @@ export function ProjectForm({
         />
         <span>
           {m.form.clientVisible}
-          <span className="mt-0.5 block text-xs text-muted">{m.form.clientVisibleHint}</span>
+          <span className="mt-0.5 block text-body text-muted">{m.form.clientVisibleHint}</span>
         </span>
       </label>
 

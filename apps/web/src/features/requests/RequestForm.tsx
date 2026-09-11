@@ -51,14 +51,14 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
       {message && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
         >
           {message}
         </p>
       )}
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="anfrage-kunde" className="text-sm font-medium">
+        <label htmlFor="anfrage-kunde" className="text-body font-medium">
           {m.customer}
         </label>
         <select
@@ -77,11 +77,11 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
             </option>
           ))}
         </select>
-        {errors.customerId && <p className="text-sm text-danger">{errors.customerId.message}</p>}
+        {errors.customerId && <p className="text-body text-danger">{errors.customerId.message}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="anfrage-projekt" className="text-sm font-medium">
+        <label htmlFor="anfrage-projekt" className="text-body font-medium">
           {m.project}
         </label>
         <select
@@ -113,7 +113,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
       />
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="anfrage-prio" className="text-sm font-medium">
+        <label htmlFor="anfrage-prio" className="text-body font-medium">
           {m.priority}
         </label>
         <select

@@ -17,4 +17,4 @@ export const CONTROL_BASE =
 
 /** Beschriftung über einem Bedienelement: klein, condensed, in Versalien. */
 export const CONTROL_LABEL =
-  'font-condensed text-label font-semibold tracking-[0.12em] text-muted uppercase';
+  'font-condensed text-body font-semibold tracking-[0.06em] text-muted uppercase';

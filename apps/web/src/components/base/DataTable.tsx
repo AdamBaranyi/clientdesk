@@ -16,7 +16,7 @@ import type { ReactNode } from 'react';
 const uebergang = 'transition-colors ease-state duration-[var(--dur-snap)]';
 
 export function DataTable({ children }: { children: ReactNode }) {
-  return <table className="hidden w-full border-collapse sm:table">{children}</table>;
+  return <table className="hidden w-full border-collapse lg:table">{children}</table>;
 }
 
 export function TableHead({ children }: { children: ReactNode }) {
@@ -32,8 +32,8 @@ export function Th({ children, right = false }: { children: ReactNode; right?: b
     <th
       scope="col"
       className={[
-        'font-condensed text-label font-semibold tracking-[0.08em] text-muted uppercase',
-        'px-4 pb-2',
+        'font-condensed text-body font-semibold tracking-[0.06em] text-muted uppercase',
+        'px-3 pb-2',
         right ? 'text-right' : 'text-left',
       ].join(' ')}
     >
@@ -59,7 +59,7 @@ export function Cell({ children, right = false, numeric = false, lead = false }:
   return (
     <td
       className={[
-        'text-dense px-4 py-3',
+        'text-body px-3 py-3',
         right ? 'text-right' : 'text-left',
         numeric ? 'font-mono tabular-nums' : '',
         lead ? 'font-medium text-ink' : `text-muted ${uebergang} group-hover:text-ink`,
@@ -71,11 +71,16 @@ export function Cell({ children, right = false, numeric = false, lead = false }:
 }
 
 /**
- * Die Kartenliste unter 640 Pixeln. Dieselben Daten, andere Form — eine
+ * Die Kartenliste unter 1024 Pixeln. Dieselben Daten, andere Form — eine
  * Tabelle seitlich zu schieben ist keine Lösung, Spalten wegzulassen auch nicht.
+ *
+ * Bis zum 12.09.2026 lag die Grenze bei 640 Pixeln. Seit keine Schrift mehr
+ * unter 16 px geht, will die schmalste Tabelle (Verträge) 725 Pixel: bei 768
+ * stehen 718 zur Verfügung, bei 1024 sind es 742. Also Karten, solange die
+ * Seitenleiste nicht steht — gequetschte Spalten brechen sonst mitten im Wort.
  */
 export function CardList({ children }: { children: ReactNode }) {
-  return <ul className="flex flex-col sm:hidden">{children}</ul>;
+  return <ul className="flex flex-col lg:hidden">{children}</ul>;
 }
 
 export function CardItem({ children }: { children: ReactNode }) {

@@ -31,9 +31,10 @@
   --font-condensed: var(--font-condensed);
   --font-mono: var(--font-mono);
 
-  --text-micro: var(--text-micro);
-  --text-label: var(--text-label);
-  --text-dense: var(--text-dense);
+  /* Tailwinds text-xs und text-sm liegen unter 16 px. Sie werden gar nicht
+     erst erzeugt, damit sie auch aus Versehen nichts verkleinern können. */
+  --text-xs: initial;
+  --text-sm: initial;
   --text-body: var(--text-body);
   --text-section: var(--text-section);
   --text-page: var(--text-page);
@@ -149,12 +150,34 @@ body {
   :where(p, li, dd, dt) a:hover {
     text-decoration-thickness: 2px;
   }
-}
 
-/* Lange Namen, E-Mail-Adressen und URLs dürfen den Container nicht sprengen. */
-:where(h1, h2, h3, p, li, td, th, dd, dt) {
-  overflow-wrap: anywhere;
-  text-wrap: pretty;
+  /*
+   * Lange Namen, E-Mail-Adressen und URLs dürfen den Container nicht sprengen.
+   *
+   * `break-word` statt `anywhere`, seit keine Schrift mehr unter 16 px geht.
+   * `anywhere` erlaubt dem Layout, eine Spalte schmaler zu rechnen als ihr
+   * längstes Wort; bei 16 px wurde aus «Danach» ein «Danac» mit einem «h»
+   * darunter. `break-word` bricht nur, was allein nicht auf eine Zeile passt:
+   * eine Adresse, kein gewöhnliches Wort. Steht eine Adresse in einer engen
+   * Spalte, sagt die Stelle das selbst mit `wrap-anywhere`.
+   */
+  :where(h1, h2, h3, p, li, td, th, dd, dt) {
+    overflow-wrap: break-word;
+    text-wrap: pretty;
+  }
+
+  /*
+   * WebKit klammert die Beschriftung einer Auswahlliste nicht ein: die längste
+   * Option malt über den Rand der Liste hinaus und zieht die ganze Seite
+   * breiter, obwohl die Liste selbst schmal bleibt. Chromium tut das nicht.
+   * Seit die Schrift 16 px hat, genügte dafür «Owner — verwaltet Workspace und
+   * Mitglieder» (DIAGNOSTICS Nummer 25). Geöffnet zeigt das Gerät die ganze
+   * Zeile, deshalb kostet das Kürzen hier nichts.
+   */
+  select {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Sprungmarke für Tastaturbedienung. */

@@ -61,8 +61,8 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
-          <p className="mt-1 max-w-[62ch] text-sm text-muted">{m.lead}</p>
+          <h1 className="text-section font-semibold tracking-[-0.02em]">{m.heading}</h1>
+          <p className="mt-1 max-w-[62ch] text-body text-muted">{m.lead}</p>
         </div>
         <Button variant="primary" onClick={openDialog}>
           <Plus size={16} strokeWidth={2} aria-hidden="true" />
@@ -86,7 +86,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
                 <span className="flex flex-wrap items-center gap-3">
                   <RequestStatusBadge status={request.status} />
                   {request.projectName && (
-                    <span className="text-xs text-muted">{request.projectName}</span>
+                    <span className="text-body text-muted">{request.projectName}</span>
                   )}
                 </span>
               </Link>
@@ -100,14 +100,14 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
           {message && (
             <p
               role="alert"
-              className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+              className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
             >
               {message}
             </p>
           )}
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="portal-projekt" className="text-sm font-medium">
+            <label htmlFor="portal-projekt" className="text-body font-medium">
               {m.project}
             </label>
             <select

@@ -11,13 +11,13 @@ interface Common {
 function Wrapper({ id, label, error, hint, children }: Common & { children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-dense font-medium">
+      <label htmlFor={id} className="text-body font-medium">
         {label}
       </label>
       {children}
-      {hint && !error && <p className="text-micro text-muted">{hint}</p>}
+      {hint && !error && <p className="text-body text-muted">{hint}</p>}
       {error && (
-        <p id={`${id}-fehler`} className="text-dense text-danger">
+        <p id={`${id}-fehler`} className="text-body text-danger">
           {error}
         </p>
       )}

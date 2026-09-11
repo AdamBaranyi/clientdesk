@@ -97,14 +97,14 @@ export function TourDialog({ step, onNext, onBack, onClose }: TourDialogProps) {
         ].join(' ')}
         style={{ top: layout.card.top, left: layout.card.left }}
       >
-        <p className="text-micro font-mono text-muted">{m.progress(step + 1, TOUR_STEPS.length)}</p>
+        <p className="text-body font-mono text-muted">{m.progress(step + 1, TOUR_STEPS.length)}</p>
 
         {/* Ein Schrittwechsel ändert nur den Inhalt; der Screenreader liest ihn so neu vor. */}
         <div aria-live="polite" className="flex flex-col gap-2">
           <h2 className="text-body font-semibold">{text.title}</h2>
-          <p className="text-dense text-muted">{text.body}</p>
+          <p className="text-body text-muted">{text.body}</p>
           {current.id === 'navigation' && (
-            <dl className="text-dense flex flex-col gap-1.5">
+            <dl className="text-body flex flex-col gap-1.5">
               {SECTION_KEYS.map((key) => (
                 <div key={key}>
                   <dt className="inline font-medium">{sections[key]}</dt>{' '}

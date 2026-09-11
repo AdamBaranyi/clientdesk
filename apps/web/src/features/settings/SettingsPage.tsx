@@ -69,8 +69,8 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div>
-        <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
-        <p className="mt-1 text-sm text-muted">
+        <h1 className="text-section font-semibold tracking-[-0.02em]">{m.heading}</h1>
+        <p className="mt-1 text-body text-muted">
           {m.workspaceFacts(workspace.name, workspace.timezone, workspace.currency)}
         </p>
       </div>
@@ -78,13 +78,13 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
       <Card>
         <CardHeader
           title={m.invite.title}
-          action={<span className="text-xs text-muted">{m.invite.validity}</span>}
+          action={<span className="text-body text-muted">{m.invite.validity}</span>}
         />
         <form onSubmit={submit} className="flex flex-col gap-4 px-4 pb-5 sm:px-5">
           {message && (
             <p
               role="alert"
-              className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+              className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
             >
               {message}
             </p>
@@ -100,7 +100,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
           />
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="einladung-rolle" className="text-sm font-medium">
+            <label htmlFor="einladung-rolle" className="text-body font-medium">
               {m.invite.role}
             </label>
             <select
@@ -119,7 +119,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
 
           {role === 'client' && (
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="einladung-kunde" className="text-sm font-medium">
+              <label htmlFor="einladung-kunde" className="text-body font-medium">
                 {m.invite.customer}
               </label>
               <select
@@ -135,7 +135,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-muted">{m.invite.clientHint}</p>
+              <p className="text-body text-muted">{m.invite.clientHint}</p>
             </div>
           )}
 
@@ -153,10 +153,10 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
 
         {created && (
           <div className="border-t border-line-soft bg-raised px-4 py-4 sm:px-5">
-            <p className="text-sm font-medium">{m.created.linkFor(created.email)}</p>
-            <p className="mt-1 text-xs text-muted">{m.created.shownOnce}</p>
+            <p className="text-body font-medium">{m.created.linkFor(created.email)}</p>
+            <p className="mt-1 text-body text-muted">{m.created.shownOnce}</p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <code className="min-w-0 flex-1 overflow-x-auto rounded-sm border border-line bg-surface px-3 py-2.5 font-mono text-xs">
+              <code className="min-w-0 flex-1 overflow-x-auto rounded-sm border border-line bg-surface px-3 py-2.5 font-mono text-body">
                 {created.inviteUrl}
               </code>
               <Button onClick={() => void copyLink(created.inviteUrl)}>
@@ -184,7 +184,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
             >
               <div className="min-w-0 flex-1">
                 <p className="font-medium break-words">{invitation.email}</p>
-                <p className="mt-1 text-xs text-muted">
+                <p className="mt-1 text-body text-muted">
                   {roleName[invitation.role]}
                   {invitation.role === 'client'
                     ? ` · ${invitation.customerName ?? m.list.unknownCustomer}`

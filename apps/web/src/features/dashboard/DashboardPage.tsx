@@ -42,13 +42,13 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.title}</h1>
-          <p className="mt-1 text-sm text-muted">
+          <h1 className="text-section font-semibold tracking-[-0.02em]">{m.title}</h1>
+          <p className="mt-1 text-body text-muted">
             {workspace.name} · {m.timezone(workspace.timezone)}
           </p>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="dashboard-stichtag" className="text-xs font-medium text-muted">
+          <label htmlFor="dashboard-stichtag" className="text-body font-medium text-muted">
             {m.contractDateLabel}
           </label>
           <input
@@ -61,7 +61,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
               else next.delete('contractDate');
               setParams(next, { replace: true });
             }}
-            className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
+            className="text-body min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
           />
         </div>
       </div>
@@ -71,10 +71,10 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
       <Card>
         <CardHeader
           title={m.monthlyContractValue}
-          action={<span className="text-xs text-muted">{m.history.period}</span>}
+          action={<span className="text-body text-muted">{m.history.period}</span>}
         />
         <div className="px-4 pb-5 sm:px-5">
-          <p className="mb-3 text-xs text-muted">{m.history.note}</p>
+          <p className="mb-3 text-body text-muted">{m.history.note}</p>
           {/*
             Der Platzhalter ist genauso hoch wie das Diagramm. Ein Fallback mit
             anderer Höhe würde beim Nachladen den Rest der Seite verschieben —
@@ -82,7 +82,7 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
           */}
           <Suspense
             fallback={
-              <div className="text-dense flex h-[248px] items-center text-muted">
+              <div className="text-body flex h-[248px] items-center text-muted">
                 {m.history.chartLoading}
               </div>
             }
@@ -94,27 +94,27 @@ export function DashboardPage({ workspace }: { workspace: WorkspaceSummary }) {
 
       <Card>
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-5">
-          <h2 className="text-sm font-semibold">{m.attention.title}</h2>
+          <h2 className="text-body font-semibold">{m.attention.title}</h2>
           <Link
             to={`${base}/projects`}
-            className="-my-2 inline-flex min-h-11 items-center px-1 text-xs font-medium"
+            className="-my-2 inline-flex min-h-11 items-center px-1 text-body font-medium"
           >
             {m.attention.allProjects}
           </Link>
         </div>
 
         {attention.isPending && (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.attention.loading}</p>
+          <p className="px-4 pb-5 text-body text-muted sm:px-5">{m.attention.loading}</p>
         )}
         {attention.data && needsAttention.length === 0 && (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.attention.none}</p>
+          <p className="px-4 pb-5 text-body text-muted sm:px-5">{m.attention.none}</p>
         )}
         {needsAttention.length > 0 && (
           <ProjectRows projects={needsAttention} basePath={`${base}/projects`} />
         )}
       </Card>
 
-      <p className="text-xs text-muted">{m.requestsHint}</p>
+      <p className="text-body text-muted">{m.requestsHint}</p>
     </div>
   );
 }

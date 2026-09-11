@@ -32,14 +32,14 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div>
-        <h1 className="text-xl font-semibold tracking-[-0.02em]">{data.customerName}</h1>
-        <p className="mt-1 text-sm text-muted">{m.overview.managedBy(data.workspaceName)}</p>
+        <h1 className="text-section font-semibold tracking-[-0.02em]">{data.customerName}</h1>
+        <p className="mt-1 text-body text-muted">{m.overview.managedBy(data.workspaceName)}</p>
       </div>
 
       <Card>
         <CardHeader title={m.overview.yourProjects} />
         {data.projects.length === 0 ? (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.overview.noProjects}</p>
+          <p className="px-4 pb-5 text-body text-muted sm:px-5">{m.overview.noProjects}</p>
         ) : (
           <ul className="flex flex-col">
             {data.projects.map((project) => (
@@ -60,14 +60,14 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
           action={
             <Link
               to={portalPath(workspace.id, 'requests')}
-              className="-my-2 inline-flex min-h-11 items-center px-1 text-xs font-medium"
+              className="-my-2 inline-flex min-h-11 items-center px-1 text-body font-medium"
             >
               {r.all}
             </Link>
           }
         />
         {data.openRequests.length === 0 ? (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.overview.noOpenRequests}</p>
+          <p className="px-4 pb-5 text-body text-muted sm:px-5">{m.overview.noOpenRequests}</p>
         ) : (
           <ul className="flex flex-col">
             {data.openRequests.map((request) => (
@@ -96,7 +96,7 @@ export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary 
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
+      <h1 className="text-section font-semibold tracking-[-0.02em]">{m.heading}</h1>
 
       <Card>
         {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
@@ -108,12 +108,12 @@ export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary 
             >
               <p className="font-medium">{project.name}</p>
               {project.description && (
-                <p className="mt-1 max-w-[70ch] text-sm text-muted">{project.description}</p>
+                <p className="mt-1 max-w-[70ch] text-body text-muted">{project.description}</p>
               )}
               <div className="mt-3">
                 <ProjectProgress project={project} />
               </div>
-              <p className="mt-2 font-mono text-xs text-muted">
+              <p className="mt-2 font-mono text-body text-muted">
                 {m.schedule(
                   formatDate(project.startDate),
                   project.targetDate ? formatDate(project.targetDate) : null,
@@ -136,7 +136,7 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
+      <h1 className="text-section font-semibold tracking-[-0.02em]">{m.heading}</h1>
 
       <Card>
         {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
@@ -148,18 +148,18 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <p className="font-medium">{contract.name}</p>
-                <p className="font-mono text-sm">
+                <p className="font-mono text-body">
                   {contract.monthlyAmountMinor === null
                     ? m.amountPending
                     : m.perMonth(formatAmountMinor(contract.monthlyAmountMinor))}
                 </p>
               </div>
               {contract.publicDescription && (
-                <p className="mt-1.5 max-w-[70ch] text-sm text-muted">
+                <p className="mt-1.5 max-w-[70ch] text-body text-muted">
                   {contract.publicDescription}
                 </p>
               )}
-              <p className="mt-2 font-mono text-xs text-muted">
+              <p className="mt-2 font-mono text-body text-muted">
                 {m.term(
                   formatDate(contract.startDate),
                   contract.endDate ? formatDate(contract.endDate) : null,
@@ -183,7 +183,7 @@ export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
+      <h1 className="text-section font-semibold tracking-[-0.02em]">{m.heading}</h1>
 
       <Card>
         {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
@@ -195,14 +195,14 @@ export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary
             >
               <div className="min-w-0 flex-1">
                 <p className="font-medium break-words">{document.originalName}</p>
-                <p className="mt-1 font-mono text-xs text-muted">
+                <p className="mt-1 font-mono text-body text-muted">
                   {formatDate(document.createdAt.slice(0, 10))}
                   {document.projectName ? ` · ${document.projectName}` : ''}
                 </p>
               </div>
               <a
                 href={portalDownloadUrl(workspace.id, document.id)}
-                className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
+                className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm border border-line px-3 text-body font-medium text-muted no-underline hover:text-ink"
               >
                 <Download size={15} strokeWidth={1.8} aria-hidden="true" />
                 {m.download}

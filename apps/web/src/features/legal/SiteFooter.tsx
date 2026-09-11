@@ -8,7 +8,7 @@ export function SiteFooter() {
   const m = useMessages(legalMessages);
 
   return (
-    <footer className="text-micro flex flex-col gap-1 border-t border-line px-4 py-4 text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <footer className="text-body flex flex-col gap-1 border-t border-line px-4 py-4 text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
       <p>{m.footer(OPERATOR.name)}</p>
       <LegalLinks />
     </footer>

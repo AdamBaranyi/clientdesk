@@ -19,13 +19,13 @@ export function Pagination({ pagination, onChange }: Props) {
       aria-label={m.pages}
       className="flex flex-wrap items-center justify-between gap-3 border-t border-line-soft px-4 py-3 sm:px-5"
     >
-      <p className="text-xs text-muted">{m.pageOf(page, totalPages, totalItems)}</p>
+      <p className="text-body text-muted">{m.pageOf(page, totalPages, totalItems)}</p>
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={() => onChange(page - 1)}
           disabled={page <= 1}
-          className="flex min-h-11 items-center gap-1 rounded-sm border border-line px-3 text-sm text-muted disabled:opacity-40"
+          className="flex min-h-11 items-center gap-1 rounded-sm border border-line px-3 text-body text-muted disabled:opacity-40"
         >
           <ChevronLeft size={16} strokeWidth={1.8} aria-hidden="true" />
           {m.previous}
@@ -34,7 +34,7 @@ export function Pagination({ pagination, onChange }: Props) {
           type="button"
           onClick={() => onChange(page + 1)}
           disabled={page >= totalPages}
-          className="flex min-h-11 items-center gap-1 rounded-sm border border-line px-3 text-sm text-muted disabled:opacity-40"
+          className="flex min-h-11 items-center gap-1 rounded-sm border border-line px-3 text-body text-muted disabled:opacity-40"
         >
           {m.next}
           <ChevronRight size={16} strokeWidth={1.8} aria-hidden="true" />

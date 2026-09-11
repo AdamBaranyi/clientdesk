@@ -25,7 +25,7 @@ export function Dialog({ open, title, onClose, children }: DialogProps) {
     <Modal label={title} onClose={onClose}>
       <div className="flex max-h-[92dvh] w-full max-w-[520px] flex-col border border-line bg-surface">
         <div className="flex shrink-0 items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5">
-          <h2 className="text-dense font-semibold">{title}</h2>
+          <h2 className="text-body font-semibold">{title}</h2>
           <button
             type="button"
             onClick={onClose}

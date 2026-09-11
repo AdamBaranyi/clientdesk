@@ -39,7 +39,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <Link
         to={workspacePath(workspace.id, 'customers')}
-        className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
+        className="inline-flex items-center gap-1.5 text-body text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
         {m.detail.back}
@@ -48,7 +48,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <RecordHeading>{customer.name}</RecordHeading>
-          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-sm text-muted">
+          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-body text-muted">
             {customer.contactName && <span>{customer.contactName}</span>}
             {customer.archivedAt && <ArchivedBadge />}
           </div>
@@ -74,11 +74,11 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
         {customer.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
-            <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
+            <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">
               {m.fields.internalNote}
             </dt>
             {/* Erscheint nie im Kundenportal — die Client-DTOs führen dieses Feld gar nicht. */}
-            <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
+            <dd className="mt-1.5 max-w-[70ch] text-body whitespace-pre-line">
               {customer.internalNote}
             </dd>
           </div>
@@ -89,7 +89,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
         <CardHeader title={m.detail.projects} />
         {projects.isPending && <LoadingState label={m.detail.projectsLoading} />}
         {projects.data && projects.data.data.length === 0 && (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.detail.noProjects}</p>
+          <p className="px-4 pb-5 text-body text-muted sm:px-5">{m.detail.noProjects}</p>
         )}
         {projects.data && projects.data.data.length > 0 && (
           <ProjectRows
@@ -137,8 +137,8 @@ function Entry({
   const m = useMessages(customerMessages);
   return (
     <div className="min-w-0">
-      <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">{label}</dt>
-      <dd className="mt-1 text-sm">
+      <dt className="text-body font-semibold tracking-[0.06em] text-muted uppercase">{label}</dt>
+      <dd className="mt-1 text-body">
         {value ? (
           href ? (
             <a href={href} className="break-words">

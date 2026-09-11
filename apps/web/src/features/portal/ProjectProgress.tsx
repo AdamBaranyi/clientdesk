@@ -14,7 +14,7 @@ export function ProjectProgress({ project }: { project: ClientProject }) {
   return (
     <div className="flex flex-col gap-2">
       {project.progress === null ? (
-        <span className="text-xs text-muted">{m.noMilestones}</span>
+        <span className="text-body text-muted">{m.noMilestones}</span>
       ) : (
         <span className="flex items-center gap-2">
           <span className="h-1.5 w-24 shrink-0 overflow-hidden bg-line" aria-hidden="true">
@@ -23,14 +23,14 @@ export function ProjectProgress({ project }: { project: ClientProject }) {
               style={{ width: `${Math.round(project.progress * 100)}%` }}
             />
           </span>
-          <span className="font-mono text-xs text-muted">
+          <span className="font-mono text-body text-muted">
             {m.done(project.milestonesDone, project.milestoneCount)}
           </span>
         </span>
       )}
 
       {project.nextMilestone && (
-        <span className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="flex flex-wrap items-center gap-2 text-body">
           <span className="text-muted">{m.nextStep(project.nextMilestone.title)}</span>
           {project.nextMilestone.dueDate && (
             <span

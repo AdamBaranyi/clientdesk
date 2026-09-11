@@ -47,12 +47,12 @@ export function Topbar({
           Dort steht der Ort nur für Screenreader; sichtbar nennt ihn die
           Überschrift der Seite.
         */}
-        <nav aria-label={m.breadcrumbs} className="text-dense flex min-w-0 items-center gap-2">
+        <nav aria-label={m.breadcrumbs} className="text-body flex min-w-0 items-center gap-2">
           <span className="hidden truncate text-muted sm:inline">{workspace.name}</span>
           <span className="hidden text-muted sm:inline" aria-hidden="true">
             /
           </span>
-          <span className="font-condensed text-label truncate font-semibold tracking-[0.12em] uppercase max-[399px]:sr-only">
+          <span className="font-condensed text-body truncate font-semibold tracking-[0.06em] uppercase max-[399px]:sr-only">
             {label}
           </span>
         </nav>
@@ -68,22 +68,22 @@ export function Topbar({
           type="button"
           onClick={onOpenSearch}
           data-tour="palette"
-          className="text-dense flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink"
+          className="text-body flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink"
         >
           <Search size={15} strokeWidth={1.8} aria-hidden="true" />
           <span className="hidden sm:inline">{m.jumpTo}</span>
-          <kbd className="text-micro hidden border border-line px-1 font-mono md:inline">⌘K</kbd>
+          <kbd className="text-body hidden border border-line px-1 font-mono md:inline">⌘K</kbd>
           <span className="sr-only">{m.openSearch}</span>
         </button>
         <ThemeToggle />
-        <span className="text-dense hidden text-muted md:inline" title={user.email}>
+        <span className="text-body hidden text-muted md:inline" title={user.email}>
           {user.displayName}
         </span>
         <button
           type="button"
           onClick={onLogout}
           disabled={loggingOut}
-          className="text-dense flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
+          className="text-body flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
         >
           <LogOut size={15} strokeWidth={1.8} aria-hidden="true" />
           <span className="hidden sm:inline">{loggingOut ? m.signingOut : m.signOut}</span>

@@ -19,7 +19,7 @@ export function ContractStatusBadge({ status }: { status: ContractVisibleStatus 
   return (
     <span
       className={[
-        'inline-flex items-center gap-2 text-xs font-medium whitespace-nowrap',
+        'inline-flex items-center gap-2 text-body font-medium whitespace-nowrap',
         entry.text,
       ].join(' ')}
     >

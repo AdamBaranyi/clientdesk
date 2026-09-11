@@ -23,8 +23,8 @@ const zustandswechsel = 'transition-colors ease-state duration-[var(--dur-snap)]
  * Eine Zelle im Kennzahlband, gebaut wie ein Feld auf einem Datenblatt:
  * Teilstrich, Bezeichnung, Einheit, Messwert, Fussnote.
  *
- * Der eigentliche Effekt ist der Dichtekontrast — 72 Pixel Zahl gegen 11 Pixel
- * Einheit, also 6,5:1. Nicht die Bewegung.
+ * Der eigentliche Effekt ist der Dichtekontrast — 72 Pixel Zahl gegen 16 Pixel
+ * Einheit, also 4,5:1. Nicht die Bewegung.
  */
 export function MetricFigure({ label, unit, figure, cents, note, to, index, lead = false }: Props) {
   return (
@@ -35,13 +35,13 @@ export function MetricFigure({ label, unit, figure, cents, note, to, index, lead
     >
       <span aria-hidden className={`mb-3 h-2 w-px bg-line ${zustandswechsel} group-hover:bg-ink`} />
       <span
-        className={`font-condensed text-label font-semibold tracking-[0.08em] uppercase text-muted ${zustandswechsel} group-hover:text-ink`}
+        className={`font-condensed text-body font-semibold tracking-[0.06em] uppercase text-muted ${zustandswechsel} group-hover:text-ink`}
       >
         {label}
       </span>
 
       {unit ? (
-        <span className="mt-1 font-condensed text-micro tracking-[0.16em] uppercase text-muted">
+        <span className="mt-1 font-condensed text-body tracking-[0.06em] uppercase text-muted">
           {unit}
         </span>
       ) : null}
@@ -60,7 +60,7 @@ export function MetricFigure({ label, unit, figure, cents, note, to, index, lead
         {cents ? <span className="text-section text-muted">.{cents}</span> : null}
       </span>
 
-      <span className="mt-3 text-micro leading-snug text-muted">{note}</span>
+      <span className="mt-3 text-body leading-snug text-muted">{note}</span>
     </Link>
   );
 }

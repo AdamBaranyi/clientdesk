@@ -64,7 +64,7 @@ export function ChangePasswordCard({ isDemo }: { isDemo: boolean }) {
     <Card>
       <CardHeader title={m.title} />
       {isDemo ? (
-        <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.demo}</p>
+        <p className="px-4 pb-5 text-body text-muted sm:px-5">{m.demo}</p>
       ) : (
         <form
           noValidate
@@ -72,12 +72,12 @@ export function ChangePasswordCard({ isDemo }: { isDemo: boolean }) {
           className="flex max-w-[420px] flex-col gap-4 px-4 pb-5 sm:px-5"
         >
           {done && (
-            <p role="status" className="text-sm text-positive">
+            <p role="status" className="text-body text-positive">
               {m.done}
             </p>
           )}
           {failure && (
-            <p role="alert" className="text-sm text-danger">
+            <p role="alert" className="text-body text-danger">
               {failure}
             </p>
           )}

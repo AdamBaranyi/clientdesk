@@ -89,7 +89,7 @@ function FullPageMessage({ title, detail }: { title: string; detail?: string }) 
     <div className="flex min-h-dvh items-center justify-center px-4">
       <div className="max-w-[46ch] text-center">
         <p className="font-medium">{title}</p>
-        {detail && <p className="mt-2 text-sm text-muted">{detail}</p>}
+        {detail && <p className="mt-2 text-body text-muted">{detail}</p>}
       </div>
     </div>
   );

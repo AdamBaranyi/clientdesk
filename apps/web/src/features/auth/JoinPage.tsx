@@ -53,7 +53,7 @@ export function JoinPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
+      <div className="flex items-end justify-between gap-2 border-b border-line px-3 sm:gap-3 sm:px-6">
         <Wordmark name="Tallyroom" />
         <span className="flex items-center gap-2 pb-4">
           <LanguageToggle />
@@ -63,21 +63,21 @@ export function JoinPage() {
 
       <main className="flex flex-1 items-center justify-center px-3 py-6 sm:px-6">
         <div className="w-full max-w-[440px] border border-line bg-surface p-5 sm:p-7">
-          {preview.isPending && <p className="text-sm text-muted">{m.checking}</p>}
+          {preview.isPending && <p className="text-body text-muted">{m.checking}</p>}
 
           {preview.isError && (
             <>
-              <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.invalidTitle}</h1>
-              <p className="mt-2 text-sm text-muted">{m.invalidDetail}</p>
+              <h1 className="text-section font-semibold tracking-[-0.02em]">{m.invalidTitle}</h1>
+              <p className="mt-2 text-body text-muted">{m.invalidDetail}</p>
             </>
           )}
 
           {preview.data && (
             <>
-              <h1 className="text-xl font-semibold tracking-[-0.02em]">
+              <h1 className="text-section font-semibold tracking-[-0.02em]">
                 {m.title(preview.data.workspaceName)}
               </h1>
-              <p className="mt-1.5 text-sm text-muted">
+              <p className="mt-1.5 text-body text-muted">
                 {m.invitedAs(preview.data.email, roles[preview.data.role])}
               </p>
 
@@ -85,14 +85,14 @@ export function JoinPage() {
                 {error && (
                   <p
                     role="alert"
-                    className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+                    className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
                   >
                     {error}
                   </p>
                 )}
 
                 {preview.data.accountExists ? (
-                  <p className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-muted">
+                  <p className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-muted">
                     {m.accountExists}
                   </p>
                 ) : (

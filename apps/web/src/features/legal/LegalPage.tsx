@@ -27,7 +27,7 @@ export function LegalPage({ title, path, children }: LegalPageProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       <link rel="canonical" href={`${SITE_URL}${path}`} />
-      <header className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
+      <header className="flex items-end justify-between gap-2 border-b border-line px-3 sm:gap-3 sm:px-6">
         <Link to="/" aria-label={m.toHome} className="min-w-0">
           <Wordmark name="Tallyroom" />
         </Link>

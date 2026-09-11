@@ -35,7 +35,7 @@ export function LoginPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
+      <div className="flex items-end justify-between gap-2 border-b border-line px-3 sm:gap-3 sm:px-6">
         <Wordmark name="Tallyroom" />
         <span className="flex items-center gap-2 pb-4">
           <LanguageToggle />
@@ -45,8 +45,8 @@ export function LoginPage() {
 
       <main className="flex flex-1 items-center justify-center px-3 py-6 sm:px-6">
         <div className="w-full max-w-[400px] border border-line bg-surface p-5 sm:p-7">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.title}</h1>
-          <p className="mt-1.5 text-sm text-muted">{m.intro}</p>
+          <h1 className="text-section font-semibold tracking-[-0.02em]">{m.title}</h1>
+          <p className="mt-1.5 text-body text-muted">{m.intro}</p>
 
           <form
             noValidate
@@ -57,7 +57,7 @@ export function LoginPage() {
             {message && (
               <p
                 role="alert"
-                className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+                className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
               >
                 {message}
               </p>
@@ -102,7 +102,7 @@ function Field({ label, type, autoComplete, error, registration }: FieldProps) {
   const id = `feld-${registration.name}`;
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-dense font-medium">
+      <label htmlFor={id} className="text-body font-medium">
         {label}
       </label>
       <input
@@ -115,7 +115,7 @@ function Field({ label, type, autoComplete, error, registration }: FieldProps) {
         className={`min-h-11 ${CONTROL_BASE}`}
       />
       {error && (
-        <p id={`${id}-fehler`} className="text-dense text-danger">
+        <p id={`${id}-fehler`} className="text-body text-danger">
           {error}
         </p>
       )}

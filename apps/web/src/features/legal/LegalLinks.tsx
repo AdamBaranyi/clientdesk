@@ -16,7 +16,7 @@ export function LegalLinks({ className = '' }: { className?: string }) {
   return (
     <nav
       aria-label={m.navigation}
-      className={`text-micro flex flex-wrap gap-x-4 text-muted ${className}`}
+      className={`text-body flex flex-wrap gap-x-4 text-muted ${className}`}
     >
       <Link to="/impressum" className={LINK_CLASS}>
         {m.imprint}

@@ -49,7 +49,7 @@ export function CustomerForm({ customer, pending, error, onSubmit, onCancel }: P
       {message && (
         <p
           role="alert"
-          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-sm text-danger"
+          className="rounded-sm border border-line bg-raised px-3 py-2.5 text-body text-danger"
         >
           {message}
         </p>

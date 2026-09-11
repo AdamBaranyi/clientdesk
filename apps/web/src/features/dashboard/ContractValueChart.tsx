@@ -25,6 +25,13 @@ interface BarShapeProps {
   index?: number;
 }
 
+/**
+ * Achsen und Tooltip schreibt Recharts als SVG-Attribut, dort greift keine
+ * Klasse. Deshalb die Zahl hier — dieselbe wie --text-body in tokens.css,
+ * denn auch im Diagramm steht nichts unter 16 px.
+ */
+const CHART_TEXT = 16;
+
 function GrowingBar({ x, y, width, height, fill, index = 0 }: BarShapeProps) {
   return (
     <rect
@@ -67,15 +74,15 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
             <CartesianGrid stroke={colors.grid} vertical={false} />
             <XAxis
               dataKey="label"
-              tick={{ fill: colors.axis, fontSize: 11 }}
+              tick={{ fill: colors.axis, fontSize: CHART_TEXT }}
               tickLine={false}
               axisLine={{ stroke: colors.cursor }}
             />
             <YAxis
-              tick={{ fill: colors.axis, fontSize: 11 }}
+              tick={{ fill: colors.axis, fontSize: CHART_TEXT }}
               tickLine={false}
               axisLine={false}
-              width={56}
+              width={72}
               tickFormatter={(value: number) => value.toLocaleString('de-CH')}
             />
             <Tooltip
@@ -85,7 +92,7 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
                 border: '1px solid var(--line)',
                 borderRadius: 0,
                 fontFamily: 'var(--font-mono)',
-                fontSize: 12,
+                fontSize: CHART_TEXT,
               }}
               labelStyle={{ color: 'var(--muted)', fontFamily: 'var(--font-condensed)' }}
               formatter={(value) => [

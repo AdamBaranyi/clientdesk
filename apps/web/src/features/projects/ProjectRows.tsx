@@ -26,7 +26,7 @@ interface Props {
 function ProgressCell({ project }: { project: Project }) {
   const m = useMessages(projectMessages);
   if (project.progress === null) {
-    return <span className="text-micro">{m.noMilestonesYet}</span>;
+    return <span className="text-body">{m.noMilestonesYet}</span>;
   }
   const percent = Math.round(project.progress * 100);
   return (
@@ -34,7 +34,7 @@ function ProgressCell({ project }: { project: Project }) {
       <span className="h-1 w-16 shrink-0 bg-line" aria-hidden="true">
         <span className="block h-full bg-ink" style={{ width: `${percent}%` }} />
       </span>
-      <span className="text-micro font-mono tabular-nums">
+      <span className="text-body font-mono tabular-nums">
         {project.milestonesDone}/{project.milestoneCount}
       </span>
     </span>
@@ -45,7 +45,7 @@ function OverdueMark({ count }: { count: number }) {
   const m = useMessages(projectMessages);
   if (count === 0) return null;
   return (
-    <span className="text-micro inline-flex items-center gap-1.5 font-medium text-danger">
+    <span className="text-body inline-flex items-center gap-1.5 font-medium text-danger">
       <AlertCircle size={13} strokeWidth={2} aria-hidden="true" />
       {m.rows.overdue(count)}
     </span>
@@ -64,9 +64,7 @@ export function ProjectRows({ projects, basePath, showCustomer = true }: Props) 
               className="flex flex-col gap-2 px-4 py-4 text-ink hover:bg-raised"
             >
               <span className="font-medium">{project.name}</span>
-              {showCustomer && (
-                <span className="text-dense text-muted">{project.customerName}</span>
-              )}
+              {showCustomer && <span className="text-body text-muted">{project.customerName}</span>}
               <span className="flex flex-wrap items-center gap-3">
                 <ProjectStatusBadge status={project.status} />
                 <OverdueMark count={project.overdueMilestones} />

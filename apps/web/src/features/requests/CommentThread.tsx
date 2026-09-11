@@ -44,7 +44,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
 
   return (
     <div className="flex flex-col">
-      {comments.length === 0 && <p className="px-4 pb-4 text-sm text-muted sm:px-5">{m.empty}</p>}
+      {comments.length === 0 && <p className="px-4 pb-4 text-body text-muted sm:px-5">{m.empty}</p>}
 
       <ul className="flex flex-col">
         {comments.map((comment) => {
@@ -58,10 +58,12 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
               ].join(' ')}
             >
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm font-medium">{comment.authorName ?? m.unknownAuthor}</span>
+                <span className="text-body font-medium">
+                  {comment.authorName ?? m.unknownAuthor}
+                </span>
                 <span
                   className={[
-                    'inline-flex items-center gap-1.5 text-xs font-medium',
+                    'inline-flex items-center gap-1.5 text-body font-medium',
                     isInternal ? 'text-warning' : 'text-positive',
                   ].join(' ')}
                 >
@@ -72,11 +74,11 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
                   )}
                   {isInternal ? m.internalOnly : m.visibleToCustomer}
                 </span>
-                <span className="font-mono text-xs text-muted">
+                <span className="font-mono text-body text-muted">
                   {formatMoment(comment.createdAt, languageTag(locale))}
                 </span>
               </div>
-              <p className="mt-2 max-w-[75ch] text-sm whitespace-pre-line">{comment.body}</p>
+              <p className="mt-2 max-w-[75ch] text-body whitespace-pre-line">{comment.body}</p>
             </li>
           );
         })}
@@ -87,7 +89,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
         className="flex flex-col gap-3 border-t border-line-soft px-4 py-4 sm:px-5"
       >
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="kommentar-text" className="text-sm font-medium">
+          <label htmlFor="kommentar-text" className="text-body font-medium">
             {m.label}
           </label>
           <textarea
@@ -100,13 +102,13 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
         </div>
 
         <fieldset className="flex flex-col gap-2">
-          <legend className="text-xs font-medium text-muted">{m.visibility}</legend>
+          <legend className="text-body font-medium text-muted">{m.visibility}</legend>
           <div className="flex flex-col gap-2 sm:flex-row">
             {(['internal', 'public'] as const).map((option) => (
               <label
                 key={option}
                 className={[
-                  'flex min-h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-sm border px-3 text-sm',
+                  'flex min-h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-sm border px-3 text-body',
                   visibility === option ? 'border-ink bg-raised' : 'border-line',
                 ].join(' ')}
               >
@@ -142,7 +144,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
         </div>
 
         {add.isError && (
-          <p role="alert" className="text-sm text-danger">
+          <p role="alert" className="text-body text-danger">
             {m.saveFailed}
           </p>
         )}
