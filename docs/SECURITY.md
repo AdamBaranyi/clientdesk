@@ -73,6 +73,11 @@ laufen über die autorisierte API, antworten als Anhang und tragen eine Richtlin
 Ausführung im Dokument unterbindet. Löschen nimmt die Sichtbarkeit sofort — auch wenn der
 Objektspeicher gerade nicht erreichbar ist.
 
+Der Objektspeicher ist Garage. Ohne Signatur antwortet er mit 403, eine Signatur für eine andere
+Region weist er ab, und Website-Zugriff auf den Bucket ist aus. Geprüft beim Wechsel von MinIO am
+11.09.2026. Nach aussen ist nur der S3-Port offen, lokal an `127.0.0.1` gebunden. Der RPC-Port
+bleibt im Container-Netz.
+
 **Einladungen.** Nur der Hash des Tokens wird gespeichert; der Link erscheint genau einmal beim
 Anlegen. Rolle und Kundenbezug hängen an der Einladung, nicht am Request des Beitretenden. Die
 Annahme entwertet die Einladung in derselben Transaktion, in der die Mitgliedschaft entsteht. Bei

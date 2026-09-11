@@ -37,15 +37,16 @@ cp .env.example .env
 openssl rand -base64 48
 ```
 
-Datenbanken und Objektspeicher starten (Postgres auf 5440, Testdatenbank auf 5441, MinIO auf
-9000 mit Konsole auf 9001):
+Datenbanken und Objektspeicher starten (Postgres auf 5440, Testdatenbank auf 5441, Garage als
+S3-Speicher auf 3900):
 
 ```bash
 docker compose -f infra/docker-compose.yml up -d
 ```
 
-Der Bucket wird beim ersten Start angelegt und ist privat. Dokumente sind ausschliesslich über
-die autorisierte API erreichbar — es gibt keine öffentliche URL und keine vorsignierten Links.
+Garage legt Bucket und Zugangsschlüssel beim ersten Start selbst an. Der Bucket ist privat.
+Dokumente sind ausschliesslich über die autorisierte API erreichbar — es gibt keine öffentliche URL
+und keine vorsignierten Links.
 
 Migrationen anwenden und ein internes Konto anlegen:
 

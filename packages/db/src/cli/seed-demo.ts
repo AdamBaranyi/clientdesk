@@ -8,7 +8,7 @@ function argValue(name: string): string | undefined {
   return value && !value.startsWith('--') ? value : undefined;
 }
 
-/** Objektspeicher für die Beispieldokumente — lokal MinIO aus dem Compose-File. */
+/** Objektspeicher für die Beispieldokumente — lokal Garage aus dem Compose-File. */
 function storageFromEnv() {
   const endpoint = process.env.S3_ENDPOINT;
   const bucket = process.env.S3_BUCKET;
@@ -23,7 +23,7 @@ function storageFromEnv() {
     bucket,
     accessKeyId,
     secretAccessKey,
-    region: process.env.S3_REGION ?? 'eu-central-1',
+    region: process.env.S3_REGION ?? 'garage',
   });
 
   return {

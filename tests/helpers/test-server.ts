@@ -59,7 +59,7 @@ export async function startTestServer(options: TestServerOptions = {}): Promise<
     LOGIN_RATE_LIMIT_MAX: String(options.loginRateLimitMax ?? 1000),
     DEMO_ENABLED: options.demoEnabled === false ? 'false' : 'true',
     DEMO_RATE_LIMIT_MAX: String(options.demoRateLimitMax ?? 500),
-    S3_ENDPOINT: 'http://localhost:9000',
+    S3_ENDPOINT: 'http://localhost:3900',
     S3_BUCKET: 'test',
     S3_ACCESS_KEY_ID: 'test',
     S3_SECRET_ACCESS_KEY: 'test',

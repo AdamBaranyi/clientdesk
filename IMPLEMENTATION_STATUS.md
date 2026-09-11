@@ -243,8 +243,8 @@ Plan vom 11.09.2026, in dieser Reihenfolge:
 | Etappe | Inhalt                                                                                   | Stand        |
 | ------ | ---------------------------------------------------------------------------------------- | ------------ |
 | D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt     |
-| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | als Nächstes |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | offen        |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt     |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | als Nächstes |
 | D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | offen        |
 | D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | offen        |
 | D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | offen        |
@@ -264,6 +264,13 @@ Plan vom 11.09.2026, in dieser Reihenfolge:
   Registry, kein Zugangstoken. Der Deploy wird bewusst ausgelöst, eine grüne Pipeline allein
   deployt nichts.
 - **Pflichtseiten vor dem Livegang**, weil die Seite ab dem ersten Tag Anmeldungen verarbeitet.
+
+**D1 im Einzelnen.** Garage v2.4.1 im Einzelserver-Modus, Schlüssel und Bucket entstehen beim
+ersten Start. Geprüft: 166 von 166 Tests grün, 147 End-to-End-Prüfungen grün, im Browser eine Demo
+gestartet, alle sechs Dokumente über die API als PDF geladen, eines angelegt und wieder gelöscht
+(Status `deleted`, nicht `pending_deletion`). Die lokalen Entwicklungsdokumente sind umgezogen: 6
+Objekte, byteweise gleich gross, jedes aktive Dokument der Datenbank hat seine Datei. Der alte
+MinIO-Container ist gestoppt, sein Volume bleibt, bis es jemand ausdrücklich löscht.
 
 **D4 im Einzelnen: Pflichtseiten und Lighthouse (6b).** Lighthouse lässt sich erst gegen die
 laufende Domain prüfen und läuft deshalb in D6.

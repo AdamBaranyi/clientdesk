@@ -93,6 +93,15 @@ und kein buchhalterischer Umsatz; die Oberfläche sagt das an jeder Stelle dazu.
 **Bun statt Node.** Schnellere Installation und Ausführung, TypeScript läuft direkt ohne
 Transpilat. Für den Server entsteht deshalb kein Build-Artefakt; `build` prüft dort nur die Typen.
 
+**Garage statt MinIO.** Der Objektspeicher war bis Meilenstein 6 MinIO. Dessen
+Community-Repository ist seit dem 12.02.2026 archiviert, fertige Images gibt es seit Oktober 2025
+nicht mehr, und das gepinnte `RELEASE.2025-09-07` hätte nie wieder eine Sicherheitskorrektur
+bekommen. Für einen öffentlichen Server ist das kein Zustand. Garage ist S3-kompatibel, gepflegt
+und legt im Einzelserver-Modus Schlüssel und Bucket beim ersten Start selbst an. Der Code merkt
+davon nichts, weil er nur Schreiben, Lesen und Löschen über Buns eingebauten S3-Client nutzt, keine
+Eigenheit eines Anbieters. Lizenz AGPL-3.0; Garage läuft als eigenständiger, unveränderter Dienst,
+für diesen Code entstehen daraus keine Pflichten.
+
 **Kein Keycloak.** Geprüft und verworfen: die Rollen hängen hier an `(workspace, customer)` und
 nicht an Realms oder Gruppen, die Demo legt pro Besucher Wegwerf-Identitäten an, und die negativen
 Sicherheitstests wären gegen einen externen Identitätsanbieter deutlich schwerer zu schreiben.
