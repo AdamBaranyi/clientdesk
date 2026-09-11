@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { demoWorkspaceId, expectNoHorizontalOverflow, warteAufSchriften } from './helpers.ts';
+import {
+  demoWorkspaceId,
+  expectNoHorizontalOverflow,
+  expectReadableText,
+  warteAufSchriften,
+} from './helpers.ts';
 
 test.describe('Prüfbreiten', () => {
   test('Startseite läuft nicht seitlich', async ({ page }) => {
@@ -34,16 +39,16 @@ test.describe('Prüfbreiten', () => {
     await expectNoHorizontalOverflow(page);
   });
 
-  test('Liste wechselt bei 640 Pixeln zwischen Tabelle und Karten', async ({ page }, testInfo) => {
+  test('Liste wechselt bei 1024 Pixeln zwischen Tabelle und Karten', async ({ page }, testInfo) => {
     const breite = page.viewportSize()?.width ?? 0;
     const workspaceId = demoWorkspaceId();
     await page.goto(`/app/${workspaceId}/customers`);
     await warteAufSchriften(page);
 
     const tabelle = page.getByRole('table');
-    const karten = page.locator('ul.sm\\:hidden');
+    const karten = page.locator('ul.lg\\:hidden');
 
-    if (breite < 640) {
+    if (breite < 1024) {
       await expect(tabelle, `bei ${testInfo.project.name} darf keine Tabelle stehen`).toBeHidden();
       await expect(karten.first()).toBeVisible();
     } else {
@@ -121,6 +126,8 @@ test.describe('Übersetzungen bei 320 Pixeln', () => {
         await expect(page.locator('html')).toHaveAttribute('lang', `${locale}-CH`);
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
         await expectNoHorizontalOverflow(page);
+        // Längere Wörter, gleiche Schrift: hier bricht am ehesten eins mitten durch.
+        await expectReadableText(page);
       }
     });
   }

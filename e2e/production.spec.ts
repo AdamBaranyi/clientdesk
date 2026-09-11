@@ -1,4 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
+import {
+  expectNamedFormFields,
+  expectNoHorizontalOverflow,
+  expectReadableText,
+} from './helpers.ts';
 
 /**
  * Prüft den Produktionsaufbau aus infra/compose.prod.yml von aussen: Header,
@@ -48,6 +53,9 @@ async function visitEveryLinkIn(page: Page, navigationName: string): Promise<str
     await link.click();
     await page.waitForLoadState('networkidle');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // Dieselbe Regel wie in font-size.spec.ts, hier auch für die Kundenansicht.
+    await expectReadableText(page);
+    await expectNamedFormFields(page);
     visited.push(name);
   }
   return visited;
@@ -135,6 +143,22 @@ test('ein Demo-Durchgang ohne CSP-Verstoss und ohne Konsolenfehler', async ({ pa
   await page.waitForLoadState('networkidle');
   const portalPages = await visitEveryLinkIn(page, 'Portalnavigation');
   expect(portalPages.length).toBeGreaterThan(0);
+
+  // Die Kundenansicht noch einmal bei 320 Pixeln. Dort steht ihre Navigation
+  // hinter dem Hamburger, und die Schrift hält trotzdem 16 px.
+  await page.setViewportSize({ width: 320, height: 800 });
+  for (let index = 0; index < portalPages.length; index++) {
+    await page.getByRole('button', { name: 'Navigation öffnen' }).click();
+    await page
+      .getByRole('navigation', { name: 'Portalnavigation' })
+      .getByRole('link')
+      .nth(index)
+      .click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expectReadableText(page);
+    await expectNoHorizontalOverflow(page);
+  }
 
   // Abmelden führt zur Startseite, nicht zur Anmeldung.
   await page.getByRole('button', { name: 'Abmelden' }).click();

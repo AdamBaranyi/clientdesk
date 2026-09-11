@@ -33,6 +33,10 @@ jobs:
       - name: Dateilängenprüfung
         run: bun run check:file-length
 
+      # Feste Projektregel: keine Schrift unter 16 px. Den Browser prüft e2e/font-size.spec.ts.
+      - name: Schriftgrössenprüfung
+        run: bun run check:font-floor
+
       - name: Lint
         run: bun run lint
 
