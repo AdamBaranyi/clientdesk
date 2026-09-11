@@ -28,7 +28,10 @@ const NORMEN = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
  * `reduce` schaltet die Eintritte ab und lässt den Ruhezustand stehen. Genau
  * den soll axe messen; die Bewegung selbst prüft focus.spec.ts.
  */
-test.use({ reducedMotion: 'reduce' });
+// Unter contextOptions, nicht direkt: `reducedMotion` ist in Playwright keine
+// eigene Testoption, und test.use übergeht Unbekanntes ohne Warnung. So lief
+// dieser Test bis zum 11.09.2026 in Wahrheit mit Bewegung.
+test.use({ contextOptions: { reducedMotion: 'reduce' } });
 
 async function pruefe(page: Page, thema: 'light' | 'dark') {
   await page.emulateMedia({ colorScheme: thema });

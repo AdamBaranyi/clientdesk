@@ -28,9 +28,9 @@ export async function expectNoHorizontalOverflow(page: Page): Promise<void> {
       .filter(({ rect }) => rect.width > 0 && rect.right > breite + 1)
       .slice(0, 3)
       .map(({ el, rect }) => {
-        const klasse =
-          (el.className instanceof SVGAnimatedString ? el.className.baseVal : el.className) || '';
-        return `${el.tagName.toLowerCase()}.${String(klasse).split(' ').slice(0, 3).join('.')} bis ${Math.round(rect.right)}px`;
+        // getAttribute statt className: bei SVG ist className kein Text.
+        const klasse = el.getAttribute('class') ?? '';
+        return `${el.tagName.toLowerCase()}.${klasse.split(' ').slice(0, 3).join('.')} bis ${Math.round(rect.right)}px`;
       });
 
     return { scrollWidth: wurzel.scrollWidth, clientWidth: breite, schuldige };
