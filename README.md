@@ -110,7 +110,7 @@ Denselben Weg gibt es für die API auf Port 4000.
 ## Prüfbefehle
 
 ```bash
-bun run verify   # Format, Dateilänge, Lint, Typen
+bun run verify   # Format, Dateilänge, Schriftgrösse, Lint, Typen
 bun run test     # Unit- und Integrationstests
 bun run test:e2e # Playwright über sechs Breiten
 bun run test:e2e:browsers # dieselben Prüfungen in Safaris und Firefox' Engine
@@ -119,7 +119,7 @@ bun run test:e2e:browsers # dieselben Prüfungen in Safaris und Firefox' Engine
 Die Integrationstests brauchen die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.
 `bun run test` liest die Datei nicht selbst, deshalb lokal: `bun --env-file=.env run vitest run`.
 
-Stand 11.09.2026: 207 Unit- und Integrationstests, 228 Playwright-Prüfungen über sechs Breiten
+Stand 12.09.2026: 214 Unit- und Integrationstests, 292 Playwright-Prüfungen über sechs Breiten
 (samt axe, allen vier Sprachen und dem Rundgang) und eine Produktionsprüfung gegen den Liveserver
 mit 3 von 3. Einzelheiten in [docs/TESTING.md](docs/TESTING.md).
 

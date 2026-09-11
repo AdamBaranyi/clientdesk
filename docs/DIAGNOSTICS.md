@@ -510,12 +510,70 @@ Produktionsprüfung meldet sich jetzt am Ende ab und erwartet «Demo starten».
 
 ---
 
+## 24 · «Danac» mit einem «h» darunter
+
+**Symptom.** Neue Regel des Betreibers: keine Schrift unter 16 px. Nach der Umstellung stand auf der
+Startseite bei 320 Pixeln «DATENBESTA» und darunter ein einsames «ND». In den Tabellen dasselbe:
+«Stichta/g», «Abgeschlos/sen».
+
+**Messung.** Die Prüfung misst seither jedes Wort einzeln: ein `Range` um das Wort, und wenn seine
+Rechtecke auf zwei Zeilen liegen, ist es mitten im Wort gebrochen (`expectReadableText` in
+`e2e/helpers.ts`). Erster Lauf: 18 von 66 Prüfungen rot, jede mit Wortbruch.
+
+**Ursache.** Zwei Dinge zusammen. Erstens `overflow-wrap: anywhere` als Grundregel für Text: sie
+erlaubt dem Layout, eine Spalte schmaler zu rechnen als ihr längstes Wort. Bei 11 px fiel das nicht
+auf, bei 16 px sofort. Zweitens stand die Regel ungeschichtet in `global.css` und schlug damit jede
+Tailwind-Utility, auch `wrap-break-word` — der erste Versuch, es an der Stelle zu berichtigen,
+wirkte deshalb gar nicht. Dieselbe Falle wie zweimal vorher mit `no-underline` und `text-muted`.
+
+**Korrektur.** Die Grundregel liegt jetzt in `@layer base` und heisst `break-word`: es bricht nur,
+was allein nicht auf eine Zeile passt — eine Adresse, kein gewöhnliches Wort. Danach wollte die
+schmalste Tabelle 765 Pixel, verfügbar waren 718. Also Zellen etwas dichter und die Grenze zwischen
+Tabelle und Karten bei 1024 statt 640 Pixeln: Karten, solange die Seitenleiste nicht steht.
+
+**Regel.** Schrift zu vergrössern ist eine Layoutänderung, keine Stiländerung. Wer sie macht, misst
+an der schmalsten Breite — und am einzelnen Wort, nicht am Seitenrand.
+
+---
+
+## 25 · Nur in WebKit: die Auswahlliste diktierte die Seitenbreite
+
+**Symptom.** Nach der Umstellung auf 16 px lief die Einstellungsseite in Safaris Engine seitlich
+über, bei 375 und bei 393 Pixeln: `scrollWidth` 429 statt 375. In Chromium bei denselben Breiten
+nicht. Die Meldung nannte kein schuldiges Element — kein Kasten ragte über den Rand.
+
+**Messung.** Jedes Element der Seite einmal auf `display: none` gesetzt und danach neu gemessen. Es
+blieb genau eines übrig: die Auswahlliste für die Rolle einer Einladung, deren längste Option «Owner
+— verwaltet Workspace und Mitglieder» heisst. Ihr eigener Kasten war dabei 317 Pixel breit und passte
+damit auf das Gerät.
+
+**Erste Erklärung, die nicht stimmte.** «WebKit nimmt die breiteste Option als Mindestbreite, und die
+Flex-Spalten reichen sie nach oben durch.» Dagegen half `min-w-0` auf der Liste — gemessen: nichts,
+weiterhin 429. Ebenso wenig `max-width: 100%` oder `min-width: 0` auf allen Flex-Kindern.
+
+**Ursache.** Nicht der Kasten ist zu breit, sondern sein Inhalt: WebKit klammert die Beschriftung
+einer Auswahlliste nicht ein. Sie malt über den Rand hinaus und vergrössert damit den scrollbaren
+Bereich des Dokuments. `select { overflow: hidden }` brachte die Seite auf 375 zurück, kürzere
+Optionstexte ebenso — die Liste selbst blieb in beiden Fällen 317 Pixel breit. Bei 13 px reichte der
+Text nicht über den Rand, bei 16 px schon.
+
+**Korrektur.** Eine Grundregel in `@layer base`: Auswahllisten klammern ihren Text ein und kürzen ihn
+mit Auslassungspunkten. Geöffnet zeigt das Gerät die ganze Zeile, es geht also nichts verloren.
+
+**Regel.** Ein Überlauf ohne schuldiges Element kommt von Inhalt, der über seinen Kasten hinausragt —
+nicht von einem zu breiten Kasten. Und ein Engine-Unterschied fällt erst auf, wenn man in beiden
+Engines prüft.
+
+---
+
 ## Was daraus als Werkzeug geblieben ist
 
 | Werkzeug                    | Hält fest                                                    |
 | --------------------------- | ------------------------------------------------------------ |
 | `bun run verify`            | Format, Dateilänge, Lint samt `jsx-a11y`, Typen              |
-| `bun run test`              | 196 Unit- und Integrationstests                              |
-| `bun run test:e2e`          | 228 Prüfungen über sechs Breiten, samt axe und vier Sprachen |
+| `bun run test`              | 214 Unit- und Integrationstests                              |
+| `bun run test:e2e`          | 292 Prüfungen über sechs Breiten, samt axe und vier Sprachen |
+| `bun run check:font-floor`  | Keine Schrift unter 16 px, im Quelltext                      |
+| `e2e/font-size.spec.ts`     | Dasselbe im Browser, dazu kein Wort mitten im Wort gebrochen |
 | `bun run check:bundle-size` | Erstlast 142 KB, CSS 8 KB, Diagramm 115 KB, je gzip          |
 | `e2e/production.spec.ts`    | Header, CSP ohne Verstoss auch ohne Konsoleneintrag, Demo    |

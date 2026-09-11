@@ -1,9 +1,9 @@
 # Umsetzungsstand
 
-Stand: 11.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · live unter
+Stand: 12.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · live unter
 <https://tallyroom.adambaranyi.xyz> · Meilenstein 6: D0 bis D7 erledigt, D8 in Arbeit
 
-207 Unit- und Integrationstests · 228 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
+214 Unit- und Integrationstests · 292 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
 und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
@@ -308,8 +308,30 @@ E2E-Tests liefen durch keinen Typecheck (DIAGNOSTICS Nummer 20). Beides behoben.
   Wunsch des Betreibers. Mit vollständigem Neuladen, weil die geschützte Seite sonst zuerst zur
   Anmeldung schickt (DIAGNOSTICS Nummer 23). Die Produktionsprüfung meldet sich am Ende ab.
 - Die ganze Suite läuft zusätzlich in WebKit und Firefox, auf iPhone, iPad und am Schreibtisch
-  (`bun run test:e2e:browsers`): 232 bestanden. Die Fokustests öffnen jetzt per Tastatur, weil
+  (`bun run test:e2e:browsers`): 296 bestanden. Die Fokustests öffnen jetzt per Tastatur, weil
   Safari Knöpfe bei einem Klick nicht fokussiert (DIAGNOSTICS Nummer 22).
+
+## Erledigt — Schrift ab 16 px (12.09.2026)
+
+Regel des Betreibers: keine Schrift unter 16 px, auf keiner Seite und keiner Breite, Kopf- und
+Fusszeile ausdrücklich eingeschlossen. Das alte Arbeitsband von 11 bis 14 px ist damit weg.
+
+- Ein Arbeitsgrad statt vier Stufen: `--text-body` mit 16 px trägt Fliesstext, Tabellen, Label und
+  Bedienelemente. Den Unterschied tragen jetzt Schnitt, Versalien, Gewicht und Farbe. Darüber die
+  Stufen 24, 32, 48, 72.
+- Tailwinds `text-xs` und `text-sm` werden gar nicht mehr erzeugt (`initial` im Theme), damit
+  darunter auch aus Versehen nichts mehr entsteht.
+- Seitentitel 20 → 24 px, damit die Überschrift über dem Fliesstext bleibt. Wortmarke 12 → 20 px,
+  unter 400 Pixeln stufenlos bis 16 px — sonst passt sie nicht neben Sprach- und Themenschalter.
+- Diagrammachsen und Tooltip 11 und 12 → 16 px, Fusszeile mit Impressum und Datenschutz 11 → 16 px.
+- Folge der grösseren Schrift: die Grenze zwischen Tabelle und Karten liegt bei 1024 statt 640
+  Pixeln, und die Grundregel für Umbrüche heisst `break-word` statt `anywhere`
+  (DIAGNOSTICS Nummer 24).
+- Zwei Prüfungen halten die Regel: `bun run check:font-floor` im Quelltext, in der CI, und
+  `e2e/font-size.spec.ts` im Browser — jede Seite, jeder Dialog, jede der sechs Breiten, dazu kein
+  Wort mitten im Wort gebrochen und jedes Formularfeld mit id oder name.
+- Nebenbei erledigt: die drei Formularfelder ohne id und name, die Chrome in den DevTools gemeldet
+  hat (Eingabe der Kommandopalette, Dateiauswahl der Dokumente, Sprachwahl).
 
 ## Offen — Meilenstein 6: Deployment
 

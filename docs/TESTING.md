@@ -3,30 +3,31 @@
 Befunde, die beim Prüfen entstanden sind, stehen in [DIAGNOSTICS.md](DIAGNOSTICS.md) —
 mit Messung, Ursache und Korrektur, einschliesslich der drei Fehldiagnosen.
 
-Stand: 11.09.2026, mit vier Sprachen und dem Rundgang durch die Demo.
+Stand: 12.09.2026, mit vier Sprachen, dem Rundgang durch die Demo und der Regel, dass
+keine Schrift unter 16 px geht.
 
 ## In der CI
 
 Jeder Push auf `main` startet `.github/workflows/ci.yml` mit sechs Jobs. Eine grüne Pipeline
 deployt nichts, der Deploy wird bewusst ausgelöst.
 
-| Job                            | Was er prüft                                                                |
-| ------------------------------ | --------------------------------------------------------------------------- |
-| Format, Dateilänge, Lint       | Prettier, 400-Zeilen-Grenze, ESLint samt `jsx-a11y`, Typen in allen Paketen |
-| Tests gegen echte Datenbank    | alle Unit- und Integrationstests gegen PostgreSQL 18                        |
-| Build                          | Build der Oberfläche und die Auslieferungsgrösse gegen ihr Budget           |
-| Secret-Scan und Abhängigkeiten | gitleaks über jeden Commit, `bun audit` blockierend ab „hoch"               |
-| Playwright über sechs Breiten  | die End-to-End-Prüfungen samt axe, gegen Entwicklungsserver und Garage      |
-| Produktionsaufbau von aussen   | Images bauen, Aufbau starten wie auf dem Server, `e2e/production.spec.ts`   |
+| Job                            | Was er prüft                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------ |
+| Format, Dateilänge, Lint       | Prettier, 400 Zeilen, keine Schrift unter 16 px, ESLint samt `jsx-a11y`, Typen |
+| Tests gegen echte Datenbank    | alle Unit- und Integrationstests gegen PostgreSQL 18                           |
+| Build                          | Build der Oberfläche und die Auslieferungsgrösse gegen ihr Budget              |
+| Secret-Scan und Abhängigkeiten | gitleaks über jeden Commit, `bun audit` blockierend ab „hoch"                  |
+| Playwright über sechs Breiten  | die End-to-End-Prüfungen samt axe, gegen Entwicklungsserver und Garage         |
+| Produktionsaufbau von aussen   | Images bauen, Aufbau starten wie auf dem Server, `e2e/production.spec.ts`      |
 
 ## Ausgeführt
 
 ```bash
-bun run verify   # Format, Dateilänge, Lint, Typen
+bun run verify   # Format, Dateilänge, Schriftgrösse, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 11.09.2026: **207 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+Ergebnis vom 12.09.2026: **214 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
 allen vier Paketen sauber, alle Code-Dateien unter der 400-Zeilen-Grenze (längste: 378 Zeilen).
 
 Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
@@ -46,10 +47,10 @@ bun run test:e2e        # alle sechs Breiten
 bun run test:e2e:ui     # zum Nachsehen, wenn etwas rot ist
 ```
 
-**228 Prüfungen im Lauf, rund zwei Minuten** (11.09.2026). Dazu kommen 60 übersprungene,
+**292 Prüfungen im Lauf, gut zwei Minuten** (12.09.2026). Dazu kommen 62 übersprungene,
 alle mit Absicht: Die drei Messungen gegen Lastdaten und die sechs Sprachprüfungen laufen nur bei
-1440 Pixeln, die drei Breitenprüfungen der Übersetzungen nur bei 320. Sechsmal dieselbe Zahl
-wäre keine zusätzliche Erkenntnis.
+1440 Pixeln, die drei Breitenprüfungen der Übersetzungen nur bei 320, und die Navigation hinter
+dem Hamburger nur unter 1024. Sechsmal dieselbe Zahl wäre keine zusätzliche Erkenntnis.
 
 Sechs Projekte, eines je Prüfbreite. **Es wird nie mitten im Test die Fenstergrösse verändert.**
 Manche Umgebungen ändern das Layout, ohne der Seite Bescheid zu sagen — dann feuert weder `resize`
@@ -60,7 +61,7 @@ statt neu zu laden, prüft ein Artefakt.
 Geprüft wird je Breite: kein waagerechter Überlauf auf Startseite, Impressum, Datenschutz, Dashboard
 und Kundenliste — die
 Zusicherung nennt beim Scheitern das schuldige Element; der Wechsel zwischen Tabelle und Karten bei
-640 Pixeln; die Seitenleiste fest ab 1024 und darunter hinter dem Hamburger, samt Escape; und dass
+1024 Pixeln; die Seitenleiste fest ab 1024 und darunter hinter dem Hamburger, samt Escape; und dass
 der Fliesstext bei 16 Pixeln bleibt.
 
 Dazu Fokus und Tastatur: der Dialog sperrt den Hintergrund aus, gibt den Fokus an seinen Auslöser
@@ -106,6 +107,16 @@ und Rollenwechsel, und nach dem Ende bleibt er zu. Der Knopf im Banner startet i
 beendet ihn, der Fokus kehrt an den Knopf zurück. axe hell und dunkel ohne Verstoss. Die
 Platzierung selbst rechnen elf Unit-Tests nach (`tour-position.test.ts`).
 
+**Schrift ab 16 px** (`e2e/font-size.spec.ts`, alle sechs Breiten): Startseite, Anmeldung,
+Impressum, Datenschutz, ein ungültiger Einladungslink, alle sieben Bereiche der Teamansicht, je eine
+Detailseite, die vier Anlege-Dialoge, die Kommandopalette mit Treffern, jeder Schritt des Rundgangs
+und die Navigation hinter dem Hamburger. Gemessen wird nicht die Klasse, sondern was der Browser
+rechnet: jeder sichtbare Text, jedes Eingabefeld, jeder Text aus `::before` und `::after`. An
+derselben Stelle zwei Dinge, die mit grösserer Schrift zusammenhängen: kein Wort, das mitten im Wort
+umbricht (DIAGNOSTICS Nummer 24), und kein Formularfeld ohne id oder name — das meldet Chrome sonst
+in den DevTools. Die Kundenansicht prüft `e2e/production.spec.ts` mit, bei voller Breite und noch
+einmal bei 320 Pixeln.
+
 ### Gegen den Produktionsaufbau
 
 ```bash
@@ -118,7 +129,9 @@ PostgreSQL und Garage aus `infra/compose.prod.yml`, lokal auf `https://localhost
 `PRODUCTION_URL` gegen den Server. Geprüft: die Sicherheitsheader samt Content Security Policy ohne
 `unsafe-inline`, dann eine Demo durch jede Seite der Teamansicht, eine Detailseite mit
 Seitenübergang, die Kommandopalette mit Treffern, ein Dokument über die API (PDF, Anhang,
-`sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Vorher einmal der ganze
+`sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel, diese zusätzlich bei 320
+Pixeln. Auf jeder Seite prüft der Lauf mit, dass keine Schrift unter 16 px steht und jedes
+Formularfeld eine id oder einen name hat. Vorher einmal der ganze
 Rundgang, mit dem jede neue Demo beginnt. Zum Schluss abmelden: das führt zur Startseite, nicht
 zur Anmeldung. Jeder Konsolenfehler lässt den
 Test scheitern, auch jeder CSP-Verstoss — und weil nicht jeder Verstoss in der Konsole erscheint,
@@ -128,7 +141,7 @@ dazu kam, steht in [DIAGNOSTICS.md](DIAGNOSTICS.md), Nummer 17.
 Dazu prüft ein eigener Test, dass das Impressum Anschrift und E-Mail nennt. Die Angaben kommen
 erst beim Bauen dazu, und ohne diesen Test fiele ein leeres Impressum niemandem auf.
 
-Ergebnis vom 11.09.2026, lokal: **3 von 3 grün, null Verstösse, null Konsolenfehler.** Die Null
+Ergebnis vom 12.09.2026, lokal: **3 von 3 grün, null Verstösse, null Konsolenfehler.** Die Null
 ist gegengeprüft: Ein absichtlich eingeschleustes Inline-Skript, ein Inline-Style und ein fremdes
 Bild wurden alle drei als Verstoss erkannt, und der stille Verstoss von Zod lässt die geschärfte
 Fassung gegen den alten Stand auf dem Server scheitern. Ein Test, der nie scheitern kann, wäre
@@ -147,9 +160,11 @@ bun run test:e2e:browsers
 
 Dieselbe Suite in den Engines von Safari und Firefox, auf Geräten statt nur auf Breiten: iPhone SE
 und iPhone 15 und iPad Pro 11 mit Touch, Pixeldichte und iOS-Kennung (WebKit), Safari und Firefox
-bei 1440 Pixeln, Firefox bei 390. Ergebnis vom 11.09.2026: **232 bestanden, keine rot**, dazu 56
+bei 1440 Pixeln, Firefox bei 390. Ergebnis vom 12.09.2026: **296 bestanden, keine rot**, dazu 58
 übersprungene, die an eine bestimmte Breite gebunden sind. Der erste Lauf hatte 14 rote; keiner
-davon war ein Fehler der Anwendung (DIAGNOSTICS Nummer 22).
+davon war ein Fehler der Anwendung (DIAGNOSTICS Nummer 22). Am 12.09.2026 kamen zwei rote dazu,
+die es doch waren: in WebKit zog die Auswahlliste der Rollen die Seite auf (DIAGNOSTICS
+Nummer 25).
 
 Nicht Teil der CI, weil beide Browser ein eigener Download sind. WebKit auf dem Mac ist Safaris
 Engine, aber nicht iOS; ein echtes iPhone ersetzt es nicht. Edge ist Chromium und damit durch die
@@ -179,6 +194,11 @@ bestanden**, 16 Tabellen, 18 aktive Dokumente mit Datei, 18 Objekte gleich.
 **Dateilängen-Zählweise** (`scripts/check-file-length.test.mjs`, 12 Tests) — leere Datei, mit und
 ohne abschliessenden Zeilenumbruch, doppelter Umbruch, Leerzeilen und Kommentare, sowie die
 Grenzfälle 399, 400 und 401 Zeilen.
+
+**Schrift-Untergrenze** (`scripts/check-font-floor.test.mjs`, 7 Tests) — Tailwinds `text-xs` und
+`text-sm` samt Präfix, Grössen in eckigen Klammern in px und rem, `fontSize` in Objekten und
+JSX-Attributen, `font-size` in CSS, die Grössen-Tokens selbst und die Untergrenze von `clamp()`.
+Kommentare zählen nicht, Adressen mit `//` bleiben stehen.
 
 **Mandantentrennung** (`tests/integration/tenant-isolation.test.ts`) — gegen eine echte
 PostgreSQL-Testdatenbank, mit zwei Workspaces und zwei Ownern:

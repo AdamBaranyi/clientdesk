@@ -109,7 +109,7 @@ The same applies to the API on port 4000.
 ## Checks
 
 ```bash
-bun run verify   # Format, Dateilänge, Lint, Typen
+bun run verify   # Format, Dateilänge, Schriftgrösse, Lint, Typen
 bun run test     # Unit- und Integrationstests
 bun run test:e2e # Playwright über sechs Breiten
 bun run test:e2e:browsers # dieselben Prüfungen in Safaris und Firefox' Engine
@@ -119,7 +119,7 @@ The integration tests need the test database running and `TEST_DATABASE_URL` fro
 `bun run test` does not read that file itself, so run them locally with
 `bun --env-file=.env run vitest run`.
 
-As of 11.09.2026: 207 unit and integration tests, 228 Playwright checks across six widths
+As of 12.09.2026: 214 unit and integration tests, 292 Playwright checks across six widths
 (including axe, all four languages and the tour) and a production check against the live server,
 3 of 3 passing. Details in [docs/TESTING.md](docs/TESTING.md) (German).
 

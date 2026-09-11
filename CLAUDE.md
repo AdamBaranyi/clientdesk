@@ -23,6 +23,10 @@ bewusst zurückgestellt wurde. Nicht neu anfangen, sondern fortsetzen.
 6. **Interne Felder gehören nicht in Client-DTOs.** Nicht ausgeblendet — gar nicht erst enthalten.
 7. **TypeScript strict bleibt an.** Keine pauschalen `any`, keine `@ts-ignore`, keine
    abgeschalteten Lint-Regeln zur Umgehung von Fehlern. Externe Daten zuerst mit Zod validieren.
+8. **Keine Schrift unter 16 px.** Auf keiner Seite und keiner Breite, auch nicht in Kopf- und
+   Fusszeile, Diagrammen, Badges oder Dialogen. Unterschiede entstehen über Schnitt, Versalien,
+   Gewicht und Farbe, nicht über kleinere Grössen. Geprüft von `bun run check:font-floor` im
+   Quelltext und von `e2e/font-size.spec.ts` im Browser.
 
 ## Aufbau einhalten
 
@@ -36,7 +40,7 @@ in `utils.ts`.
 ## Vor jeder Meilenstein-Abnahme
 
 ```bash
-bun run verify   # Format, Dateilänge, Lint, Typen
+bun run verify   # Format, Dateilänge, Schriftgrösse, Lint, Typen
 bun run test
 ```
 
