@@ -15,5 +15,8 @@ ac4e1dee1d7d629f251613a315a11828dd15f6e9:infra/.env.production.example:generic-a
 483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/invitations.test.ts:generic-api-key:180
 4da7592754b3346c5351ccb79ef532f42a41b824:tests/integration/password-change.test.ts:generic-api-key:25
 
+# Dieselbe Falschmeldung, zitiert in der Begründung. Die Zeile ist inzwischen umformuliert.
+44cd676011fea75edb76c07aeaaf20e13c2a4b6f:docs/SECURITY.md:generic-api-key:151
+
 # Idempotency-Key eines Tests. Er schützt nichts, er erkennt einen Doppelklick.
 483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/requests.test.ts:generic-api-key:40

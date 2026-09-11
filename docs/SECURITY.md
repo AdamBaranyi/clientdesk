@@ -137,10 +137,10 @@ endet rot und zählt nicht als bestanden.
 | Werkzeug      | gitleaks 8.30.1, Binärdatei aus dem Release, Prüfsumme im Workflow festgehalten      |
 | Umfang        | jeder Commit der Historie (`fetch-depth: 0`), nicht nur der letzte Stand             |
 | Konfiguration | Standardregeln, keine eigenen Abschwächungen; Ausnahmen einzeln in `.gitleaksignore` |
-| Ergebnis      | 11.09.2026, 78 Commits: 9 Funde, alle 9 einzeln geprüft und falsch                   |
+| Ergebnis      | 11.09.2026, 83 Commits: 10 Funde, alle 10 einzeln geprüft und falsch                 |
 | Gegenprobe    | ein erfundener Schlüssel in einer Wegwerfkopie wird gefunden, der Lauf endet rot     |
 
-Die neun Funde, jeder mit eigenem Fingerabdruck. Ein neuer Fund an derselben Stelle hätte einen
+Die zehn Funde, jeder mit eigenem Fingerabdruck. Ein neuer Fund an derselben Stelle hätte einen
 anderen und schlüge an:
 
 | Fundstelle                                     | Was dort steht                             | Warum kein Geheimnis                                                  |
@@ -148,8 +148,9 @@ anderen und schlüge an:
 | `.env.example:12`                              | `SESSION_SECRET=bitte-ersetzen-…`          | Platzhalter. Die API startet damit nicht, Zod lehnt das Präfix ab     |
 | `infra/.env.production.example:11`             | derselbe Platzhalter                       | wie oben                                                              |
 | `tests/integration/invitations.test.ts` (5)    | Passwörter wie `Ein-langes-Passwort-2026`  | Konten, die nur in der flüchtigen Testdatenbank eines Laufs entstehen |
-| `tests/integration/password-change.test.ts:25` | `NEW_PASSWORD = 'Ein-neues-Passwort-2026'` | wie oben, ein Konto der flüchtigen Testdatenbank                      |
+| `tests/integration/password-change.test.ts:25` | das Passwort `Ein-neues-Passwort-2026`     | wie oben, ein Konto der flüchtigen Testdatenbank                      |
 | `tests/integration/requests.test.ts:40`        | Idempotency-Key `doppelklick-schluessel-1` | schützt nichts, er erkennt einen Doppelklick                          |
+| `docs/SECURITY.md:151`                         | diese Tabelle, die das Passwort zitierte   | dasselbe Testpasswort, einmal in der Dokumentation                    |
 
 Nächste Prüfung dieser Ausnahmen: mit dem nächsten Meilenstein, spätestens am 11.12.2026.
 
@@ -187,7 +188,7 @@ Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 | 09.09.2026 | Meilenstein 1: Mandantentrennung, Sitzung, CSRF, Fehlerantworten, Rate-Limit | 28 Tests grün  |
 | 09.09.2026 | Meilenstein 4: Kundenansicht, Uploads, Einladungen, Idempotenz               | 141 Tests grün |
 | 11.09.2026 | Produktionsaufbau lokal: Header, CSP, Demo-Durchgang, Download, Garage       | 2 von 2 grün   |
-| 11.09.2026 | Secret-Scan über 78 Commits, Abhängigkeitsscan über `bun.lock`               | siehe oben     |
+| 11.09.2026 | Secret-Scan über 83 Commits, Abhängigkeitsscan über `bun.lock`               | siehe oben     |
 
 Drei Befunde aus Meilenstein 4, alle behoben:
 
