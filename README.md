@@ -1,16 +1,24 @@
 # Tallyroom
 
+**Deutsch** · [English](README.en.md)
+
 SaaS-Dashboard mit Kundenportal für kleine Digitalagenturen. Ein Team führt Kunden, Projekte,
 monatliche Serviceverträge, Anfragen und Dokumente an einem Ort zusammen; Kunden sehen über ein
 getrenntes Portal nur den ausdrücklich freigegebenen Teil davon.
 
+Die Oberfläche gibt es auf Deutsch, Französisch, Italienisch und Englisch. Die französischen und
+italienischen Texte sind nicht von Muttersprachlern geprüft; die Rechtsseiten erklären die deutsche
+Fassung für verbindlich.
+
 Portfolio-Projekt von Adam Baranyi. Alle Daten in der Anwendung sind erfunden.
 
-> **Stand: Meilenstein 6 von 6, Deployment in Arbeit.** Alle Pflichtfunktionen stehen, samt
-> isolierter Besucher-Demo mit Rollenwechsel, Kommandopalette und Playwright-Prüfungen über sechs
-> Breiten. Der Server ist eingerichtet, die Anwendung noch nicht ausgerollt. Der genaue Stand steht
-> in
-> [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+> **Live seit dem 11.09.2026** unter <https://tallyroom.adambaranyi.xyz>, auf einem eigenen Server
+> mit Caddy, Docker Compose und Let's Encrypt.
+>
+> **Stand: Meilenstein 6 von 6.** Alle Pflichtfunktionen stehen, samt isolierter Besucher-Demo mit
+> Rollenwechsel und Kommandopalette. Vom Deployment sind die Etappen D0 bis D6 erledigt; offen sind
+> D7 (Sicherung mit echtem Restore-Test) und D8 (Server-Anleitung, Rollback, Fallstudie). Der
+> genaue Stand steht in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
 
@@ -59,7 +67,9 @@ bun run admin:create -- --email dein@konto.test --name "Vor Nachname" --workspac
 ```
 
 Der Befehl gibt ein zufälliges Passwort einmalig aus. Es gibt bewusst keine öffentliche
-Registrierung — interne Konten entstehen über diesen Befehl, weitere später über Einladungslinks.
+Registrierung — interne Konten entstehen über diesen Befehl, weitere über Einladungslinks. Ein
+vergessenes Passwort setzt `bun run admin:reset-password -- --email dein@konto.test` neu, auch
+das zufällig und einmalig ausgegeben; alle Sitzungen des Kontos enden dabei.
 
 Alternativ einen Workspace mit Vorführdaten anlegen — acht erfundene Kunden, zwölf Projekte,
 Meilensteine mit sinnvollen Fristen:
@@ -106,6 +116,10 @@ bun run test     # Unit- und Integrationstests
 Die Integrationstests brauchen die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.
 `bun run test` liest die Datei nicht selbst, deshalb lokal: `bun --env-file=.env run vitest run`.
 
+Stand 11.09.2026: 207 Unit- und Integrationstests, 210 Playwright-Prüfungen über sechs Breiten
+(samt axe, allen vier Sprachen und dem Rundgang) und eine Produktionsprüfung gegen den Liveserver
+mit 3 von 3. Einzelheiten in [docs/TESTING.md](docs/TESTING.md).
+
 ### Performance messen
 
 Nur lokal. Erzeugt einen eigenen Workspace mit 1'000 Kunden, 3'000 Projekten, 1'500 Verträgen und
@@ -119,6 +133,14 @@ bun run measure
 Ohne diesen Seed gibt es nichts zu messen — eine genannte Laufzeit wäre erfunden. Die Ergebnisse
 stehen in [docs/TESTING.md](docs/TESTING.md).
 
+### Lighthouse und Bundle-Grösse
+
+Gegen die Live-Seite am 11.09.2026, je zwei Läufe: mobil Leistung 98 bis 99, Barrierefreiheit,
+Best Practices und SEO je 100; Desktop in allen vier Kategorien 100.
+
+Die Startseite lädt 135.7 KB JavaScript (gzip). Teamansicht, Kundenportal und Rechtsseiten werden
+erst beim Aufruf nachgeladen.
+
 ## Die Demo
 
 Auf der Startseite legt „Demo starten" einen eigenen Workspace nur für diesen Besucher an — mit
@@ -127,6 +149,9 @@ Lauf alles weg: Daten, Sitzungen und Dateien.
 
 Ein Banner kennzeichnet die Demo durchgehend und trägt den Rollenwechsel: drei interne
 Identitäten und zwei Kundenzugänge. Der Wechsel wirkt nur innerhalb der eigenen Demo.
+
+Eine neue Demo beginnt mit einem geführten Rundgang in sechs Schritten. Über das Demo-Banner lässt
+er sich neu starten.
 
 Grenzen in der Demo: 30 Kunden, 50 Projekte, 50 Verträge, 100 Anfragen. Eigene Dateien werden
 nicht angenommen — für den Testupload gibt es ein enthaltenes Beispieldokument. Abschalten lässt
@@ -148,14 +173,16 @@ sich das Ganze über `DEMO_ENABLED=false`; dann existiert der Bereich nicht.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Aufbau, Datenmodell, Entscheidungen, Codequalität
 - [docs/SECURITY.md](docs/SECURITY.md) — Bedrohungsübersicht, Schutzmassnahmen, geprüfte Fälle
 - [docs/TESTING.md](docs/TESTING.md) — ausgeführte Tests, Prüfbreiten, bekannte Lücken
+- [docs/DIAGNOSTICS.md](docs/DIAGNOSTICS.md) — Befunde mit Messung, Ursache und Behebung
+- [docs/BETRIEB.md](docs/BETRIEB.md) — Sicherung, Probe-Wiederherstellung, Passwort auf dem Server
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) — erledigt, offen, blockiert
 
 ## Bewusst nicht enthalten
 
 Diese Punkte fehlen als Entscheidung, nicht als Versehen:
 
-- **Passwort-Reset per E-Mail.** Ohne Mailversand nicht sauber baubar. Passwörter werden über den
-  Admin-Befehl zurückgesetzt.
+- **Passwort-Reset per E-Mail.** Ohne Mailversand nicht sauber baubar. Passwörter setzt der
+  Betreiber mit `admin:reset-password` neu.
 - Zahlungen, Rechnungen, Stripe, Kalender, E-Mail-Versand, Echtzeit-Benachrichtigungen
 - Mehrfaktor-Authentisierung und öffentliche Selbstregistrierung
 - Weitere Währungen — im MVP ist alles CHF und monatlich
