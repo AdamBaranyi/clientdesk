@@ -1,0 +1,16 @@
+# In den Build gehen nur Quelltext, Paketlisten und Lockfile. Alles Lokale
+# bleibt draussen — vor allem node_modules mit Binärdateien für macOS und jede
+# Datei mit Geheimnissen.
+**/node_modules
+**/dist
+**/.env*
+.git
+.github
+.claude
+docs
+e2e
+tests
+test-results
+playwright-report
+**/*.test.ts
+**/*.test.tsx

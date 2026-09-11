@@ -1,0 +1,59 @@
+# Caddy liefert die statische Oberfläche aus und reicht /api an die API durch.
+# Das Zertifikat holt und erneuert Caddy selbst. Für "localhost" nimmt es eine
+# eigene lokale Zertifizierungsstelle, damit sich derselbe Aufbau auch auf dem
+# eigenen Rechner mit HTTPS prüfen lässt.
+
+{$SITE_ADDRESS} {
+	encode zstd gzip
+
+	# Keine Werbung für Server und Version. "defer", damit das auch für
+	# Antworten der API gilt, deren Header erst nach dem Durchreichen feststehen.
+	header {
+		-Server
+		-Via
+		defer
+	}
+
+	# Die API setzt ihre Sicherheitsheader selbst (helmet), Downloads bekommen
+	# dort eine eigene, strengere Richtlinie. Caddy überschreibt hier nichts.
+	# Die API vertraut genau diesem einen Hop: TRUST_PROXY_HOPS=1.
+	handle /api/* {
+		reverse_proxy api:4000
+	}
+
+	handle {
+		root * /srv
+
+		# Nur eigene Quellen. Keine Inline-Skripte, keine fremden Schriften,
+		# keine Einbettungen: das ist möglich, weil die Schriften vom eigenen
+		# Server kommen und der Build kein Inline-Skript erzeugt. Gegengeprüft
+		# mit e2e/production.spec.ts, dort muss die Liste der Verstösse leer sein.
+		header {
+			Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+			Strict-Transport-Security "max-age=31536000; includeSubDomains"
+			X-Content-Type-Options "nosniff"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+			Cross-Origin-Opener-Policy "same-origin"
+			X-Frame-Options "DENY"
+		}
+
+		# Dateinamen mit Inhalts-Hash ändern sich bei jeder Änderung, sie dürfen
+		# also für immer im Cache liegen. Schriften haben keinen Hash, darum nur
+		# 30 Tage. Alles andere, vor allem die index.html, fragt jedes Mal nach.
+		# Die Matcher schliessen einander aus: Caddy sortiert gleichnamige
+		# Direktiven nach Pfad, eine Regel ohne Pfad liefe sonst zuletzt und
+		# überschriebe die beiden anderen.
+		@hashed path /assets/*
+		header @hashed Cache-Control "public, max-age=31536000, immutable"
+		@fonts path /fonts/*
+		header @fonts Cache-Control "public, max-age=2592000"
+		@other not path /assets/* /fonts/*
+		header @other Cache-Control "no-cache"
+
+		# Die Oberfläche routet selbst. Jeder unbekannte Pfad bekommt die
+		# index.html, die API-Pfade sind oben schon abgefangen.
+		try_files {path} /index.html
+		file_server
+	}
+}
