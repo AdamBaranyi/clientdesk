@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { DEMO_LIFETIME_MINUTES } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
@@ -12,6 +13,14 @@ import { useStartDemo } from '../demo/api.ts';
 import { SiteFooter } from '../legal/SiteFooter.tsx';
 import { LandingFeatures } from './LandingFeatures.tsx';
 import { landingMessages } from './messages.ts';
+
+/*
+ * Der Nebel kommt nach: die Überschrift steht sofort, der Nebel blendet
+ * danach auf. Er liegt in einem eigenen Bündel und zählt nicht zur Erstlast.
+ */
+const HeroFog = lazy(() =>
+  import('./fog/HeroFog.tsx').then((modul) => ({ default: modul.HeroFog })),
+);
 
 export function LandingPage() {
   const navigate = useNavigate();
@@ -54,10 +63,18 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main id="inhalt" className="flex-1 px-4 py-12 sm:px-6 sm:py-20">
-        <div className="mx-auto w-full max-w-[1180px]">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,7fr)_minmax(0,4fr)] lg:gap-20">
-            <div>
+      <main id="inhalt" className="flex-1">
+        {/*
+          Text links auf ruhigem Grund, rechts ist der Nebel selbst das Bild —
+          ohne Text darauf. Nur so darf er seine volle Farbe zeigen, ohne dass
+          grauer Fliesstext unleserlich wird.
+        */}
+        <section className="relative isolate overflow-hidden border-b border-line px-4 pt-12 pb-40 sm:px-6 sm:pt-20 sm:pb-36 lg:pb-32">
+          <Suspense fallback={null}>
+            <HeroFog />
+          </Suspense>
+          <div className="mx-auto w-full max-w-[1180px]">
+            <div data-fog-calm="" className="lg:max-w-[40rem] xl:max-w-[44rem]">
               {/* Links ausgerichtet, nicht mittig. Eine zentrierte Spalte ist
                   die Vorgabe jeder Startseitenvorlage — hier führt die Kante. */}
               <h1 className="text-page sm:text-figure lg:text-hero leading-tight font-semibold tracking-[-0.03em]">
@@ -80,7 +97,7 @@ export function LandingPage() {
                 </Button>
                 <Link
                   to="/login"
-                  className="text-body inline-flex min-h-11 items-center justify-center rounded-sm border border-line px-4 font-medium"
+                  className="text-body inline-flex min-h-11 items-center justify-center rounded-sm border border-line bg-bg px-4 font-medium"
                 >
                   {m.signIn}
                 </Link>
@@ -89,30 +106,34 @@ export function LandingPage() {
               {message && (
                 <p
                   role="alert"
-                  className="text-body mt-6 border border-danger px-4 py-3 text-danger"
+                  className="text-body mt-6 border border-danger bg-bg px-4 py-3 text-danger"
                 >
                   {message}
                 </p>
               )}
+
+              {/* Statt eines Werbebildes: was die Demo tatsächlich tut. */}
+              <dl className="mt-10 grid border-t border-line sm:grid-cols-2 sm:gap-x-8">
+                {demoFacts.map((fact) => (
+                  <div
+                    key={fact.label}
+                    className="flex items-baseline justify-between gap-4 border-b border-line py-3"
+                  >
+                    <dt className="font-condensed text-label font-semibold tracking-[0.12em] text-muted uppercase">
+                      {fact.label}
+                    </dt>
+                    <dd className="text-dense text-right font-mono tabular-nums">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
-
-            {/* Statt eines Werbebildes: was die Demo tatsächlich tut. */}
-            <dl className="flex flex-col self-start border-t border-line">
-              {demoFacts.map((fact) => (
-                <div
-                  key={fact.label}
-                  className="flex items-baseline justify-between gap-4 border-b border-line py-3"
-                >
-                  <dt className="font-condensed text-label font-semibold tracking-[0.12em] text-muted uppercase">
-                    {fact.label}
-                  </dt>
-                  <dd className="text-dense text-right font-mono tabular-nums">{fact.value}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
+        </section>
 
-          <LandingFeatures />
+        <div className="px-4 pb-12 sm:px-6 sm:pb-20">
+          <div className="mx-auto w-full max-w-[1180px]">
+            <LandingFeatures />
+          </div>
         </div>
       </main>
 

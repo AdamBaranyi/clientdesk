@@ -9,6 +9,7 @@ export const landingMessages = defineMessages({
     startDemo: 'Demo starten',
     preparingDemo: 'Demo wird vorbereitet …',
     demoFailed: 'Die Demo konnte nicht gestartet werden. Bitte später erneut versuchen.',
+    motionToggle: 'Bewegung anhalten',
     facts: {
       runtime: { label: 'Laufzeit', value: (minutes: number) => `${minutes} Minuten` },
       data: { label: 'Datenbestand', value: 'eigener je Besucher' },
@@ -41,6 +42,7 @@ export const landingMessages = defineMessages({
     startDemo: 'Démarrer la démo',
     preparingDemo: 'Préparation de la démo …',
     demoFailed: "La démo n'a pas pu être démarrée. Veuillez réessayer plus tard.",
+    motionToggle: 'Arrêter le mouvement',
     facts: {
       runtime: { label: 'Durée', value: (minutes: number) => `${minutes} minutes` },
       data: { label: 'Jeu de données', value: 'un par visiteur' },
@@ -73,6 +75,7 @@ export const landingMessages = defineMessages({
     startDemo: 'Avvia la demo',
     preparingDemo: 'Preparazione della demo …',
     demoFailed: 'Non è stato possibile avviare la demo. Riprovi più tardi.',
+    motionToggle: 'Ferma il movimento',
     facts: {
       runtime: { label: 'Durata', value: (minutes: number) => `${minutes} minuti` },
       data: { label: 'Set di dati', value: 'uno per visitatore' },
@@ -105,6 +108,7 @@ export const landingMessages = defineMessages({
     startDemo: 'Start demo',
     preparingDemo: 'Preparing demo …',
     demoFailed: 'The demo could not be started. Please try again later.',
+    motionToggle: 'Pause motion',
     facts: {
       runtime: { label: 'Runs for', value: (minutes: number) => `${minutes} minutes` },
       data: { label: 'Data', value: 'your own copy' },

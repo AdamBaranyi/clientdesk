@@ -157,8 +157,11 @@
    *   2. aktiver Navigationszustand
    *   3. Fokusring — muss auffällig sein, und keine Statusfarbe darf das
    *      übernehmen
+   *   4. der Nebel im Hero der Startseite, als Stimmung hinter dem Text
+   *      (Entscheid des Betreibers vom 11.09.2026; die Töne stehen in
+   *      features/landing/fog/HeroFog.tsx)
    *
-   * Verboten: Knöpfe, Flächen, Rahmen, Icons, Text.
+   * Verboten: Knöpfe, Flächen der Bedienoberfläche, Rahmen, Icons, Text.
    *
    * Landet Kobalt je auf einem Knopf, ist das der Rückfall ins
    * Standard-SaaS. Das Token heisst deshalb nicht "accent" — ein Token
