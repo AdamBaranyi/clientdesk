@@ -63,8 +63,8 @@ describe('Passwort ändern', () => {
 
     await changePassword(changer, account.password, NEW_PASSWORD);
 
-    expect((await otherDevice.request('/api/v1/auth/me')).status).toBe(401);
-    expect((await changer.request('/api/v1/auth/me')).status).toBe(200);
+    await expect((await otherDevice.request('/api/v1/auth/me')).json()).resolves.toBeNull();
+    await expect((await changer.request('/api/v1/auth/me')).json()).resolves.not.toBeNull();
   });
 
   it('verlangt das bisherige Passwort und antwortet dabei nicht mit 401', async () => {

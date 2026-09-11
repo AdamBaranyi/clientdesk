@@ -9,23 +9,13 @@ import { apiRequest, ApiRequestError, resetCsrfToken } from '../../lib/api.ts';
 
 const SESSION_KEY = ['session'] as const;
 
-/**
- * Ein 401 ist hier kein Fehlerzustand, sondern die Antwort „nicht angemeldet".
- * Deshalb wird er zu null und nicht an die Fehlergrenze weitergereicht.
- */
+/** Ohne Anmeldung antwortet die API mit null, nicht mit einem Fehler. */
 export function useSession() {
   return useQuery<SessionUser | null>({
     queryKey: SESSION_KEY,
     retry: false,
     staleTime: 30_000,
-    queryFn: async () => {
-      try {
-        return sessionUserSchema.parse(await apiRequest<unknown>('/auth/me'));
-      } catch (error) {
-        if (error instanceof ApiRequestError && error.code === 'UNAUTHENTICATED') return null;
-        throw error;
-      }
-    },
+    queryFn: async () => sessionUserSchema.nullable().parse(await apiRequest<unknown>('/auth/me')),
   });
 }
 

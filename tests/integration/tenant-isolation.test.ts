@@ -79,8 +79,14 @@ describe('Mandantentrennung', () => {
 });
 
 describe('Sitzung', () => {
-  it('verweigert /auth/me ohne Anmeldung', async () => {
+  it('nennt ohne Anmeldung niemanden, ohne Fehler', async () => {
     const response = await server.client().request('/api/v1/auth/me');
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toBeNull();
+  });
+
+  it('verweigert geschützte Routen ohne Anmeldung weiterhin mit 401', async () => {
+    const response = await server.client().request('/api/v1/workspaces');
     expect(response.status).toBe(401);
     await expect(response.json()).resolves.toMatchObject({ error: { code: 'UNAUTHENTICATED' } });
   });
@@ -132,10 +138,14 @@ describe('Sitzung', () => {
     );
 
     // Das alte Cookie erneut vorlegen: der Server darf es nicht mehr akzeptieren.
-    const replay = await fetch(`${server.baseUrl}/api/v1/auth/me`, {
+    const replay = await fetch(`${server.baseUrl}/api/v1/workspaces`, {
       headers: { cookie: cookieAfterLogin },
     });
     expect(replay.status).toBe(401);
+    const me = await fetch(`${server.baseUrl}/api/v1/auth/me`, {
+      headers: { cookie: cookieAfterLogin },
+    });
+    await expect(me.json()).resolves.toBeNull();
   });
 
   it('trennt zwei gleichzeitige Sitzungen voneinander', async () => {

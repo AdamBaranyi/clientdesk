@@ -30,10 +30,14 @@ export function createAuthRouter(service: AuthService, options: AuthRouterOption
     res.json(body);
   });
 
+  /*
+   * «Nicht angemeldet» ist hier eine gültige Antwort, kein Fehler. Mit 401
+   * stand bei jedem Besuch der Startseite ein roter Eintrag in der
+   * Browserkonsole. Alle anderen Routen antworten ohne Anmeldung weiter 401.
+   */
   router.get('/me', async (req, res) => {
     const userId = req.session.userId;
-    if (!userId) throw unauthenticated();
-    res.json(await service.buildSessionUser(userId));
+    res.json(userId ? await service.buildSessionUser(userId) : null);
   });
 
   router.post('/login', loginLimiter, async (req, res) => {

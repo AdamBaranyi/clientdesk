@@ -269,7 +269,7 @@ describe('Grenzen und Ablauf', () => {
 
     // Das Cookie der Demo ist danach wertlos: die Sitzung wurde mitgelöscht.
     const nachher = await demo.client.request('/api/v1/auth/me');
-    expect(nachher.status).toBe(401);
+    await expect(nachher.json()).resolves.toBeNull();
   }, 40_000);
 
   it('lässt eine laufende Demo unangetastet', async () => {
@@ -282,6 +282,6 @@ describe('Grenzen und Ablauf', () => {
 
     expect(result.workspaces).toBe(0);
     const me = await laufend.client.request('/api/v1/auth/me');
-    expect(me.status).toBe(200);
+    await expect(me.json()).resolves.not.toBeNull();
   }, 30_000);
 });
