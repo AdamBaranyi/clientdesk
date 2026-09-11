@@ -1,9 +1,9 @@
 # Umsetzungsstand
 
-Stand: 11.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · Server eingerichtet · Meilenstein 6 in
-Arbeit
+Stand: 11.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · live unter
+<https://tallyroom.adambaranyi.xyz> · Meilenstein 6: D0 bis D6 erledigt, D7 und D8 in Arbeit
 
-170 Unit- und Integrationstests · 177 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
+207 Unit- und Integrationstests · 210 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
 und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
@@ -284,18 +284,18 @@ es 149 KB. Die Messung zählt jetzt, was `index.html` anfordert, nicht eine einz
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
 
-| Etappe | Inhalt                                                                                   | Stand    |
-| ------ | ---------------------------------------------------------------------------------------- | -------- |
-| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt |
-| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt |
-| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt |
-| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt |
-| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt |
-| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | erledigt |
-| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt |
-| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen    |
-| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen    |
+| Etappe | Inhalt                                                                                   | Stand     |
+| ------ | ---------------------------------------------------------------------------------------- | --------- |
+| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt  |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt  |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt  |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt  |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt  |
+| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt  |
+| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | erledigt  |
+| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt  |
+| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | in Arbeit |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen     |
 
 **Entscheide**
 
@@ -401,6 +401,22 @@ Bewusst so gelassen, weil der Nutzen den Eingriff nicht trägt:
 - Schriften liegen 30 Tage im Cache, nicht ein Jahr: ihre Dateinamen tragen keinen Hash.
 - Lighthouse zählt rund 75 KB JavaScript, die beim ersten Bild noch nicht laufen, vor allem aus
   React und Zod.
+
+**D7 im Einzelnen: Sicherung.** Gebaut und am lokalen Produktionsaufbau geprüft, auf dem Server
+noch einzurichten. Nächtlich `infra/backup.sh` über einen systemd-Timer: `pg_dump`, die
+Dokumente logisch über die S3-Schnittstelle mit Prüfsumme je Objekt, eine Zählung je Tabelle,
+14 Tage Aufbewahrung. `infra/restore-test.sh` spielt eine Sicherung in eine eigene PostgreSQL und
+eine eigene Garage zurück und vergleicht Prüfsummen, Zeilenzahlen, Dokumente gegen Datenbank und
+Objekt für Objekt. Lokal mit drei Demos: 16 Tabellen und 18 Dokumente, Probe bestanden. Die
+Gegenprobe mit einem entfernten Dokument scheitert wie gewollt. Anleitung in `docs/BETRIEB.md`.
+
+Nebenbei gefunden: `deploy.sh` lief unter `sh`, und in `pg_dump | gzip` zählte nur gzip. Ein
+gescheiterter Dump hätte eine leere Sicherung ergeben und den Deploy in die Migration laufen
+lassen. Jetzt bash mit `pipefail`. Und die README versprach einen Befehl zum Zurücksetzen von
+Passwörtern, den es nicht gab; jetzt gibt es `admin:reset-password`.
+
+Offen für D7: Timer auf dem Server einrichten, erste Sicherung, Probe dort. Die Kopie ausser Haus
+wartet auf die Antwort des Hosters.
 
 **D6b im Einzelnen: Rundgang durch die Demo.** Wunsch des Betreibers vom 11.09.2026, erledigt am
 selben Tag; was gebaut ist, steht oben unter „Vier Sprachen und geschlossene Lücken". Anders als

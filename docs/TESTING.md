@@ -26,7 +26,7 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 11.09.2026: **196 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+Ergebnis vom 11.09.2026: **207 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
 allen vier Paketen sauber, alle Code-Dateien unter der 400-Zeilen-Grenze (längste: 378 Zeilen).
 
 Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
@@ -125,6 +125,22 @@ sonst keiner.
 Gegen den Server (`PRODUCTION_URL=https://tallyroom.adambaranyi.xyz`) am 11.09.2026 nach dem
 zweiten Deploy: **3 von 3 grün.** Lighthouse gegen dieselbe Adresse, je zwei Läufe: mobil
 Leistung 98 bis 99, die übrigen drei Kategorien 100; Desktop viermal 100.
+
+### Sicherung und Wiederherstellung
+
+`apps/api/src/backup/archive.test.ts`, 9 Tests: das Dokumentarchiv spielt Byte für Byte samt
+Inhaltstyp zurück; eine falsche Prüfsumme bricht ab, bevor der Eintrag geschrieben wird; ein
+abgeschnittenes Archiv und fehlende Einträge fallen an der Schlusszeile auf; Zeilen über
+Blockgrenzen und Umlaute an einer Blockgrenze. `tests/integration/password-reset.test.ts`, 2 Tests:
+das neue Passwort gilt, das alte nicht mehr, jede Sitzung ist beendet, eine unbekannte Adresse wird
+gemeldet.
+
+Die Probe-Wiederherstellung selbst ist ein Skript für den Server (`infra/restore-test.sh`, siehe
+[BETRIEB.md](BETRIEB.md)). Am 11.09.2026 gegen den lokalen Produktionsaufbau mit drei Demos
+gelaufen: Prüfsummen, 16 Tabellen mit denselben Zeilenzahlen, 18 aktive Dokumente mit Datei, 18
+Objekte in der neuen Garage mit derselben Prüfsumme. Gegenprobe: ein aus dem Archiv entferntes
+Dokument, Schlusszeile und Prüfsummen passend nachgeführt, lässt die Probe mit «Aktive Dokumente
+ohne Datei im Archiv: 1» scheitern. Danach blieben keine Container und kein Netz zurück.
 
 ### Was geprüft wird
 
