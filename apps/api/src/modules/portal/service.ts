@@ -87,7 +87,13 @@ export function createPortalService(
   return {
     async overview(scope: PortalScope): Promise<PortalOverview> {
       const customer = await repository.customer(scope.workspaceId, scope.customerId);
-      if (!customer) throw notFound({ de: 'Kunde nicht gefunden.', en: 'Customer not found.' });
+      if (!customer)
+        throw notFound({
+          de: 'Kunde nicht gefunden.',
+          fr: 'Client introuvable.',
+          it: 'Cliente non trovato.',
+          en: 'Customer not found.',
+        });
 
       const [projects, requests, documents] = await Promise.all([
         projectsWithMilestones(scope),
@@ -125,7 +131,13 @@ export function createPortalService(
       requestId: string,
     ): Promise<{ request: ClientRequest; comments: ClientComment[] }> {
       const row = await repository.request(scope.workspaceId, scope.customerId, requestId);
-      if (!row) throw notFound({ de: 'Anfrage nicht gefunden.', en: 'Request not found.' });
+      if (!row)
+        throw notFound({
+          de: 'Anfrage nicht gefunden.',
+          fr: 'Demande introuvable.',
+          it: 'Richiesta non trovata.',
+          en: 'Request not found.',
+        });
 
       const comments = await repository.publicComments(scope.workspaceId, requestId);
       return {
@@ -161,9 +173,21 @@ export function createPortalService(
         const allowed = await repository.assignableProjects(scope.workspaceId, scope.customerId);
         if (!allowed.some((project) => project.id === input.projectId)) {
           throw validationFailed(
-            { de: 'Dieses Projekt steht nicht zur Auswahl.', en: 'This project is not available.' },
             {
-              projectId: [{ de: 'Unbekanntes Projekt', en: 'Unknown project' }],
+              de: 'Dieses Projekt steht nicht zur Auswahl.',
+              fr: "Ce projet n'est pas disponible.",
+              it: 'Questo progetto non è disponibile.',
+              en: 'This project is not available.',
+            },
+            {
+              projectId: [
+                {
+                  de: 'Unbekanntes Projekt',
+                  fr: 'Projet inconnu',
+                  it: 'Progetto sconosciuto',
+                  en: 'Unknown project',
+                },
+              ],
             },
           );
         }
@@ -200,6 +224,8 @@ export function createPortalService(
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Anfrage konnte nicht angelegt werden.',
+            fr: "La demande n'a pas pu être créée.",
+            it: 'Non è stato possibile creare la richiesta.',
             en: 'The request could not be created.',
           });
 
@@ -230,7 +256,13 @@ export function createPortalService(
       body: string,
     ): Promise<{ request: ClientRequest; comments: ClientComment[] }> {
       const existing = await repository.request(scope.workspaceId, scope.customerId, requestId);
-      if (!existing) throw notFound({ de: 'Anfrage nicht gefunden.', en: 'Request not found.' });
+      if (!existing)
+        throw notFound({
+          de: 'Anfrage nicht gefunden.',
+          fr: 'Demande introuvable.',
+          it: 'Richiesta non trovata.',
+          en: 'Request not found.',
+        });
 
       await db.transaction(async (tx) => {
         await tx.insert(requestComments).values({
@@ -284,12 +316,20 @@ export function createPortalService(
     async downloadDocument(scope: PortalScope, documentId: string) {
       const rows = await repository.documents(scope.workspaceId, scope.customerId);
       const row = rows.find((entry) => entry.id === documentId);
-      if (!row) throw notFound({ de: 'Dokument nicht gefunden.', en: 'Document not found.' });
+      if (!row)
+        throw notFound({
+          de: 'Dokument nicht gefunden.',
+          fr: 'Document introuvable.',
+          it: 'Documento non trovato.',
+          en: 'Document not found.',
+        });
 
       const object = await storage.get(row.objectKey);
       if (!object)
         throw notFound({
           de: 'Die Datei ist im Speicher nicht mehr vorhanden.',
+          fr: "Le fichier n'est plus présent dans l'espace de stockage.",
+          it: 'Il file non è più presente nello spazio di archiviazione.',
           en: 'The file is no longer in storage.',
         });
       return { originalName: row.originalName, bytes: object.bytes };

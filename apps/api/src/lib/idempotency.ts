@@ -53,6 +53,8 @@ export async function findExistingResult(
   if (existing.requestHash !== scope.requestHash) {
     throw new HttpError('IDEMPOTENCY_CONFLICT', {
       de: 'Derselbe Idempotency-Key wurde bereits mit anderem Inhalt verwendet.',
+      fr: "La même clé d'idempotence a déjà été utilisée avec un autre contenu.",
+      it: 'La stessa chiave di idempotenza è già stata usata con un contenuto diverso.',
       en: 'The same idempotency key was already used with different content.',
     });
   }

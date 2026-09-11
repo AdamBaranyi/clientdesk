@@ -37,11 +37,21 @@ function resolveFieldErrors(fieldErrors: LocalizedFieldErrors): FieldErrors {
 }
 
 export const unauthenticated = (
-  message: Localized = { de: 'Nicht angemeldet.', en: 'Not signed in.' },
+  message: Localized = {
+    de: 'Nicht angemeldet.',
+    fr: 'Non connecté.',
+    it: 'Accesso non effettuato.',
+    en: 'Not signed in.',
+  },
 ): HttpError => new HttpError('UNAUTHENTICATED', message);
 
 export const forbidden = (
-  message: Localized = { de: 'Diese Aktion ist nicht erlaubt.', en: 'This action is not allowed.' },
+  message: Localized = {
+    de: 'Diese Aktion ist nicht erlaubt.',
+    fr: "Cette action n'est pas autorisée.",
+    it: 'Questa azione non è consentita.',
+    en: 'This action is not allowed.',
+  },
 ): HttpError => new HttpError('FORBIDDEN', message);
 
 /**
@@ -49,7 +59,12 @@ export const forbidden = (
  * dass die ID existiert.
  */
 export const notFound = (
-  message: Localized = { de: 'Nicht gefunden.', en: 'Not found.' },
+  message: Localized = {
+    de: 'Nicht gefunden.',
+    fr: 'Introuvable.',
+    it: 'Non trovato.',
+    en: 'Not found.',
+  },
 ): HttpError => new HttpError('NOT_FOUND', message);
 
 export const validationFailed = (

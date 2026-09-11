@@ -12,6 +12,25 @@ export const legalMessages = defineMessages({
     /** Steht nur in Übersetzungen, nicht im Original. */
     bindingVersion: '',
   },
+  fr: {
+    navigation: 'Informations légales',
+    imprint: 'Mentions légales',
+    privacy: 'Protection des données',
+    toHome: "Tallyroom, vers la page d'accueil",
+    footer: (name: string) => `© 2026 ${name}. Projet de portfolio, aucune donnée client réelle.`,
+    country: 'Suisse',
+    bindingVersion: 'Ceci est une traduction. La version allemande fait foi.',
+  },
+  it: {
+    navigation: 'Informazioni legali',
+    imprint: 'Note legali',
+    privacy: 'Protezione dei dati',
+    toHome: 'Tallyroom, alla pagina iniziale',
+    footer: (name: string) =>
+      `© 2026 ${name}. Progetto di portfolio, nessun dato reale di clienti.`,
+    country: 'Svizzera',
+    bindingVersion: 'Questa è una traduzione. Fa fede la versione tedesca.',
+  },
   en: {
     navigation: 'Legal',
     imprint: 'Legal notice',

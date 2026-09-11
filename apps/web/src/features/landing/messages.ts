@@ -33,6 +33,70 @@ export const landingMessages = defineMessages({
       },
     },
   },
+  fr: {
+    documentTitle: "Tallyroom · Vue d'ensemble des clients et portail client pour petites agences",
+    signIn: 'Se connecter',
+    headline: "Vue d'ensemble des clients et portail client pour petites agences",
+    lead: 'Avancement des projets, contrats de service mensuels, documents et demandes des clients au même endroit — et un portail séparé où le client voit exactement ce qui a été partagé.',
+    startDemo: 'Démarrer la démo',
+    preparingDemo: 'Préparation de la démo …',
+    demoFailed: "La démo n'a pas pu être démarrée. Veuillez réessayer plus tard.",
+    facts: {
+      runtime: { label: 'Durée', value: (minutes: number) => `${minutes} minutes` },
+      data: { label: 'Jeu de données', value: 'un par visiteur' },
+      after: { label: 'Ensuite', value: 'supprimé, fichiers compris' },
+      fictional: { label: 'Entreprises et chiffres', value: 'fictifs' },
+    },
+    features: {
+      clients: {
+        title: 'Clients, projets, jalons',
+        detail:
+          "Qui est suivi, ce qui est en cours, ce qui est en retard. L'avancement découle des jalons terminés et non d'une estimation.",
+      },
+      contracts: {
+        title: 'Contrats avec versions de prix',
+        detail:
+          "Un changement de prix s'applique à partir de sa date et ne touche pas les valeurs mensuelles passées. La valeur mensuelle du contrat est traçable à toute date de référence.",
+      },
+      portal: {
+        title: 'Portail client séparé',
+        detail:
+          "Le client voit les projets et documents partagés ainsi que la partie publique de l'historique. Les notes et commentaires internes ne lui parviennent pas.",
+      },
+    },
+  },
+  it: {
+    documentTitle: 'Tallyroom · Panoramica dei clienti e portale clienti per piccole agenzie',
+    signIn: 'Accedi',
+    headline: 'Panoramica dei clienti e portale clienti per piccole agenzie',
+    lead: 'Stato dei progetti, contratti di servizio mensili, documenti e richieste dei clienti in un unico posto — e un portale separato in cui il cliente vede esattamente ciò che è stato condiviso.',
+    startDemo: 'Avvia la demo',
+    preparingDemo: 'Preparazione della demo …',
+    demoFailed: 'Non è stato possibile avviare la demo. Riprovi più tardi.',
+    facts: {
+      runtime: { label: 'Durata', value: (minutes: number) => `${minutes} minuti` },
+      data: { label: 'Set di dati', value: 'uno per visitatore' },
+      after: { label: 'Al termine', value: 'eliminato, file inclusi' },
+      fictional: { label: 'Aziende e numeri', value: 'fittizi' },
+    },
+    features: {
+      clients: {
+        title: 'Clienti, progetti, traguardi',
+        detail:
+          "Chi viene seguito, cosa è in corso, cosa è in ritardo. L'avanzamento deriva dai traguardi completati, non da una stima.",
+      },
+      contracts: {
+        title: 'Contratti con versioni di prezzo',
+        detail:
+          'Una modifica di prezzo vale dalla sua data e lascia invariati i valori mensili passati. Il valore mensile del contratto è tracciabile per ogni data di riferimento.',
+      },
+      portal: {
+        title: 'Portale clienti separato',
+        detail:
+          'Il cliente vede i progetti e i documenti condivisi e la parte pubblica della cronologia. Note e commenti interni non lo raggiungono.',
+      },
+    },
+  },
   en: {
     documentTitle: 'Tallyroom · Client overview and client portal for small agencies',
     signIn: 'Sign in',

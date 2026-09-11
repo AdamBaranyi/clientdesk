@@ -39,13 +39,27 @@ export function requireWorkspace(repository: AuthRepository) {
 
     const parsed = workspaceIdSchema.safeParse(req.params.workspaceId);
     if (!parsed.success) {
-      next(notFound({ de: 'Workspace nicht gefunden.', en: 'Workspace not found.' }));
+      next(
+        notFound({
+          de: 'Workspace nicht gefunden.',
+          fr: 'Espace de travail introuvable.',
+          it: 'Area di lavoro non trovata.',
+          en: 'Workspace not found.',
+        }),
+      );
       return;
     }
 
     const membership = await repository.findMembership(userId, parsed.data);
     if (!membership) {
-      next(notFound({ de: 'Workspace nicht gefunden.', en: 'Workspace not found.' }));
+      next(
+        notFound({
+          de: 'Workspace nicht gefunden.',
+          fr: 'Espace de travail introuvable.',
+          it: 'Area di lavoro non trovata.',
+          en: 'Workspace not found.',
+        }),
+      );
       return;
     }
 
@@ -62,7 +76,12 @@ export function requireWorkspace(repository: AuthRepository) {
 
 export function getWorkspace(req: Request): WorkspaceContext {
   if (!req.workspace)
-    throw unauthenticated({ de: 'Kein Workspace-Kontext.', en: 'No workspace context.' });
+    throw unauthenticated({
+      de: 'Kein Workspace-Kontext.',
+      fr: "Aucun contexte d'espace de travail.",
+      it: 'Nessun contesto di area di lavoro.',
+      en: 'No workspace context.',
+    });
   return req.workspace;
 }
 
@@ -70,7 +89,9 @@ export function getWorkspace(req: Request): WorkspaceContext {
 export function requireInternal(req: Request, _res: Response, next: NextFunction): void {
   const context = getWorkspace(req);
   if (!isInternalRole(context.role)) {
-    next(notFound({ de: 'Nicht gefunden.', en: 'Not found.' }));
+    next(
+      notFound({ de: 'Nicht gefunden.', fr: 'Introuvable.', it: 'Non trovato.', en: 'Not found.' }),
+    );
     return;
   }
   next();
@@ -82,6 +103,8 @@ export function requireOwner(req: Request, _res: Response, next: NextFunction): 
     next(
       forbidden({
         de: 'Diese Aktion ist Owner-Konten vorbehalten.',
+        fr: 'Cette action est réservée aux propriétaires.',
+        it: 'Questa azione è riservata ai proprietari.',
         en: 'Only owner accounts can do this.',
       }),
     );

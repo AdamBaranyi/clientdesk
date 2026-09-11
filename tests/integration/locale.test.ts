@@ -67,9 +67,14 @@ describe('Sprache der API-Meldungen', () => {
     );
   });
 
-  it('gibt Französisch und Italienisch Englisch statt Deutsch, solange es sie nicht gibt', async () => {
-    expect((await failedLogin('fr-CH,fr;q=0.9')).language).toBe('en');
-    expect((await failedLogin('it-CH')).language).toBe('en');
+  it('antwortet auf Französisch und Italienisch, wenn der Browser das verlangt', async () => {
+    const french = await failedLogin('fr-CH,fr;q=0.9');
+    expect(french.language).toBe('fr');
+    expect(french.body.error.message).toBe("L'e-mail ou le mot de passe est incorrect.");
+
+    const italian = await failedLogin('it-CH');
+    expect(italian.language).toBe('it');
+    expect(italian.body.error.message).toBe("L'e-mail o la password non è corretta.");
   });
 
   it('übersetzt auch die Prüfmeldungen der gemeinsamen Schemas', async () => {
@@ -90,6 +95,9 @@ describe('Sprache der API-Meldungen', () => {
     const german = (await (await create('de')).json()) as ErrorBody;
     expect(german.error.message).toBe('Eingabe ungültig.');
     expect(german.error.fieldErrors?.name).toEqual(['Name ist erforderlich']);
+
+    const french = (await (await create('fr-CH')).json()) as ErrorBody;
+    expect(french.error.fieldErrors?.name).toEqual(['Le nom est obligatoire']);
   });
 
   it('mischt die Sprachen gleichzeitiger Requests nicht', async () => {

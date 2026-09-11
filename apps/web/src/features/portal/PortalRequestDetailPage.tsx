@@ -11,7 +11,7 @@ import { useMessages } from '../../i18n/messages.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { RequestStatusBadge } from '../requests/labels.tsx';
 import { useAddPortalComment, usePortalRequest } from './api.ts';
-import { portalMessages } from './messages.ts';
+import { portalRequestMessages } from './request-messages.ts';
 
 function formatMoment(iso: string, locale: Locale): string {
   return new Date(iso).toLocaleString(languageTag(locale), {
@@ -29,7 +29,7 @@ export function PortalRequestDetailPage({ workspace }: { workspace: WorkspaceSum
   const query = usePortalRequest(workspace.id, requestId);
   const addComment = useAddPortalComment(workspace.id, requestId ?? '');
   const { locale } = useLocale();
-  const { requests: r, requestDetail: m } = useMessages(portalMessages);
+  const { requests: r, requestDetail: m } = useMessages(portalRequestMessages);
 
   if (query.isPending) return <LoadingState label={m.loading} />;
   if (query.isError || !query.data) {

@@ -16,7 +16,12 @@ export function notFoundHandler(_req: Request, res: Response): void {
   const body: ApiError = {
     error: {
       code: 'NOT_FOUND',
-      message: inCurrentLocale({ de: 'Route nicht gefunden.', en: 'Route not found.' }),
+      message: inCurrentLocale({
+        de: 'Route nicht gefunden.',
+        fr: 'Route introuvable.',
+        it: 'Percorso non trovato.',
+        en: 'Route not found.',
+      }),
       requestId: _req.requestId,
     },
   };
@@ -48,8 +53,22 @@ export function errorHandler(
       req,
       'VALIDATION_FAILED',
       413,
-      inCurrentLocale({ de: 'Die Datei ist zu gross.', en: 'The file is too large.' }),
-      { file: [inCurrentLocale({ de: 'Grössengrenze überschritten', en: 'Size limit exceeded' })] },
+      inCurrentLocale({
+        de: 'Die Datei ist zu gross.',
+        fr: 'Le fichier est trop volumineux.',
+        it: 'Il file è troppo grande.',
+        en: 'The file is too large.',
+      }),
+      {
+        file: [
+          inCurrentLocale({
+            de: 'Grössengrenze überschritten',
+            fr: 'Taille maximale dépassée',
+            it: 'Dimensione massima superata',
+            en: 'Size limit exceeded',
+          }),
+        ],
+      },
     );
     return;
   }
@@ -61,6 +80,8 @@ export function errorHandler(
       422,
       inCurrentLocale({
         de: 'Der Anfrageinhalt ist unlesbar.',
+        fr: 'Le contenu de la requête est illisible.',
+        it: 'Il contenuto della richiesta non è leggibile.',
         en: 'The request body is unreadable.',
       }),
       undefined,
@@ -74,7 +95,12 @@ export function errorHandler(
       req,
       'VALIDATION_FAILED',
       422,
-      inCurrentLocale({ de: 'Eingabe ungültig.', en: 'Invalid input.' }),
+      inCurrentLocale({
+        de: 'Eingabe ungültig.',
+        fr: 'Saisie non valide.',
+        it: 'Dati non validi.',
+        en: 'Invalid input.',
+      }),
       fieldErrorsFromZod(error),
     );
     return;
@@ -92,7 +118,12 @@ export function errorHandler(
     req,
     'INTERNAL',
     500,
-    inCurrentLocale({ de: 'Unerwarteter Serverfehler.', en: 'Unexpected server error.' }),
+    inCurrentLocale({
+      de: 'Unerwarteter Serverfehler.',
+      fr: 'Erreur inattendue du serveur.',
+      it: 'Errore imprevisto del server.',
+      en: 'Unexpected server error.',
+    }),
     undefined,
   );
 }

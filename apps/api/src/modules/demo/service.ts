@@ -49,6 +49,8 @@ export function createDemoService(
       if (active >= MAX_ACTIVE_DEMOS) {
         throw new HttpError('RATE_LIMITED', {
           de: 'Derzeit laufen zu viele Demos. Bitte in einigen Minuten erneut versuchen.',
+          fr: 'Trop de démos sont en cours. Veuillez réessayer dans quelques minutes.',
+          it: 'Al momento sono attive troppe demo. Riprovi tra qualche minuto.',
           en: 'Too many demos are running right now. Please try again in a few minutes.',
         });
       }
@@ -67,6 +69,8 @@ export function createDemoService(
         if (!workspace)
           throw new HttpError('INTERNAL', {
             de: 'Demo konnte nicht angelegt werden.',
+            fr: "La démo n'a pas pu être créée.",
+            it: 'Non è stato possibile creare la demo.',
             en: 'The demo could not be created.',
           });
 
@@ -83,6 +87,8 @@ export function createDemoService(
           if (!user)
             throw new HttpError('INTERNAL', {
               de: 'Demo-Konto konnte nicht angelegt werden.',
+              fr: "Le compte de démo n'a pas pu être créé.",
+              it: "Non è stato possibile creare l'account demo.",
               en: 'The demo account could not be created.',
             });
 
@@ -96,6 +102,8 @@ export function createDemoService(
         if (!ownerUserId)
           throw new HttpError('INTERNAL', {
             de: 'Demo-Owner fehlt.',
+            fr: 'Le propriétaire de la démo est manquant.',
+            it: 'Manca il proprietario della demo.',
             en: 'The demo owner is missing.',
           });
 
@@ -122,7 +130,12 @@ export function createDemoService(
     async status(workspaceId: string, currentUserId: string): Promise<DemoStatus> {
       const workspace = await repository.findWorkspace(workspaceId);
       if (!workspace?.isDemo || !workspace.expiresAt)
-        throw notFound({ de: 'Keine Demo.', en: 'Not a demo.' });
+        throw notFound({
+          de: 'Keine Demo.',
+          fr: "Ce n'est pas une démo.",
+          it: 'Non è una demo.',
+          en: 'Not a demo.',
+        });
 
       const rows = await repository.identities(workspaceId);
       return {
@@ -145,18 +158,36 @@ export function createDemoService(
       targetUserId: string,
     ): Promise<void> {
       const workspace = await repository.findWorkspace(workspaceId);
-      if (!workspace?.isDemo) throw notFound({ de: 'Keine Demo.', en: 'Not a demo.' });
+      if (!workspace?.isDemo)
+        throw notFound({
+          de: 'Keine Demo.',
+          fr: "Ce n'est pas une démo.",
+          it: 'Non è una demo.',
+          en: 'Not a demo.',
+        });
       if (workspace.expiresAt && workspace.expiresAt.getTime() < Date.now()) {
-        throw notFound({ de: 'Diese Demo ist abgelaufen.', en: 'This demo has expired.' });
+        throw notFound({
+          de: 'Diese Demo ist abgelaufen.',
+          fr: 'Cette démo a expiré.',
+          it: 'Questa demo è scaduta.',
+          en: 'This demo has expired.',
+        });
       }
 
       const identities = await repository.identities(workspaceId);
       if (!identities.some((identity) => identity.userId === currentUserId)) {
-        throw notFound({ de: 'Keine Demo.', en: 'Not a demo.' });
+        throw notFound({
+          de: 'Keine Demo.',
+          fr: "Ce n'est pas une démo.",
+          it: 'Non è una demo.',
+          en: 'Not a demo.',
+        });
       }
       if (!identities.some((identity) => identity.userId === targetUserId)) {
         throw forbidden({
           de: 'Diese Identität gehört nicht zu dieser Demo.',
+          fr: "Cette identité n'appartient pas à cette démo.",
+          it: 'Questa identità non appartiene a questa demo.',
           en: 'This identity does not belong to this demo.',
         });
       }

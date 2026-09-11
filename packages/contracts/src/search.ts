@@ -20,7 +20,15 @@ export const searchQuerySchema = z.object({
   q: z
     .string()
     .trim()
-    .min(2, localized({ de: 'Mindestens zwei Zeichen', en: 'At least two characters' }))
+    .min(
+      2,
+      localized({
+        de: 'Mindestens zwei Zeichen',
+        fr: 'Au moins deux caractères',
+        it: 'Almeno due caratteri',
+        en: 'At least two characters',
+      }),
+    )
     .max(100),
 });
 

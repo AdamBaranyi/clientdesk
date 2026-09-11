@@ -4,7 +4,7 @@ import { z } from 'zod';
  * Sprachen von Oberfläche und API-Meldungen. Kommt eine dazu, meldet der
  * Compiler jede Stelle, an der ihr Text fehlt — `Localized` verlangt alle.
  */
-export const LOCALES = ['de', 'en'] as const;
+export const LOCALES = ['de', 'fr', 'it', 'en'] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = 'de';
 
@@ -18,14 +18,12 @@ export function isLocale(value: unknown): value is Locale {
 /**
  * Wählt aus einer Liste von Sprachwünschen die erste unterstützte. Nimmt
  * `navigator.languages` ebenso wie die Einträge eines Accept-Language-Headers,
- * also `de-CH`, `en;q=0.8` oder `fr`. Französisch und Italienisch gibt es
- * noch nicht; wer sie wünscht, bekommt Englisch statt Deutsch.
+ * also `de-CH`, `fr;q=0.8` oder `it`. Ohne passenden Wunsch gilt Deutsch.
  */
 export function negotiateLocale(preferences: readonly string[]): Locale {
   for (const preference of preferences) {
     const base = preference.split(';')[0]?.trim().toLowerCase().split('-')[0];
     if (isLocale(base)) return base;
-    if (base === 'fr' || base === 'it') return 'en';
   }
   return DEFAULT_LOCALE;
 }
@@ -70,12 +68,17 @@ export function localized(text: Localized): { error: () => string } {
  * sie englisch, auch in der deutschen Oberfläche. Das deutsche Paket schreibt
  * ß; hier gilt Schweizer Schreibweise.
  */
-const zodGerman = z.locales.de();
-const zodEnglish = z.locales.en();
+const zodLocales = {
+  de: z.locales.de(),
+  fr: z.locales.fr(),
+  it: z.locales.it(),
+  en: z.locales.en(),
+} satisfies Record<Locale, { localeError: unknown }>;
+
 z.config({
   localeError: (issue) => {
-    if (resolveLocale() === 'en') return zodEnglish.localeError(issue);
-    const message = zodGerman.localeError(issue);
-    return typeof message === 'string' ? message.replaceAll('ß', 'ss') : message;
+    const locale = resolveLocale();
+    const message = zodLocales[locale].localeError(issue);
+    return locale === 'de' && typeof message === 'string' ? message.replaceAll('ß', 'ss') : message;
   },
 });

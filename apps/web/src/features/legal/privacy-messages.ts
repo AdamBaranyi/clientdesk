@@ -49,6 +49,90 @@ export const privacyMessages = defineMessages({
     complaint:
       'Beschwerden können Sie an den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) richten.',
   },
+  fr: {
+    title: 'Déclaration de protection des données',
+    intro: (date: string) =>
+      `État\u00a0: ${date}. Cette déclaration indique quelles données personnelles sont traitées lors de la visite et de l'utilisation, dans quel but et pendant combien de temps. Elle est courte, car peu de données sont traitées.`,
+    date: '11 septembre 2026',
+    responsible: 'Responsable',
+    whereTitle: 'Où se trouvent les données',
+    where:
+      "Le site fonctionne sur un serveur de FSIT AG, dans ses centres de données en Suisse. Serveur web, application, base de données et stockage des fichiers fonctionnent tous sur ce seul serveur. Aucune donnée n'est transmise à l'étranger et aucun autre service n'est intégré.",
+    visitTitle: 'Lors de la visite du site',
+    visitAddress:
+      "Votre navigateur transmet votre adresse IP\u00a0; sans elle, aucune connexion n'est possible. Elle n'est pas enregistrée\u00a0: ni le serveur web ni l'application ne l'inscrivent dans un journal. Pour limiter les tentatives de connexion et les démarrages de la démo, l'application la garde en mémoire vive pendant une fenêtre de 15 minutes et l'efface au plus tard une minute après.",
+    visitLog:
+      "Pour chaque requête, seuls l'heure, la méthode, le chemin, le statut et la durée sont journalisés, sans adresse IP, sans identification du navigateur et sans termes de recherche. Les journaux ont une taille maximale fixe\u00a0; les entrées plus anciennes sont écrasées.",
+    cookieTitle: 'Cookie et stockage local',
+    cookieBefore: 'Il existe un seul cookie,',
+    cookieAfter:
+      ". Il n'est créé que lorsque vous vous connectez ou démarrez la démo, et ne contient qu'un identifiant aléatoire de votre session. Il est techniquement nécessaire et expire après deux heures d'inactivité, au plus tard après douze heures.",
+    localStorage:
+      "Votre navigateur enregistre localement votre choix de langue et d'apparence. Il ne quitte pas votre appareil.",
+    demoTitle: 'La démo',
+    demo: (minutes: number) =>
+      `Au démarrage, un espace de travail distinct est créé avec des entreprises, des personnes et des chiffres fictifs. Il est supprimé après ${minutes} minutes, avec tout ce que vous y avez saisi, votre session et les fichiers. La démo n'accepte pas vos propres fichiers. Veuillez ne pas y saisir de données personnelles réelles.`,
+    accountsTitle: 'Comptes',
+    accounts:
+      "En dehors de la démo, les comptes ne sont créés que sur invitation. Sont enregistrés le nom, l'adresse e-mail, le mot de passe sous forme de hachage irréversible et l'appartenance aux espaces de travail, ainsi que les contenus et documents qui y sont créés. Le seul but est l'exploitation de l'application. Les données sont conservées jusqu'à la suppression du compte, qui a lieu sur demande.",
+    notTitle: "Ce qu'il n'y a pas",
+    not: "Aucun service d'analyse ou de statistiques, aucune publicité, aucun contenu tiers intégré, aucune police provenant de serveurs externes et aucune transmission à des tiers.",
+    backupTitle: 'Sauvegarde',
+    backup:
+      "L'hébergeur sauvegarde le serveur chaque semaine, selon ses indications également en Suisse. Une sauvegarde contient l'état au moment de la sauvegarde, y compris les données d'une démo en cours à ce moment-là.",
+    rightsTitle: 'Vos droits',
+    rights:
+      'Vous pouvez demander des renseignements sur vos données, leur rectification ou leur effacement, et vous opposer à leur traitement.',
+    contactByEmail: 'Un e-mail à',
+    contactByEmailEnd: 'suffit.',
+    contactByImprint: "Un message à l'adresse indiquée dans les",
+    contactByImprintLink: 'mentions légales',
+    contactByImprintEnd: 'suffit.',
+    complaint:
+      'Les plaintes peuvent être adressées au Préposé fédéral à la protection des données et à la transparence (PFPDT).',
+  },
+  it: {
+    title: 'Informativa sulla protezione dei dati',
+    intro: (date: string) =>
+      `Stato: ${date}. Questa informativa indica quali dati personali vengono trattati durante la visita e l'uso, a quale scopo e per quanto tempo. È breve perché i dati trattati sono pochi.`,
+    date: '11 settembre 2026',
+    responsible: 'Responsabile',
+    whereTitle: 'Dove si trovano i dati',
+    where:
+      "Il sito funziona su un server di FSIT AG nei suoi centri di calcolo in Svizzera. Server web, applicazione, banca dati e archivio dei file funzionano tutti su questo unico server. Nessun dato viene trasmesso all'estero e non è integrato alcun altro servizio.",
+    visitTitle: 'Alla visita del sito',
+    visitAddress:
+      "Il Suo browser trasmette il Suo indirizzo IP; senza di esso nessuna connessione è possibile. Non viene salvato: né il server web né l'applicazione lo registrano in un protocollo. Per limitare i tentativi di accesso e gli avvii della demo, l'applicazione lo conserva nella memoria di lavoro finché è in corso una finestra di 15 minuti e lo scarta al più tardi un minuto dopo.",
+    visitLog:
+      'Per ogni richiesta vengono registrati soltanto ora, metodo, percorso, stato e durata, senza indirizzo IP, senza identificazione del browser e senza termini di ricerca. I protocolli hanno una dimensione massima fissa; le voci più vecchie vengono sovrascritte.',
+    cookieTitle: 'Cookie e memoria locale',
+    cookieBefore: 'Esiste un solo cookie,',
+    cookieAfter:
+      '. Viene creato solo quando accede o avvia la demo e contiene soltanto un identificativo casuale della Sua sessione. È tecnicamente necessario e scade dopo due ore di inattività, al più tardi dopo dodici ore.',
+    localStorage:
+      'Il browser salva localmente la Sua scelta di lingua e di aspetto. Non lascia il Suo dispositivo.',
+    demoTitle: 'La demo',
+    demo: (minutes: number) =>
+      `All'avvio viene creata un'area di lavoro separata con aziende, persone e cifre fittizie. Dopo ${minutes} minuti viene eliminata, insieme a tutto ciò che vi ha inserito, alla Sua sessione e ai file. La demo non accetta file propri. La preghiamo di non inserirvi dati personali reali.`,
+    accountsTitle: 'Account',
+    accounts:
+      "Al di fuori della demo gli account vengono creati solo su invito. Vengono salvati il nome, l'indirizzo e-mail, la password come hash irreversibile e l'appartenenza alle aree di lavoro, oltre ai contenuti e ai documenti creati al loro interno. Lo scopo è unicamente il funzionamento dell'applicazione. I dati restano fino all'eliminazione dell'account, che avviene su richiesta.",
+    notTitle: "Che cosa non c'è",
+    not: 'Nessun servizio di analisi o di statistica, nessuna pubblicità, nessun contenuto di terzi incorporato, nessun carattere da server esterni e nessuna trasmissione a terzi.',
+    backupTitle: 'Backup',
+    backup:
+      "Il fornitore esegue ogni settimana un backup del server, secondo le sue indicazioni anch'esso in Svizzera. Un backup contiene lo stato al momento del salvataggio, compresi i dati di una demo in corso in quel momento.",
+    rightsTitle: 'I Suoi diritti',
+    rights:
+      'Può chiedere informazioni sui Suoi dati, la loro rettifica o cancellazione e opporsi al loro trattamento.',
+    contactByEmail: "Un'e-mail a",
+    contactByEmailEnd: 'è sufficiente.',
+    contactByImprint: "Un messaggio all'indirizzo indicato nelle",
+    contactByImprintLink: 'note legali',
+    contactByImprintEnd: 'è sufficiente.',
+    complaint:
+      "I reclami possono essere indirizzati all'Incaricato federale della protezione dei dati e della trasparenza (IFPDT).",
+  },
   en: {
     title: 'Privacy policy',
     intro: (date: string) =>

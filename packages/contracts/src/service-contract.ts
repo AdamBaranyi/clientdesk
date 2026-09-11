@@ -21,7 +21,15 @@ export const contractInputSchema = z
     name: z
       .string()
       .trim()
-      .min(1, localized({ de: 'Bezeichnung ist erforderlich', en: 'Name is required' }))
+      .min(
+        1,
+        localized({
+          de: 'Bezeichnung ist erforderlich',
+          fr: 'La désignation est obligatoire',
+          it: 'La denominazione è obbligatoria',
+          en: 'Name is required',
+        }),
+      )
       .max(200),
     startDate: isoDate,
     /** Exklusiv: am Enddatum selbst zählt der Vertrag nicht mehr. */
@@ -40,6 +48,8 @@ export const contractInputSchema = z
   .refine((value) => !value.endDate || value.endDate > value.startDate, {
     ...localized({
       de: 'Das Enddatum muss nach dem Beginn liegen',
+      fr: 'La date de fin doit être postérieure au début',
+      it: "La data di fine deve essere successiva all'inizio",
       en: 'The end date must be after the start',
     }),
     path: ['endDate'],

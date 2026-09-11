@@ -57,6 +57,8 @@ export function rateLimit(options: RateLimitOptions) {
       next(
         new HttpError('RATE_LIMITED', {
           de: 'Zu viele Versuche. Bitte später erneut probieren.',
+          fr: 'Trop de tentatives. Veuillez réessayer plus tard.',
+          it: 'Troppi tentativi. Riprovi più tardi.',
           en: 'Too many attempts. Please try again later.',
         }),
       );

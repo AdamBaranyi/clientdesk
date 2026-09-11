@@ -38,6 +38,8 @@ async function getCsrfToken(): Promise<string> {
     throw new Error(
       inCurrentLocale({
         de: 'CSRF-Token konnte nicht geladen werden.',
+        fr: "Le jeton CSRF n'a pas pu être chargé.",
+        it: 'Non è stato possibile caricare il token CSRF.',
         en: 'The CSRF token could not be loaded.',
       }),
     );
@@ -48,6 +50,8 @@ async function getCsrfToken(): Promise<string> {
     throw new Error(
       inCurrentLocale({
         de: 'CSRF-Antwort hat ein unerwartetes Format.',
+        fr: 'La réponse CSRF a un format inattendu.',
+        it: 'La risposta CSRF ha un formato imprevisto.',
         en: 'The CSRF response has an unexpected format.',
       }),
     );
@@ -84,6 +88,8 @@ async function toError(response: Response): Promise<ApiRequestError> {
     code: 'INTERNAL',
     message: inCurrentLocale({
       de: 'Unerwartete Antwort vom Server.',
+      fr: 'Réponse inattendue du serveur.',
+      it: 'Risposta imprevista dal server.',
       en: 'Unexpected response from the server.',
     }),
     requestId: response.headers.get('X-Request-Id') ?? 'unknown',

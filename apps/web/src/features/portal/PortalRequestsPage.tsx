@@ -12,10 +12,10 @@ import { ApiRequestError } from '../../lib/api.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { RequestStatusBadge } from '../requests/labels.tsx';
 import { useAssignableProjects, useCreatePortalRequest, usePortalRequests } from './api.ts';
-import { portalMessages } from './messages.ts';
+import { portalRequestMessages } from './request-messages.ts';
 
 export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary }) {
-  const m = useMessages(portalMessages).requests;
+  const m = useMessages(portalRequestMessages).requests;
   const [open, setOpen] = useState(false);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');

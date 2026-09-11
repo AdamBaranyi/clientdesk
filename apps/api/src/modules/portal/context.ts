@@ -22,13 +22,27 @@ export function requirePortalClient(repository: AuthRepository) {
 
     const parsed = workspaceIdSchema.safeParse(req.params.workspaceId);
     if (!parsed.success) {
-      next(notFound({ de: 'Nicht gefunden.', en: 'Not found.' }));
+      next(
+        notFound({
+          de: 'Nicht gefunden.',
+          fr: 'Introuvable.',
+          it: 'Non trovato.',
+          en: 'Not found.',
+        }),
+      );
       return;
     }
 
     const membership = await repository.findMembership(userId, parsed.data);
     if (!membership || membership.role !== 'client' || !membership.customerId) {
-      next(notFound({ de: 'Nicht gefunden.', en: 'Not found.' }));
+      next(
+        notFound({
+          de: 'Nicht gefunden.',
+          fr: 'Introuvable.',
+          it: 'Non trovato.',
+          en: 'Not found.',
+        }),
+      );
       return;
     }
 
@@ -44,6 +58,12 @@ export function requirePortalClient(repository: AuthRepository) {
 }
 
 export function getPortal(req: Request): PortalScope {
-  if (!req.portal) throw unauthenticated({ de: 'Kein Kundenkontext.', en: 'No customer context.' });
+  if (!req.portal)
+    throw unauthenticated({
+      de: 'Kein Kundenkontext.',
+      fr: 'Aucun contexte client.',
+      it: 'Nessun contesto cliente.',
+      en: 'No customer context.',
+    });
   return req.portal;
 }

@@ -11,7 +11,15 @@ export const milestoneInputSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(1, localized({ de: 'Titel ist erforderlich', en: 'Title is required' }))
+    .min(
+      1,
+      localized({
+        de: 'Titel ist erforderlich',
+        fr: 'Le titre est obligatoire',
+        it: 'Il titolo è obbligatorio',
+        en: 'Title is required',
+      }),
+    )
     .max(200),
   description: z.string().trim().max(2000).nullish(),
   dueDate: isoDate.nullish(),

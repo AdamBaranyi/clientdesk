@@ -53,6 +53,33 @@ Auf Datenbankebene stützen das zusammengesetzte Fremdschlüssel ab: eine Kindta
 `workspace_id` mit und verweist auf `(id, workspace_id)` der Elterntabelle. Ein Projekt kann so
 gar nicht zu einem Kunden eines fremden Workspace gehören, auch nicht bei einem Fehler im Service.
 
+## Sprachen
+
+Deutsch, Französisch, Italienisch und Englisch, für Oberfläche und API-Meldungen. Die Liste steht
+an genau einer Stelle, `LOCALES` in `packages/contracts/src/i18n.ts`. Kommt eine Sprache dazu,
+meldet der Compiler jede Stelle, an der ihr Text fehlt: Kataloge der Oberfläche, Meldungen der
+API, Prüfmeldungen der Schemas.
+
+**Oberfläche.** Ein Katalog je Bereich, alle Sprachen nebeneinander in einer Datei, gebaut mit
+`defineMessages`. Deutsch gibt die Form vor; ein fehlender oder überzähliger Schlüssel oder eine
+Funktion mit anderen Parametern bricht den Typecheck. Begriffe, die mehrere Bereiche teilen —
+Zustände, Prioritäten, Rollen —, stehen einmal in `apps/web/src/i18n/domain-messages.ts`.
+Formate bleiben in jeder Sprache schweizerisch: `CHF 2'970.00`, `11.09.2026`.
+
+**Welche Sprache.** Eine frühere Wahl, sonst die Wünsche des Browsers, sonst Deutsch. Die Wahl
+liegt im Browser, setzt das `lang`-Attribut und geht als `Accept-Language` an die API. Nach einem
+Wechsel wird neu geholt, was der Server schon in der alten Sprache geschickt hat.
+
+**API.** Die Sprache gilt je Request und liegt in `AsyncLocalStorage`. Meldungen entstehen tief
+in Services und Schemas; ein Sprachparameter müsste sonst durch jede Funktion bis dorthin gereicht
+werden. `HttpError` nimmt eine Meldung nur in allen Sprachen zugleich, ein einzelner String
+kompiliert nicht. Die gemeinsamen Zod-Schemas lösen ihre Meldungen erst beim Prüfen auf, so dient
+dasselbe Schema der Oberfläche in jeder Sprache und der API.
+
+**Was nicht übersetzt wird.** Inhalte, die Nutzer anlegen, und die erfundenen Daten der Demo. Das
+sind Kundendaten, keine Oberfläche. Die Rechtsseiten in Französisch, Italienisch und Englisch sagen,
+dass die deutsche Fassung gilt.
+
 ## Entscheidungen
 
 **Sitzungen statt Tokens.** Serverseitige Sessions im PostgreSQL-Store. Eine Abmeldung wirkt damit
@@ -111,7 +138,9 @@ Eine spätere Anbindung über OIDC bleibt möglich und steht im Backlog.
 
 **Session-Tabelle.** `connect-pg-simple` gibt das Schema von `session` vor, nicht dieses Projekt.
 Die Tabelle steht trotzdem in `packages/db/src/schema/sessions.ts`, damit ein frischer Checkout
-allein über die Migrationen startet. Über Drizzle wird sie nie beschrieben.
+allein über die Migrationen startet. Drizzle löscht dort nur Zeilen, beim Aufräumen abgelaufener
+Demos und nach einem Passwortwechsel. Angelegt und geändert werden sie ausschliesslich von
+connect-pg-simple.
 
 **Rate-Limit im Prozessspeicher.** Reicht bei einer API-Instanz. Bei mehreren Instanzen gehört der
 Zähler in einen gemeinsamen Speicher.

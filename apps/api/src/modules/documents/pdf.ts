@@ -17,11 +17,18 @@ export function looksLikePdf(bytes: Uint8Array): boolean {
 export function assertAcceptablePdf(bytes: Uint8Array, declaredType: string | undefined): void {
   if (declaredType !== ALLOWED_DOCUMENT_MIME) {
     throw validationFailed(
-      { de: 'Nur PDF-Dateien sind erlaubt.', en: 'Only PDF files are allowed.' },
+      {
+        de: 'Nur PDF-Dateien sind erlaubt.',
+        fr: 'Seuls les fichiers PDF sont autorisés.',
+        it: 'Sono consentiti solo file PDF.',
+        en: 'Only PDF files are allowed.',
+      },
       {
         file: [
           {
             de: `Content-Type muss ${ALLOWED_DOCUMENT_MIME} sein`,
+            fr: `Le Content-Type doit être ${ALLOWED_DOCUMENT_MIME}`,
+            it: `Il Content-Type deve essere ${ALLOWED_DOCUMENT_MIME}`,
             en: `Content-Type must be ${ALLOWED_DOCUMENT_MIME}`,
           },
         ],
@@ -30,17 +37,38 @@ export function assertAcceptablePdf(bytes: Uint8Array, declaredType: string | un
   }
   if (bytes.length === 0) {
     throw validationFailed(
-      { de: 'Die Datei ist leer.', en: 'The file is empty.' },
-      { file: [{ de: 'Keine Daten empfangen', en: 'No data received' }] },
+      {
+        de: 'Die Datei ist leer.',
+        fr: 'Le fichier est vide.',
+        it: 'Il file è vuoto.',
+        en: 'The file is empty.',
+      },
+      {
+        file: [
+          {
+            de: 'Keine Daten empfangen',
+            fr: 'Aucune donnée reçue',
+            it: 'Nessun dato ricevuto',
+            en: 'No data received',
+          },
+        ],
+      },
     );
   }
   if (bytes.length > MAX_DOCUMENT_BYTES) {
     throw validationFailed(
-      { de: 'Die Datei ist zu gross.', en: 'The file is too large.' },
+      {
+        de: 'Die Datei ist zu gross.',
+        fr: 'Le fichier est trop volumineux.',
+        it: 'Il file è troppo grande.',
+        en: 'The file is too large.',
+      },
       {
         file: [
           {
             de: `Höchstens ${MAX_DOCUMENT_BYTES / (1024 * 1024)} MiB`,
+            fr: `Au maximum ${MAX_DOCUMENT_BYTES / (1024 * 1024)} Mio`,
+            it: `Al massimo ${MAX_DOCUMENT_BYTES / (1024 * 1024)} MiB`,
             en: `At most ${MAX_DOCUMENT_BYTES / (1024 * 1024)} MiB`,
           },
         ],
@@ -50,10 +78,20 @@ export function assertAcceptablePdf(bytes: Uint8Array, declaredType: string | un
   if (!looksLikePdf(bytes)) {
     // Eine als PDF deklarierte Datei, die keine ist — hier endet der Versuch.
     throw validationFailed(
-      { de: 'Der Dateiinhalt ist kein PDF.', en: 'The file content is not a PDF.' },
+      {
+        de: 'Der Dateiinhalt ist kein PDF.',
+        fr: "Le contenu du fichier n'est pas un PDF.",
+        it: 'Il contenuto del file non è un PDF.',
+        en: 'The file content is not a PDF.',
+      },
       {
         file: [
-          { de: 'Dateianfang entspricht keinem PDF', en: 'The file does not start like a PDF' },
+          {
+            de: 'Dateianfang entspricht keinem PDF',
+            fr: 'Le début du fichier ne correspond pas à un PDF',
+            it: "L'inizio del file non corrisponde a un PDF",
+            en: 'The file does not start like a PDF',
+          },
         ],
       },
     );

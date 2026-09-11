@@ -44,6 +44,88 @@ export const settingsMessages = defineMessages({
       revoke: (email: string) => `Einladung für ${email} zurückziehen`,
     },
   },
+  fr: {
+    heading: 'Paramètres',
+    workspaceFacts: (name: string, timezone: string, currency: string) =>
+      `${name} · Fuseau horaire ${timezone} · Devise ${currency}`,
+    invite: {
+      title: 'Inviter',
+      validity: 'Le lien est valable sept jours, pour une seule utilisation',
+      email: 'E-mail',
+      role: 'Rôle',
+      customer: 'Client attribué',
+      chooseCustomer: 'Veuillez choisir',
+      clientHint: 'Un accès client voit exclusivement les contenus partagés de ce seul client.',
+      creating: 'Création …',
+      submit: "Créer l'invitation",
+      createFailed: "L'invitation n'a pas pu être créée.",
+    },
+    roleDescription: {
+      owner: "gère l'espace de travail et les membres",
+      member: 'travaille sur les clients, les projets et les demandes',
+      client: "voit uniquement les contenus partagés d'un client",
+    },
+    created: {
+      linkFor: (email: string) => `Lien pour ${email}`,
+      shownOnce:
+        "Ce lien n'est affiché que maintenant. Seul son hash est enregistré — il ne peut pas être récupéré plus tard.",
+      copy: 'Copier',
+      copied: 'Copié',
+    },
+    list: {
+      title: 'Invitations en cours',
+      loading: 'Chargement des invitations …',
+      loadFailed: "Les invitations n'ont pas pu être chargées.",
+      emptyTitle: 'Aucune invitation',
+      emptyDetail:
+        "Les invitations créées apparaissent ici jusqu'à ce qu'elles soient acceptées ou expirent.",
+      unknownCustomer: 'inconnu',
+      acceptedOn: (date: string) => `acceptée le ${date}`,
+      validUntil: (date: string) => `valable jusqu'au ${date}`,
+      revoke: (email: string) => `Révoquer l'invitation pour ${email}`,
+    },
+  },
+  it: {
+    heading: 'Impostazioni',
+    workspaceFacts: (name: string, timezone: string, currency: string) =>
+      `${name} · Fuso orario ${timezone} · Valuta ${currency}`,
+    invite: {
+      title: 'Invitare',
+      validity: 'Il link è valido sette giorni, per un solo utilizzo',
+      email: 'E-mail',
+      role: 'Ruolo',
+      customer: 'Cliente assegnato',
+      chooseCustomer: 'Selezionare',
+      clientHint:
+        'Un accesso cliente vede esclusivamente i contenuti condivisi di questo unico cliente.',
+      creating: 'Creazione …',
+      submit: 'Crea invito',
+      createFailed: "Non è stato possibile creare l'invito.",
+    },
+    roleDescription: {
+      owner: "gestisce l'area di lavoro e i membri",
+      member: 'lavora su clienti, progetti e richieste',
+      client: 'vede solo i contenuti condivisi di un cliente',
+    },
+    created: {
+      linkFor: (email: string) => `Link per ${email}`,
+      shownOnce:
+        'Questo link viene mostrato solo ora. Viene salvato solo il suo hash — in seguito non sarà più possibile recuperarlo.',
+      copy: 'Copia',
+      copied: 'Copiato',
+    },
+    list: {
+      title: 'Inviti aperti',
+      loading: 'Caricamento degli inviti …',
+      loadFailed: 'Non è stato possibile caricare gli inviti.',
+      emptyTitle: 'Nessun invito',
+      emptyDetail: 'Gli inviti creati compaiono qui finché non vengono accettati o scadono.',
+      unknownCustomer: 'sconosciuto',
+      acceptedOn: (date: string) => `accettato il ${date}`,
+      validUntil: (date: string) => `valido fino al ${date}`,
+      revoke: (email: string) => `Revoca l'invito per ${email}`,
+    },
+  },
   en: {
     heading: 'Settings',
     workspaceFacts: (name: string, timezone: string, currency: string) =>

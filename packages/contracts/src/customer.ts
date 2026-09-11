@@ -9,7 +9,17 @@ export const customerInputSchema = z.object({
   email: z.union([z.email(localized(VALIDATION.invalidEmail)), z.literal('')]).nullish(),
   phone: z.string().trim().max(60).nullish(),
   website: z
-    .union([z.url(localized({ de: 'Keine gültige URL', en: 'Not a valid URL' })), z.literal('')])
+    .union([
+      z.url(
+        localized({
+          de: 'Keine gültige URL',
+          fr: 'URL non valide',
+          it: 'URL non valido',
+          en: 'Not a valid URL',
+        }),
+      ),
+      z.literal(''),
+    ])
     .nullish(),
   internalNote: z.string().trim().max(4000).nullish(),
 });

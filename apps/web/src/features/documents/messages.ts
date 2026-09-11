@@ -30,6 +30,64 @@ export const documentMessages = defineMessages({
     share: 'Für Kunden freigeben',
     delete: (fileName: string) => `${fileName} löschen`,
   },
+  fr: {
+    title: 'Documents',
+    leadDemo:
+      "La démo n'accepte pas vos propres fichiers. Le document d'exemple inclus montre le déroulement.",
+    lead: (maxMib: number) =>
+      `PDF jusqu'à ${maxMib} Mio. Les fichiers téléversés restent internes jusqu'à ce qu'ils soient explicitement partagés.`,
+    creating: 'Création …',
+    createSample: "Créer un document d'exemple",
+    uploading: 'Téléversement …',
+    upload: 'Téléverser un PDF',
+    chooseFile: 'Choisir un fichier PDF',
+    uploadFailed: 'Le téléversement a échoué. Veuillez réessayer.',
+    customer: 'Client',
+    allCustomers: 'Tous les clients',
+    uploadTarget: (customerName: string) =>
+      `Le fichier est téléversé pour ${customerName}. Pour changer, choisissez d'abord le client.`,
+    loading: 'Chargement des documents …',
+    loadFailed: "La liste des documents n'a pas pu être chargée. Veuillez recharger la page.",
+    empty: "Aucun document pour l'instant",
+    emptyNoCustomers: "Un document appartient toujours à un client. Créez d'abord un client.",
+    emptyDetail:
+      "Les PDF téléversés restent d'abord internes. Ils n'apparaissent dans le portail client qu'après un partage.",
+    visibleInPortal: 'Visible dans le portail',
+    internalOnly: 'Interne uniquement',
+    open: 'Ouvrir',
+    stopSharing: 'Retirer le partage',
+    share: 'Partager avec le client',
+    delete: (fileName: string) => `Supprimer ${fileName}`,
+  },
+  it: {
+    title: 'Documenti',
+    leadDemo:
+      'La demo non accetta file propri. Il documento di esempio incluso mostra la procedura.',
+    lead: (maxMib: number) =>
+      `PDF fino a ${maxMib} MiB. I file caricati restano interni finché non vengono condivisi esplicitamente.`,
+    creating: 'Creazione …',
+    createSample: 'Crea documento di esempio',
+    uploading: 'Caricamento del file …',
+    upload: 'Carica PDF',
+    chooseFile: 'Scegli un file PDF',
+    uploadFailed: 'Il caricamento non è riuscito. Riprovi.',
+    customer: 'Cliente',
+    allCustomers: 'Tutti i clienti',
+    uploadTarget: (customerName: string) =>
+      `Il file viene caricato per ${customerName}. Per cambiare, scelga prima il cliente.`,
+    loading: 'Caricamento dei documenti …',
+    loadFailed: "Non è stato possibile caricare l'elenco dei documenti. Ricarichi la pagina.",
+    empty: 'Ancora nessun documento',
+    emptyNoCustomers: 'Un documento appartiene sempre a un cliente. Crei prima un cliente.',
+    emptyDetail:
+      'I PDF caricati restano inizialmente interni. Compaiono nel portale clienti solo dopo una condivisione.',
+    visibleInPortal: 'Visibile nel portale',
+    internalOnly: 'Solo interno',
+    open: 'Apri',
+    stopSharing: 'Annulla la condivisione',
+    share: 'Condividi con il cliente',
+    delete: (fileName: string) => `Elimina ${fileName}`,
+  },
   en: {
     title: 'Documents',
     leadDemo:

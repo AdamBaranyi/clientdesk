@@ -67,7 +67,12 @@ export function createDocumentService(
   async function require(workspaceId: string, documentId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, documentId);
     if (!row || row.deletionStatus !== 'active')
-      throw notFound({ de: 'Dokument nicht gefunden.', en: 'Document not found.' });
+      throw notFound({
+        de: 'Dokument nicht gefunden.',
+        fr: 'Document introuvable.',
+        it: 'Documento non trovato.',
+        en: 'Document not found.',
+      });
     return row as Row;
   }
 
@@ -93,10 +98,19 @@ export function createDocumentService(
         throw validationFailed(
           {
             de: 'Kunde gehört nicht zu diesem Workspace.',
+            fr: "Ce client n'appartient pas à cet espace de travail.",
+            it: "Questo cliente non appartiene a quest'area di lavoro.",
             en: 'This customer does not belong to this workspace.',
           },
           {
-            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+            customerId: [
+              {
+                de: 'Unbekannter Kunde',
+                fr: 'Client inconnu',
+                it: 'Cliente sconosciuto',
+                en: 'Unknown customer',
+              },
+            ],
           },
         );
       }
@@ -110,11 +124,18 @@ export function createDocumentService(
           throw validationFailed(
             {
               de: 'Das Projekt gehört nicht zu diesem Kunden.',
+              fr: "Ce projet n'appartient pas à ce client.",
+              it: 'Questo progetto non appartiene a questo cliente.',
               en: 'This project does not belong to this customer.',
             },
             {
               projectId: [
-                { de: 'Projekt passt nicht zum Kunden', en: 'Project does not match the customer' },
+                {
+                  de: 'Projekt passt nicht zum Kunden',
+                  fr: 'Le projet ne correspond pas au client',
+                  it: 'Il progetto non corrisponde al cliente',
+                  en: 'Project does not match the customer',
+                },
               ],
             },
           );
@@ -146,6 +167,8 @@ export function createDocumentService(
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Dokument konnte nicht angelegt werden.',
+            fr: "Le document n'a pas pu être créé.",
+            it: 'Non è stato possibile creare il documento.',
             en: 'The document could not be created.',
           });
 
@@ -176,10 +199,19 @@ export function createDocumentService(
         throw validationFailed(
           {
             de: 'Kunde gehört nicht zu diesem Workspace.',
+            fr: "Ce client n'appartient pas à cet espace de travail.",
+            it: "Questo cliente non appartiene a quest'area di lavoro.",
             en: 'This customer does not belong to this workspace.',
           },
           {
-            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+            customerId: [
+              {
+                de: 'Unbekannter Kunde',
+                fr: 'Client inconnu',
+                it: 'Cliente sconosciuto',
+                en: 'Unknown customer',
+              },
+            ],
           },
         );
       }
@@ -205,6 +237,8 @@ export function createDocumentService(
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Dokument konnte nicht angelegt werden.',
+            fr: "Le document n'a pas pu être créé.",
+            it: 'Non è stato possibile creare il documento.',
             en: 'The document could not be created.',
           });
 
@@ -229,6 +263,8 @@ export function createDocumentService(
       if (!object)
         throw notFound({
           de: 'Die Datei ist im Speicher nicht mehr vorhanden.',
+          fr: "Le fichier n'est plus présent dans l'espace de stockage.",
+          it: 'Il file non è più presente nello spazio di archiviazione.',
           en: 'The file is no longer in storage.',
         });
       return { document: toDto(row), bytes: object.bytes };

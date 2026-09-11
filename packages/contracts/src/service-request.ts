@@ -72,7 +72,15 @@ export const commentInputSchema = z.object({
   body: z
     .string()
     .trim()
-    .min(1, localized({ de: 'Kommentar darf nicht leer sein', en: 'A comment cannot be empty' }))
+    .min(
+      1,
+      localized({
+        de: 'Kommentar darf nicht leer sein',
+        fr: 'Le commentaire ne peut pas être vide',
+        it: 'Il commento non può essere vuoto',
+        en: 'A comment cannot be empty',
+      }),
+    )
     .max(8000),
   visibility: z.enum(COMMENT_VISIBILITY).default('internal'),
 });

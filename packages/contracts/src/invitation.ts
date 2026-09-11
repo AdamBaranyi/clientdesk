@@ -16,6 +16,8 @@ export const invitationInputSchema = z
   .refine((value) => (value.role === 'client') === Boolean(value.customerId), {
     ...localized({
       de: 'Ein Kundenzugang braucht genau einen zugeordneten Kunden',
+      fr: 'Un accès client nécessite exactement un client attribué',
+      it: 'Un accesso cliente richiede esattamente un cliente assegnato',
       en: 'A client login needs exactly one assigned customer',
     }),
     path: ['customerId'],
@@ -63,7 +65,15 @@ export const acceptInvitationSchema = z.object({
   displayName: z.string().trim().min(1).max(200).optional(),
   password: z
     .string()
-    .min(12, localized({ de: 'Mindestens 12 Zeichen', en: 'At least 12 characters' }))
+    .min(
+      12,
+      localized({
+        de: 'Mindestens 12 Zeichen',
+        fr: 'Au moins 12 caractères',
+        it: 'Almeno 12 caratteri',
+        en: 'At least 12 characters',
+      }),
+    )
     .max(1024),
 });
 

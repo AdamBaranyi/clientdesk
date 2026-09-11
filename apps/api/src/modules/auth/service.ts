@@ -47,6 +47,8 @@ export function createAuthService(repository: AuthRepository): AuthService {
       if (!user || !matches) {
         throw unauthenticated({
           de: 'E-Mail oder Passwort ist falsch.',
+          fr: "L'e-mail ou le mot de passe est incorrect.",
+          it: "L'e-mail o la password non è corretta.",
           en: 'Email or password is incorrect.',
         });
       }
@@ -58,6 +60,8 @@ export function createAuthService(repository: AuthRepository): AuthService {
       if (!user)
         throw unauthenticated({
           de: 'Konto existiert nicht mehr.',
+          fr: "Ce compte n'existe plus.",
+          it: 'Questo account non esiste più.',
           en: 'This account no longer exists.',
         });
 
@@ -82,6 +86,8 @@ export function createAuthService(repository: AuthRepository): AuthService {
       if (await repository.isDemoAccount(userId)) {
         throw forbidden({
           de: 'In der Demo lässt sich das Passwort nicht ändern.',
+          fr: 'Le mot de passe ne peut pas être modifié dans la démo.',
+          it: 'Nella demo non è possibile modificare la password.',
           en: 'The password cannot be changed in the demo.',
         });
       }
@@ -91,8 +97,17 @@ export function createAuthService(repository: AuthRepository): AuthService {
 
       if (!(await verifyPassword(user.passwordHash, input.currentPassword))) {
         throw validationFailed(
-          { de: 'Das Passwort wurde nicht geändert.', en: 'The password was not changed.' },
-          { currentPassword: [{ de: 'Stimmt nicht', en: 'Incorrect' }] },
+          {
+            de: 'Das Passwort wurde nicht geändert.',
+            fr: "Le mot de passe n'a pas été modifié.",
+            it: 'La password non è stata modificata.',
+            en: 'The password was not changed.',
+          },
+          {
+            currentPassword: [
+              { de: 'Stimmt nicht', fr: 'Incorrect', it: 'Non corretta', en: 'Incorrect' },
+            ],
+          },
         );
       }
 

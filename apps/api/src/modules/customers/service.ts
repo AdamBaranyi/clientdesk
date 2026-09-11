@@ -58,7 +58,13 @@ export function createCustomerService(
 ) {
   async function requireCustomer(workspaceId: string, customerId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, customerId);
-    if (!row) throw notFound({ de: 'Kunde nicht gefunden.', en: 'Customer not found.' });
+    if (!row)
+      throw notFound({
+        de: 'Kunde nicht gefunden.',
+        fr: 'Client introuvable.',
+        it: 'Cliente non trovato.',
+        en: 'Customer not found.',
+      });
     return row as Row;
   }
 
@@ -108,6 +114,8 @@ export function createCustomerService(
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Kunde konnte nicht angelegt werden.',
+            fr: "Le client n'a pas pu être créé.",
+            it: 'Non è stato possibile creare il cliente.',
             en: 'The customer could not be created.',
           });
 
@@ -172,6 +180,8 @@ export function createCustomerService(
         if (updated.length === 0) {
           throw new HttpError('VERSION_CONFLICT', {
             de: 'Der Kunde wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
+            fr: "Le client a été modifié entre-temps par quelqu'un d'autre. Veuillez recharger la page.",
+            it: "Il cliente è stato modificato nel frattempo da un'altra persona. Ricarichi la pagina.",
             en: 'Someone else has changed this customer in the meantime. Please reload.',
           });
         }
@@ -209,6 +219,8 @@ export function createCustomerService(
           throw validationFailed(
             {
               de: 'Der Kunde kann noch nicht archiviert werden.',
+              fr: 'Le client ne peut pas encore être archivé.',
+              it: 'Il cliente non può ancora essere archiviato.',
               en: 'This customer cannot be archived yet.',
             },
             {

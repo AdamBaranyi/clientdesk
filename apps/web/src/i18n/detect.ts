@@ -2,11 +2,7 @@ import { isLocale, negotiateLocale, type Locale } from '@tallyroom/contracts';
 
 export const LOCALE_STORAGE_KEY = 'tallyroom.locale';
 
-/**
- * Die Sprache beim Start: zuerst eine frühere Wahl, sonst die Wünsche des
- * Browsers. Wer Französisch oder Italienisch eingestellt hat, bekommt Englisch,
- * bis es diese Sprachen gibt — siehe negotiateLocale.
- */
+/** Die Sprache beim Start: zuerst eine frühere Wahl, sonst die Wünsche des Browsers. */
 export function initialLocale(): Locale {
   const stored = readStoredLocale();
   if (stored) return stored;
@@ -35,5 +31,5 @@ export function storeLocale(locale: Locale): void {
 
 /** Sprachkennung für Intl und das lang-Attribut. Formate bleiben schweizerisch. */
 export function languageTag(locale: Locale): string {
-  return locale === 'de' ? 'de-CH' : 'en-CH';
+  return `${locale}-CH`;
 }

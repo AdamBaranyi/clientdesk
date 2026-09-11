@@ -236,6 +236,30 @@ den Anbieter.
 
 Die einzelnen Schritte kommen mit D8 in die README.
 
+## Erledigt — Vier Sprachen und geschlossene Lücken (11.09.2026)
+
+Vor dem Livegang dazugekommen, auf Wunsch des Betreibers und aus einer eigenen Durchsicht der
+Anwendung.
+
+**Sprachen.** Deutsch, Französisch, Italienisch und Englisch für Oberfläche, API-Meldungen und
+Prüfmeldungen. Aufbau und Begründung in `docs/ARCHITECTURE.md`, Abschnitt „Sprachen".
+Französisch und Italienisch sind ohne Prüfung durch Muttersprachler übersetzt; die Rechtsseiten
+sagen in jeder Übersetzung, dass die deutsche Fassung gilt.
+
+**Nebenbefund Zod.** Zods eigene Meldungen waren nie konfiguriert und erschienen auf Englisch,
+auch in der deutschen Oberfläche. Sie folgen jetzt der gewählten Sprache.
+
+**Lücken, die vorher offen waren**
+
+- Passwort ändern, für Team und Kundenzugang, mit dem bisherigen Passwort als Nachweis; danach
+  enden alle anderen Sitzungen des Kontos
+- Fehlergrenze statt weisser Seite bei einem Darstellungsfehler
+- Eine abgelaufene Sitzung führt zur Anmeldung, statt jede Seite „Konnte nicht geladen werden"
+  sagen zu lassen
+- Rate-Limit auf Uploads, 30 je Konto und Viertelstunde
+- Wiederholungslauf für Löschungen, die am Objektspeicher gescheitert sind
+- Zwei deutsche Texte auf der Einladungsseite waren grammatisch falsch
+
 ## Offen — Meilenstein 6: Deployment
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
@@ -249,6 +273,7 @@ Plan vom 11.09.2026, in dieser Reihenfolge:
 | D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt     |
 | D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt     |
 | D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | als Nächstes |
+| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | geplant      |
 | D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
 | D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen        |
 
@@ -330,6 +355,15 @@ Funde und die einzeln begründeten Ausnahmen stehen in `docs/SECURITY.md`.
 Lauf auf dem Server erzeugt, Datenbanksicherung vor jeder Migration, Rollback über einen älteren
 Commit. Dazu auf dem Server `443/udp` in der Firewall freigeben. Caddy bietet HTTP/3 an, bisher ist
 dafür nur TCP offen, und Browser fallen dann still auf HTTP/2 zurück.
+
+**D6b im Einzelnen: Rundgang durch die Demo.** Wunsch des Betreibers vom 11.09.2026. Wer die Demo
+startet, bekommt einmal einen kurzen Rundgang: was Tallyroom ist, dann Schritt für Schritt
+Kennzahlen, Kunden, Projekte, Verträge, Anfragen und Dokumente, zum Schluss der Rollenwechsel ins
+Kundenportal — der Moment, in dem die Trennung sichtbar wird. Jeder Schritt zeigt auf das
+Bedienelement, um das es geht. Überspringbar, jederzeit neu startbar aus dem Demo-Banner, mit
+Tastatur und Screenreader bedienbar, ohne Bewegung bei `prefers-reduced-motion`, ab 320 Pixeln.
+Keine Bibliothek: ein fremdes Skript bräuchte eine Ausnahme in der CSP und brächte mehr, als der
+Rundgang braucht.
 
 **D8 im Einzelnen: Fallstudie.** Sie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
 Geschmack.

@@ -61,7 +61,13 @@ export function createRequestService(
 ) {
   async function require(workspaceId: string, requestId: string): Promise<Row> {
     const row = await repository.findById(workspaceId, requestId);
-    if (!row) throw notFound({ de: 'Anfrage nicht gefunden.', en: 'Request not found.' });
+    if (!row)
+      throw notFound({
+        de: 'Anfrage nicht gefunden.',
+        fr: 'Demande introuvable.',
+        it: 'Richiesta non trovata.',
+        en: 'Request not found.',
+      });
     return row as Row;
   }
 
@@ -77,11 +83,18 @@ export function createRequestService(
       throw validationFailed(
         {
           de: 'Das Projekt gehört nicht zu diesem Kunden.',
+          fr: "Ce projet n'appartient pas à ce client.",
+          it: 'Questo progetto non appartiene a questo cliente.',
           en: 'This project does not belong to this customer.',
         },
         {
           projectId: [
-            { de: 'Projekt passt nicht zum Kunden', en: 'Project does not match the customer' },
+            {
+              de: 'Projekt passt nicht zum Kunden',
+              fr: 'Le projet ne correspond pas au client',
+              it: 'Il progetto non corrisponde al cliente',
+              en: 'Project does not match the customer',
+            },
           ],
         },
       );
@@ -137,10 +150,19 @@ export function createRequestService(
         throw validationFailed(
           {
             de: 'Kunde gehört nicht zu diesem Workspace.',
+            fr: "Ce client n'appartient pas à cet espace de travail.",
+            it: "Questo cliente non appartiene a quest'area di lavoro.",
             en: 'This customer does not belong to this workspace.',
           },
           {
-            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+            customerId: [
+              {
+                de: 'Unbekannter Kunde',
+                fr: 'Client inconnu',
+                it: 'Cliente sconosciuto',
+                en: 'Unknown customer',
+              },
+            ],
           },
         );
       }
@@ -179,6 +201,8 @@ export function createRequestService(
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Anfrage konnte nicht angelegt werden.',
+            fr: "La demande n'a pas pu être créée.",
+            it: 'Non è stato possibile creare la richiesta.',
             en: 'The request could not be created.',
           });
 
@@ -235,6 +259,8 @@ export function createRequestService(
         if (updated.length === 0) {
           throw new HttpError('VERSION_CONFLICT', {
             de: 'Die Anfrage wurde inzwischen geändert. Bitte neu laden.',
+            fr: 'La demande a été modifiée entre-temps. Veuillez recharger la page.',
+            it: 'La richiesta è stata modificata nel frattempo. Ricarichi la pagina.',
             en: 'This request has been changed in the meantime. Please reload.',
           });
         }
@@ -264,10 +290,19 @@ export function createRequestService(
         throw validationFailed(
           {
             de: `Übergang von ${existing.status} zu ${status} ist nicht erlaubt.`,
+            fr: `Le passage de ${existing.status} à ${status} n'est pas autorisé.`,
+            it: `Il passaggio da ${existing.status} a ${status} non è consentito.`,
             en: `Changing from ${existing.status} to ${status} is not allowed.`,
           },
           {
-            status: [{ de: 'Nicht erlaubter Übergang', en: 'Transition not allowed' }],
+            status: [
+              {
+                de: 'Nicht erlaubter Übergang',
+                fr: 'Passage non autorisé',
+                it: 'Passaggio non consentito',
+                en: 'Transition not allowed',
+              },
+            ],
           },
         );
       }
@@ -288,6 +323,8 @@ export function createRequestService(
         if (updated.length === 0) {
           throw new HttpError('VERSION_CONFLICT', {
             de: 'Die Anfrage wurde inzwischen geändert. Bitte neu laden.',
+            fr: 'La demande a été modifiée entre-temps. Veuillez recharger la page.',
+            it: 'La richiesta è stata modificata nel frattempo. Ricarichi la pagina.',
             en: 'This request has been changed in the meantime. Please reload.',
           });
         }

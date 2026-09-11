@@ -11,14 +11,29 @@ export const amountMinorSchema = z
   .int(
     localized({
       de: 'Betrag muss in ganzen Rappen angegeben werden',
+      fr: 'Le montant doit être indiqué en centimes entiers',
+      it: "L'importo deve essere indicato in centesimi interi",
       en: 'Amount must be given in whole rappen',
     }),
   )
-  .min(0, localized({ de: 'Betrag darf nicht negativ sein', en: 'Amount cannot be negative' }))
+  .min(
+    0,
+    localized({
+      de: 'Betrag darf nicht negativ sein',
+      fr: 'Le montant ne peut pas être négatif',
+      it: "L'importo non può essere negativo",
+      en: 'Amount cannot be negative',
+    }),
+  )
   // Eine Milliarde Rappen sind zehn Millionen Franken — als Schutz vor Tippfehlern.
   .max(
     1_000_000_000,
-    localized({ de: 'Betrag ist unrealistisch hoch', en: 'Amount is unrealistically high' }),
+    localized({
+      de: 'Betrag ist unrealistisch hoch',
+      fr: 'Le montant est trop élevé pour être réaliste',
+      it: "L'importo è troppo alto per essere realistico",
+      en: 'Amount is unrealistically high',
+    }),
   );
 
 /** Formatiert Rappen als Schweizer Betrag, zum Beispiel 485000 zu "4'850.00". */

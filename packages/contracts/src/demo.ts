@@ -16,10 +16,10 @@ export const DEMO_LIMITS = {
 export type DemoLimitedEntity = keyof typeof DEMO_LIMITS;
 
 export const DEMO_LIMIT_LABELS: Record<DemoLimitedEntity, Localized> = {
-  customers: { de: 'Kunden', en: 'customers' },
-  projects: { de: 'Projekte', en: 'projects' },
-  contracts: { de: 'Verträge', en: 'contracts' },
-  requests: { de: 'Anfragen', en: 'requests' },
+  customers: { de: 'Kunden', fr: 'clients', it: 'clienti', en: 'customers' },
+  projects: { de: 'Projekte', fr: 'projets', it: 'progetti', en: 'projects' },
+  contracts: { de: 'Verträge', fr: 'contrats', it: 'contratti', en: 'contracts' },
+  requests: { de: 'Anfragen', fr: 'demandes', it: 'richieste', en: 'requests' },
 };
 
 /** Lebensdauer einer Demo. Danach räumt ein Lauf sie samt Dateien weg. */

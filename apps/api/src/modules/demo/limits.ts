@@ -44,6 +44,8 @@ export function createDemoLimits(db: Database) {
       if (!(await isDemo(workspaceId))) return;
       throw new HttpError('FORBIDDEN', {
         de: 'In der Demo werden keine eigenen Dateien angenommen. Nutzen Sie das enthaltene Beispieldokument.',
+        fr: "La démo n'accepte pas vos propres fichiers. Utilisez le document d'exemple fourni.",
+        it: 'La demo non accetta file propri. Usi il documento di esempio incluso.',
         en: 'The demo does not accept your own files. Use the included sample document.',
       });
     },
@@ -63,9 +65,20 @@ export function createDemoLimits(db: Database) {
           'VALIDATION_FAILED',
           {
             de: `In der Demo sind höchstens ${limit} ${DEMO_LIMIT_LABELS[entity].de} möglich.`,
+            fr: `La démo permet au maximum ${limit} ${DEMO_LIMIT_LABELS[entity].fr}.`,
+            it: `La demo consente al massimo ${limit} ${DEMO_LIMIT_LABELS[entity].it}.`,
             en: `The demo allows at most ${limit} ${DEMO_LIMIT_LABELS[entity].en}.`,
           },
-          { limit: [{ de: `Grenze von ${limit} erreicht`, en: `Limit of ${limit} reached` }] },
+          {
+            limit: [
+              {
+                de: `Grenze von ${limit} erreicht`,
+                fr: `Limite de ${limit} atteinte`,
+                it: `Limite di ${limit} raggiunto`,
+                en: `Limit of ${limit} reached`,
+              },
+            ],
+          },
         );
       }
     },

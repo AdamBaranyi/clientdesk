@@ -69,10 +69,19 @@ export function createInvitationService(db: Database, appOrigin: string) {
           throw validationFailed(
             {
               de: 'Kunde gehört nicht zu diesem Workspace.',
+              fr: "Ce client n'appartient pas à cet espace de travail.",
+              it: "Questo cliente non appartiene a quest'area di lavoro.",
               en: 'This customer does not belong to this workspace.',
             },
             {
-              customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+              customerId: [
+                {
+                  de: 'Unbekannter Kunde',
+                  fr: 'Client inconnu',
+                  it: 'Cliente sconosciuto',
+                  en: 'Unknown customer',
+                },
+              ],
             },
           );
         }
@@ -88,10 +97,19 @@ export function createInvitationService(db: Database, appOrigin: string) {
         throw validationFailed(
           {
             de: 'Dieses Konto ist bereits Mitglied dieses Workspace.',
+            fr: 'Ce compte est déjà membre de cet espace de travail.',
+            it: "Questo account è già membro di quest'area di lavoro.",
             en: 'This account is already a member of this workspace.',
           },
           {
-            email: [{ de: 'Bereits Mitglied', en: 'Already a member' }],
+            email: [
+              {
+                de: 'Bereits Mitglied',
+                fr: 'Déjà membre',
+                it: 'Già membro',
+                en: 'Already a member',
+              },
+            ],
           },
         );
       }
@@ -116,6 +134,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Einladung konnte nicht angelegt werden.',
+            fr: "L'invitation n'a pas pu être créée.",
+            it: "Non è stato possibile creare l'invito.",
             en: 'The invitation could not be created.',
           });
 
@@ -134,6 +154,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
       if (!entry)
         throw new HttpError('INTERNAL', {
           de: 'Einladung nicht auffindbar.',
+          fr: "L'invitation est introuvable.",
+          it: "L'invito non è reperibile.",
           en: 'The invitation cannot be found.',
         });
 
@@ -153,7 +175,12 @@ export function createInvitationService(db: Database, appOrigin: string) {
         )
         .returning({ id: invitations.id });
       if (deleted.length === 0)
-        throw notFound({ de: 'Einladung nicht gefunden.', en: 'Invitation not found.' });
+        throw notFound({
+          de: 'Einladung nicht gefunden.',
+          fr: 'Invitation introuvable.',
+          it: 'Invito non trovato.',
+          en: 'Invitation not found.',
+        });
     },
 
     async preview(token: string): Promise<InvitationPreview> {
@@ -193,6 +220,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
       if (!record || record.acceptedAt !== null || record.expiresAt.getTime() < Date.now()) {
         throw notFound({
           de: 'Diese Einladung ist ungültig oder abgelaufen.',
+          fr: "Cette invitation n'est pas valide ou a expiré.",
+          it: 'Questo invito non è valido o è scaduto.',
           en: 'This invitation is invalid or has expired.',
         });
       }
@@ -223,6 +252,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
       if (existingAccount && sessionUserId !== existingAccount.id) {
         throw forbidden({
           de: 'Zu dieser E-Mail gibt es bereits ein Konto. Bitte zuerst damit anmelden und den Link erneut öffnen.',
+          fr: "Un compte existe déjà pour cette adresse e-mail. Veuillez d'abord vous connecter avec ce compte, puis rouvrir le lien.",
+          it: 'Esiste già un account per questo indirizzo e-mail. Acceda prima con questo account, poi riapra il link.',
           en: 'An account already exists for this email. Sign in with it first, then open the link again.',
         });
       }
@@ -237,6 +268,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
         if (consumed.length === 0)
           throw notFound({
             de: 'Diese Einladung wurde bereits verwendet.',
+            fr: 'Cette invitation a déjà été utilisée.',
+            it: 'Questo invito è già stato utilizzato.',
             en: 'This invitation has already been used.',
           });
 
@@ -253,6 +286,8 @@ export function createInvitationService(db: Database, appOrigin: string) {
           if (!created)
             throw new HttpError('INTERNAL', {
               de: 'Konto konnte nicht angelegt werden.',
+              fr: "Le compte n'a pas pu être créé.",
+              it: "Non è stato possibile creare l'account.",
               en: 'The account could not be created.',
             });
           userId = created.id;

@@ -24,6 +24,47 @@ export const domainMessages = defineMessages({
     },
     role: { owner: 'Owner', member: 'Mitglied', client: 'Kundenzugang' },
   },
+  fr: {
+    requestStatus: {
+      open: 'Ouverte',
+      in_progress: 'En cours',
+      waiting_customer: 'En attente du client',
+      resolved: 'Résolue',
+    },
+    requestPriority: { normal: 'Normale', high: 'Haute' },
+    contractStatus: { draft: 'Brouillon', planned: 'Planifié', active: 'Actif', ended: 'Terminé' },
+    projectStatus: {
+      planned: 'Planifié',
+      active: 'Actif',
+      paused: 'En pause',
+      completed: 'Terminé',
+      archived: 'Archivé',
+    },
+    role: { owner: 'Propriétaire', member: 'Membre', client: 'Accès client' },
+  },
+  it: {
+    requestStatus: {
+      open: 'Aperta',
+      in_progress: 'In corso',
+      waiting_customer: 'In attesa del cliente',
+      resolved: 'Risolta',
+    },
+    requestPriority: { normal: 'Normale', high: 'Alta' },
+    contractStatus: {
+      draft: 'Bozza',
+      planned: 'Pianificato',
+      active: 'Attivo',
+      ended: 'Terminato',
+    },
+    projectStatus: {
+      planned: 'Pianificato',
+      active: 'Attivo',
+      paused: 'In pausa',
+      completed: 'Completato',
+      archived: 'Archiviato',
+    },
+    role: { owner: 'Proprietario', member: 'Membro', client: 'Accesso cliente' },
+  },
   en: {
     requestStatus: {
       open: 'Open',

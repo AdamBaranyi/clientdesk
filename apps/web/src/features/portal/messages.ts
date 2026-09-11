@@ -1,5 +1,6 @@
 import { defineMessages } from '../../i18n/messages.ts';
 
+/** Texte des Kundenportals ohne die Anfragen — die stehen in request-messages.ts. */
 export const portalMessages = defineMessages({
   de: {
     shell: {
@@ -64,38 +65,150 @@ export const portalMessages = defineMessages({
       emptyDetail: 'Hier erscheinen die Dateien, die für Sie freigegeben wurden.',
       download: 'Herunterladen',
     },
-    requests: {
-      heading: 'Anfragen',
-      lead: 'Alle Anfragen Ihres Unternehmens — auch die Ihrer Kolleginnen und Kollegen mit Zugang.',
-      all: 'Alle Anfragen',
-      create: 'Anfrage stellen',
-      loading: 'Anfragen werden geladen …',
-      loadFailed: 'Die Anfragen konnten nicht geladen werden.',
-      emptyTitle: 'Noch keine Anfrage',
-      emptyDetail: 'Stellen Sie eine Anfrage, und wir melden uns darauf zurück.',
-      project: 'Projekt',
-      noProject: 'Ohne Projekt',
-      subject: 'Betreff',
-      body: 'Ihr Anliegen',
-      cancel: 'Abbrechen',
-      sending: 'Wird gesendet …',
-      send: 'Anfrage senden',
-      sendFailed: 'Die Anfrage konnte nicht gesendet werden. Bitte erneut versuchen.',
-    },
-    requestDetail: {
-      loading: 'Anfrage wird geladen …',
-      notFound: 'Diese Anfrage gehört nicht zu Ihrem Zugang.',
-      history: 'Verlauf',
-      noReply: 'Noch keine Antwort.',
-      teamFallback: 'Team',
-      reply: 'Antworten',
-      waitingHint: 'Diese Anfrage wartet auf Ihre Rückmeldung. Ihre Antwort öffnet sie wieder.',
-      sendReply: 'Antwort senden',
-    },
     progress: {
       noMilestones: 'Noch keine Meilensteine',
       done: (done: number, total: number) => `${done} von ${total} erledigt`,
       nextStep: (title: string) => `Nächster Schritt: ${title}`,
+    },
+  },
+  fr: {
+    shell: {
+      navLabel: 'Navigation du portail',
+      skipToContent: 'Aller au contenu',
+      wordmark: 'Portail client',
+      yourAccess: 'Votre accès',
+      openNavigation: 'Ouvrir la navigation',
+      closeNavigation: 'Fermer la navigation',
+      close: 'Fermer',
+      signOut: 'Se déconnecter',
+    },
+    nav: {
+      overview: 'Aperçu',
+      projects: 'Projets',
+      contracts: 'Contrats',
+      requests: 'Demandes',
+      documents: 'Documents',
+      account: 'Compte',
+    },
+    account: {
+      title: 'Compte',
+      lead: 'Votre accès à ce portail client.',
+    },
+    overview: {
+      loading: "Chargement de l'aperçu …",
+      loadFailed: "L'aperçu n'a pas pu être chargé. Veuillez recharger la page.",
+      managedBy: (workspaceName: string) => `Suivi assuré par ${workspaceName}`,
+      yourProjects: 'Vos projets',
+      noProjects: "Aucun projet n'est actuellement partagé avec vous.",
+      yourOpenRequests: 'Vos demandes ouvertes',
+      noOpenRequests: 'Aucune demande ouverte.',
+    },
+    projects: {
+      heading: 'Projets',
+      loading: 'Chargement des projets …',
+      loadFailed: "Les projets n'ont pas pu être chargés.",
+      emptyTitle: 'Aucun projet partagé',
+      emptyDetail:
+        "Dès qu'un projet est partagé avec vous, il apparaît ici avec son état d'avancement.",
+      schedule: (start: string, target: string | null) =>
+        target === null ? `Début ${start}` : `Début ${start} · Échéance ${target}`,
+    },
+    contracts: {
+      heading: 'Contrats de service',
+      loading: 'Chargement des contrats …',
+      loadFailed: "Les contrats n'ont pas pu être chargés.",
+      emptyTitle: 'Aucun contrat partagé',
+      emptyDetail:
+        "Dès qu'un contrat est partagé avec vous, vous voyez ici la prestation et le montant.",
+      amountPending: 'Applicable dès le début du contrat',
+      perMonth: (amount: string) => `CHF ${amount} par mois`,
+      term: (start: string, end: string | null) =>
+        end === null ? `Dès le ${start} · durée indéterminée` : `Du ${start} au ${end}`,
+      inactive: 'actuellement inactif',
+    },
+    documents: {
+      heading: 'Documents',
+      loading: 'Chargement des documents …',
+      loadFailed: "Les documents n'ont pas pu être chargés.",
+      emptyTitle: 'Aucun document partagé',
+      emptyDetail: 'Les fichiers partagés avec vous apparaissent ici.',
+      download: 'Télécharger',
+    },
+    progress: {
+      noMilestones: "Aucun jalon pour l'instant",
+      done: (done: number, total: number) =>
+        `${done} sur ${total} ${done < 2 ? 'terminé' : 'terminés'}`,
+      nextStep: (title: string) => `Prochaine étape\u00a0: ${title}`,
+    },
+  },
+  it: {
+    shell: {
+      navLabel: 'Navigazione del portale',
+      skipToContent: 'Vai al contenuto',
+      wordmark: 'Portale clienti',
+      yourAccess: 'Il Suo accesso',
+      openNavigation: 'Apri la navigazione',
+      closeNavigation: 'Chiudi la navigazione',
+      close: 'Chiudi',
+      signOut: 'Esci',
+    },
+    nav: {
+      overview: 'Panoramica',
+      projects: 'Progetti',
+      contracts: 'Contratti',
+      requests: 'Richieste',
+      documents: 'Documenti',
+      account: 'Account',
+    },
+    account: {
+      title: 'Account',
+      lead: 'Il Suo accesso a questo portale clienti.',
+    },
+    overview: {
+      loading: 'Caricamento della panoramica …',
+      loadFailed: 'Non è stato possibile caricare la panoramica. Ricarichi la pagina.',
+      managedBy: (workspaceName: string) => `A cura di ${workspaceName}`,
+      yourProjects: 'I Suoi progetti',
+      noProjects: 'Al momento nessun progetto è condiviso con Lei.',
+      yourOpenRequests: 'Le Sue richieste aperte',
+      noOpenRequests: 'Nessuna richiesta aperta.',
+    },
+    projects: {
+      heading: 'Progetti',
+      loading: 'Caricamento dei progetti …',
+      loadFailed: 'Non è stato possibile caricare i progetti.',
+      emptyTitle: 'Nessun progetto condiviso',
+      emptyDetail:
+        'Non appena un progetto viene condiviso con Lei, compare qui con il suo stato di avanzamento.',
+      schedule: (start: string, target: string | null) =>
+        target === null ? `Inizio ${start}` : `Inizio ${start} · Termine ${target}`,
+    },
+    contracts: {
+      heading: 'Contratti di servizio',
+      loading: 'Caricamento dei contratti …',
+      loadFailed: 'Non è stato possibile caricare i contratti.',
+      emptyTitle: 'Nessun contratto condiviso',
+      emptyDetail:
+        "Non appena un contratto viene condiviso con Lei, qui vede la prestazione e l'importo.",
+      amountPending: "Valido dall'inizio del contratto",
+      perMonth: (amount: string) => `CHF ${amount} al mese`,
+      term: (start: string, end: string | null) =>
+        end === null ? `Dal ${start} · a tempo indeterminato` : `Dal ${start} al ${end}`,
+      inactive: 'attualmente non attivo',
+    },
+    documents: {
+      heading: 'Documenti',
+      loading: 'Caricamento dei documenti …',
+      loadFailed: 'Non è stato possibile caricare i documenti.',
+      emptyTitle: 'Nessun documento condiviso',
+      emptyDetail: 'Qui compaiono i file condivisi con Lei.',
+      download: 'Scarica',
+    },
+    progress: {
+      noMilestones: 'Ancora nessun traguardo',
+      done: (done: number, total: number) =>
+        `${done} di ${total} ${done === 1 ? 'completato' : 'completati'}`,
+      nextStep: (title: string) => `Prossimo passo: ${title}`,
     },
   },
   en: {
@@ -160,34 +273,6 @@ export const portalMessages = defineMessages({
       emptyTitle: 'No shared documents',
       emptyDetail: 'Files that have been shared with you appear here.',
       download: 'Download',
-    },
-    requests: {
-      heading: 'Requests',
-      lead: 'All requests from your company — including those of colleagues with access.',
-      all: 'All requests',
-      create: 'New request',
-      loading: 'Loading requests …',
-      loadFailed: 'The requests could not be loaded.',
-      emptyTitle: 'No requests yet',
-      emptyDetail: 'Submit a request and we will get back to you.',
-      project: 'Project',
-      noProject: 'No project',
-      subject: 'Subject',
-      body: 'Your message',
-      cancel: 'Cancel',
-      sending: 'Sending …',
-      send: 'Send request',
-      sendFailed: 'The request could not be sent. Please try again.',
-    },
-    requestDetail: {
-      loading: 'Loading request …',
-      notFound: 'This request is not part of your access.',
-      history: 'History',
-      noReply: 'No reply yet.',
-      teamFallback: 'Team',
-      reply: 'Reply',
-      waitingHint: 'This request is waiting for your response. Your reply will reopen it.',
-      sendReply: 'Send reply',
     },
     progress: {
       noMilestones: 'No milestones yet',

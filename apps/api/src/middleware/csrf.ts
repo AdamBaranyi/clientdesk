@@ -39,6 +39,8 @@ export function csrfProtection(env: Env) {
       next(
         new HttpError('CSRF_FAILED', {
           de: 'Herkunft der Anfrage ist nicht erlaubt.',
+          fr: "L'origine de la requête n'est pas autorisée.",
+          it: "L'origine della richiesta non è consentita.",
           en: 'The origin of this request is not allowed.',
         }),
       );
@@ -51,6 +53,8 @@ export function csrfProtection(env: Env) {
       next(
         new HttpError('CSRF_FAILED', {
           de: 'CSRF-Token fehlt oder ist ungültig.',
+          fr: 'Le jeton CSRF est manquant ou non valide.',
+          it: 'Il token CSRF è mancante o non valido.',
           en: 'The CSRF token is missing or invalid.',
         }),
       );

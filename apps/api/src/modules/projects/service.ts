@@ -58,7 +58,13 @@ export function createProjectService(
     today: string,
   ): Promise<ProjectRow> {
     const row = await repository.findById(workspaceId, projectId, today);
-    if (!row) throw notFound({ de: 'Projekt nicht gefunden.', en: 'Project not found.' });
+    if (!row)
+      throw notFound({
+        de: 'Projekt nicht gefunden.',
+        fr: 'Projet introuvable.',
+        it: 'Progetto non trovato.',
+        en: 'Project not found.',
+      });
     return row as ProjectRow;
   }
 
@@ -108,10 +114,19 @@ export function createProjectService(
         throw validationFailed(
           {
             de: 'Kunde gehört nicht zu diesem Workspace.',
+            fr: "Ce client n'appartient pas à cet espace de travail.",
+            it: "Questo cliente non appartiene a quest'area di lavoro.",
             en: 'This customer does not belong to this workspace.',
           },
           {
-            customerId: [{ de: 'Unbekannter Kunde', en: 'Unknown customer' }],
+            customerId: [
+              {
+                de: 'Unbekannter Kunde',
+                fr: 'Client inconnu',
+                it: 'Cliente sconosciuto',
+                en: 'Unknown customer',
+              },
+            ],
           },
         );
       }
@@ -119,10 +134,19 @@ export function createProjectService(
         throw validationFailed(
           {
             de: 'Für einen archivierten Kunden kann kein Projekt entstehen.',
+            fr: 'Aucun projet ne peut être créé pour un client archivé.',
+            it: 'Non è possibile creare un progetto per un cliente archiviato.',
             en: 'An archived customer cannot get a new project.',
           },
           {
-            customerId: [{ de: 'Kunde ist archiviert', en: 'Customer is archived' }],
+            customerId: [
+              {
+                de: 'Kunde ist archiviert',
+                fr: 'Le client est archivé',
+                it: 'Il cliente è archiviato',
+                en: 'Customer is archived',
+              },
+            ],
           },
         );
       }
@@ -146,6 +170,8 @@ export function createProjectService(
         if (!created)
           throw new HttpError('INTERNAL', {
             de: 'Projekt konnte nicht angelegt werden.',
+            fr: "Le projet n'a pas pu être créé.",
+            it: 'Non è stato possibile creare il progetto.',
             en: 'The project could not be created.',
           });
 
@@ -181,9 +207,20 @@ export function createProjectService(
           throw validationFailed(
             {
               de: `Noch ${open} offene Meilensteine. Zum Abschliessen ist eine Begründung nötig.`,
+              fr: `Il reste ${open} jalons ouverts. Un motif est nécessaire pour clôturer le projet.`,
+              it: `Ci sono ancora ${open} traguardi aperti. Per chiudere il progetto serve una motivazione.`,
               en: `${open} milestones are still open. Closing the project needs a reason.`,
             },
-            { completionReason: [{ de: 'Begründung erforderlich', en: 'Reason required' }] },
+            {
+              completionReason: [
+                {
+                  de: 'Begründung erforderlich',
+                  fr: 'Motif obligatoire',
+                  it: 'Motivazione obbligatoria',
+                  en: 'Reason required',
+                },
+              ],
+            },
           );
         }
       }
@@ -225,6 +262,8 @@ export function createProjectService(
         if (updated.length === 0) {
           throw new HttpError('VERSION_CONFLICT', {
             de: 'Das Projekt wurde inzwischen von jemand anderem geändert. Bitte neu laden.',
+            fr: "Le projet a été modifié entre-temps par quelqu'un d'autre. Veuillez recharger la page.",
+            it: "Il progetto è stato modificato nel frattempo da un'altra persona. Ricarichi la pagina.",
             en: 'Someone else has changed this project in the meantime. Please reload.',
           });
         }

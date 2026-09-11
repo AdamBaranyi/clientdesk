@@ -15,10 +15,12 @@ import {
   usePortalProjects,
 } from './api.ts';
 import { portalMessages } from './messages.ts';
+import { portalRequestMessages } from './request-messages.ts';
 
 export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary }) {
   const query = usePortalOverview(workspace.id);
   const m = useMessages(portalMessages);
+  const r = useMessages(portalRequestMessages).requests;
 
   if (query.isPending) return <LoadingState label={m.overview.loading} />;
   if (query.isError || !query.data) {
@@ -60,7 +62,7 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
               to={portalPath(workspace.id, 'requests')}
               className="-my-2 inline-flex min-h-11 items-center px-1 text-xs font-medium"
             >
-              {m.requests.all}
+              {r.all}
             </Link>
           }
         />

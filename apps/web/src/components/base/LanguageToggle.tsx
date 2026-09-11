@@ -1,50 +1,59 @@
-import { LOCALES, type Locale } from '@tallyroom/contracts';
+import { ChevronDown } from 'lucide-react';
+import { isLocale, LOCALES, type Locale } from '@tallyroom/contracts';
 import { useLocale } from '../../i18n/locale-context.ts';
 
 /**
  * Jede Sprache steht in sich selbst, nicht übersetzt: wer kein Deutsch liest,
- * findet „English" auch in der deutschen Oberfläche. Das lang-Attribut sagt
- * einem Screenreader, in welcher Sprache er das Wort vorlesen soll.
+ * findet „Français" auch in der deutschen Oberfläche. Das lang-Attribut sagt
+ * einem Screenreader, in welcher Sprache er den Namen vorlesen soll.
  */
-const OPTIONS: Record<Locale, { short: string; name: string }> = {
-  de: { short: 'DE', name: 'Deutsch' },
-  en: { short: 'EN', name: 'English' },
+const NAMES: Record<Locale, string> = {
+  de: 'Deutsch',
+  fr: 'Français',
+  it: 'Italiano',
+  en: 'English',
 };
 
-const GROUP_LABEL: Record<Locale, string> = { de: 'Sprache', en: 'Language' };
+const LABEL: Record<Locale, string> = {
+  de: 'Sprache',
+  fr: 'Langue',
+  it: 'Lingua',
+  en: 'Language',
+};
 
+/**
+ * Vier Knöpfe passen bei 320 Pixeln nicht neben Wortmarke und Themenschalter.
+ * Deshalb eine echte Auswahlliste des Browsers — mit Tastatur, Screenreader und
+ * dem Auswahlrad auf dem Telefon, ohne eigenen Nachbau. Sichtbar ist nur das
+ * Kürzel; die Liste selbst zeigt die vollen Namen. Die Liste liegt unsichtbar
+ * über dem Kürzel, deshalb zeichnet die Hülle den Fokusring.
+ */
 export function LanguageToggle() {
   const { locale, setLocale } = useLocale();
 
   return (
-    <div
-      role="group"
-      aria-label={GROUP_LABEL[locale]}
-      className="flex items-center gap-0.5 rounded-sm border border-line bg-surface p-[3px]"
-    >
-      {LOCALES.map((option) => {
-        const active = locale === option;
-        return (
-          <button
-            key={option}
-            type="button"
-            lang={option}
-            onClick={() => setLocale(option)}
-            aria-pressed={active}
-            title={OPTIONS[option].name}
-            className={[
-              // Gleiche Masse wie der Themenschalter daneben.
-              'font-condensed text-label flex h-11 w-9 items-center justify-center rounded-sm font-semibold tracking-[0.08em] transition-colors sm:h-8',
-              active
-                ? 'border border-line bg-raised text-ink'
-                : 'border border-transparent text-muted hover:text-ink',
-            ].join(' ')}
-          >
-            <span aria-hidden="true">{OPTIONS[option].short}</span>
-            <span className="sr-only">{OPTIONS[option].name}</span>
-          </button>
-        );
-      })}
+    <div className="relative inline-flex h-11 items-center gap-1 rounded-sm border border-line bg-surface px-2 text-muted hover:text-ink has-[:focus-visible]:[outline:2px_solid_var(--focus-ring)] has-[:focus-visible]:[outline-offset:2px] sm:h-8">
+      <span
+        aria-hidden="true"
+        className="font-condensed text-label font-semibold tracking-[0.08em] text-ink"
+      >
+        {locale.toUpperCase()}
+      </span>
+      <ChevronDown size={12} strokeWidth={2} aria-hidden="true" />
+      <select
+        aria-label={LABEL[locale]}
+        value={locale}
+        onChange={(event) => {
+          if (isLocale(event.target.value)) setLocale(event.target.value);
+        }}
+        className="absolute inset-0 cursor-pointer opacity-0"
+      >
+        {LOCALES.map((option) => (
+          <option key={option} value={option} lang={option}>
+            {NAMES[option]}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

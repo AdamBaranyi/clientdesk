@@ -24,6 +24,8 @@ export const projectInputSchema = z
   .refine((value) => !value.targetDate || value.targetDate >= value.startDate, {
     ...localized({
       de: 'Zieltermin darf nicht vor dem Start liegen',
+      fr: 'La date cible ne peut pas être antérieure au début',
+      it: "La data obiettivo non può essere precedente all'inizio",
       en: 'The target date cannot be before the start',
     }),
     path: ['targetDate'],
