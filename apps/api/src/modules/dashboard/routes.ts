@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { dashboardQuerySchema } from '@clientdesk/contracts';
+import { dashboardQuerySchema } from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import {
   getWorkspace,

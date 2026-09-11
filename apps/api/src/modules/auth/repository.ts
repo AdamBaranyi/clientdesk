@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
-import { memberships, users, workspaces } from '@clientdesk/db';
+import type { Database } from '@tallyroom/db';
+import { memberships, users, workspaces } from '@tallyroom/db';
 
 export interface AuthRepository {
   findUserByEmail: (normalizedEmail: string) => Promise<UserRecord | undefined>;

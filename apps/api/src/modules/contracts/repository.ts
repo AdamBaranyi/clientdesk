@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, gt, ilike, isNotNull, isNull, lte, or, sql } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
-import { contractRates, customers, serviceContracts } from '@clientdesk/db';
-import type { ContractListQuery, ContractVisibleStatus } from '@clientdesk/contracts';
+import type { Database } from '@tallyroom/db';
+import { contractRates, customers, serviceContracts } from '@tallyroom/db';
+import type { ContractListQuery, ContractVisibleStatus } from '@tallyroom/contracts';
 
 /**
  * Der am Stichtag gültige Betrag: letzte Preisversion mit

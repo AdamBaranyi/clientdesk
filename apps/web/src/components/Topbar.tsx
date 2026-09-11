@@ -1,6 +1,6 @@
 import { LogOut, Menu, Search } from 'lucide-react';
 import { useLocation } from 'react-router';
-import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
+import type { SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
 import { ThemeToggle } from './base/ThemeToggle.tsx';
 
 interface TopbarProps {

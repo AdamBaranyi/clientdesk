@@ -7,7 +7,7 @@ import type {
   ClientRequest,
   PortalOverview,
   ServiceRequest,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { containsText, makePdfBytes } from '../helpers/fixtures.ts';
 import {
   buildScenario,

@@ -1,4 +1,4 @@
-import type { MembershipRole } from '@clientdesk/contracts';
+import type { MembershipRole } from '@tallyroom/contracts';
 import type { Logger } from '../lib/logger.ts';
 
 declare module 'express-session' {

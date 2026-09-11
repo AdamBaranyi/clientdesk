@@ -37,7 +37,7 @@ async function main(): Promise<void> {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) throw new Error('DATABASE_URL fehlt. Siehe .env.example.');
 
-  const email = argValue('email') ?? 'demo@clientdesk.test';
+  const email = argValue('email') ?? 'demo@tallyroom.test';
   const password = argValue('password') ?? randomBytes(9).toString('base64url');
   const displayName = argValue('name') ?? 'Demo-Konto';
   const clientPassword = argValue('client-password') ?? password;

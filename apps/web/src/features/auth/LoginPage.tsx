@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Navigate } from 'react-router';
-import { loginSchema, type LoginInput } from '@clientdesk/contracts';
+import { loginSchema, type LoginInput } from '@tallyroom/contracts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { useLogin, useSession } from './use-session.ts';
@@ -30,7 +30,7 @@ export function LoginPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
-        <Wordmark name="ClientDesk" />
+        <Wordmark name="Tallyroom" />
         <span className="pb-4">
           <ThemeToggle />
         </span>

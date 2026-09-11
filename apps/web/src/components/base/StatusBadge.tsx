@@ -1,4 +1,4 @@
-import type { ProjectStatus } from '@clientdesk/contracts';
+import type { ProjectStatus } from '@tallyroom/contracts';
 
 /**
  * Status nie nur über die Farbe: jeder Zustand trägt Punkt und Wort.

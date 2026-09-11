@@ -7,6 +7,6 @@ export const LOAD_STATE_FILE = `${AUTH_DIR}/load-state.json`;
 export const LOAD_WORKSPACE_FILE = `${AUTH_DIR}/load-workspace.json`;
 
 export const LOAD_ZUGANG = {
-  email: 'last@clientdesk.test',
+  email: 'last@tallyroom.test',
   passwort: 'Lastdaten-Passwort-2026',
 };

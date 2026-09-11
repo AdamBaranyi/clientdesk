@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { ThemeChoice } from '@clientdesk/contracts';
+import type { ThemeChoice } from '@tallyroom/contracts';
 
 export interface ThemeContextValue {
   /** Was der Nutzer gewählt hat: Gerät, Hell oder Dunkel. */

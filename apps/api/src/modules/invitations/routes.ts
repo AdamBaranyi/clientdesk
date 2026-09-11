@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { acceptInvitationSchema, invitationInputSchema } from '@clientdesk/contracts';
+import { acceptInvitationSchema, invitationInputSchema } from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import { rateLimit } from '../../middleware/rate-limit.ts';
 import { regenerateSession, saveSession } from '../../middleware/session.ts';

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { sessionUserSchema, type LoginInput, type SessionUser } from '@clientdesk/contracts';
+import { sessionUserSchema, type LoginInput, type SessionUser } from '@tallyroom/contracts';
 import { apiRequest, ApiRequestError, resetCsrfToken } from '../../lib/api.ts';
 
 const SESSION_KEY = ['session'] as const;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, Send } from 'lucide-react';
 import { Link, useParams } from 'react-router';
-import type { WorkspaceSummary } from '@clientdesk/contracts';
+import type { WorkspaceSummary } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { demoSwitchSchema } from '@clientdesk/contracts';
+import { demoSwitchSchema } from '@tallyroom/contracts';
 import type { Env } from '../../config/env.ts';
 import { notFound } from '../../lib/http-error.ts';
 import { rateLimit } from '../../middleware/rate-limit.ts';

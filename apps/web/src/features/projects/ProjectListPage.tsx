@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useSearchParams } from 'react-router';
-import { PROJECT_STATUS, type ProjectStatus, type WorkspaceSummary } from '@clientdesk/contracts';
+import { PROJECT_STATUS, type ProjectStatus, type WorkspaceSummary } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { workspacePath } from '../../lib/paths.ts';
 import { Card } from '../../components/base/Card.tsx';

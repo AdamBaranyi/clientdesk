@@ -1,4 +1,4 @@
-import type { ContractVisibleStatus } from '@clientdesk/contracts';
+import type { ContractVisibleStatus } from '@tallyroom/contracts';
 
 /**
  * Jeder Zustand trägt Punkt und Wort. Die Farbe allein dürfte den Unterschied

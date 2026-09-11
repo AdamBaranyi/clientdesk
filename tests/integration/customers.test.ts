@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { ArchiveBlockers, Customer, ListResponse } from '@clientdesk/contracts';
+import type { ArchiveBlockers, Customer, ListResponse } from '@tallyroom/contracts';
 import {
   seedClientUser,
   seedWorkspaceWithOwner,

@@ -1,4 +1,4 @@
-import { apiErrorSchema, type ApiError, type ErrorCode } from '@clientdesk/contracts';
+import { apiErrorSchema, type ApiError, type ErrorCode } from '@tallyroom/contracts';
 
 const BASE = '/api/v1';
 

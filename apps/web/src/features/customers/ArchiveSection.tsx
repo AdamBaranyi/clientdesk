@@ -1,4 +1,4 @@
-import type { Customer, WorkspaceSummary } from '@clientdesk/contracts';
+import type { Customer, WorkspaceSummary } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { useArchiveBlockers, useArchiveCustomer } from './api.ts';

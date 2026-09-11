@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Lock, Send, Users } from 'lucide-react';
-import type { CommentVisibility, RequestComment } from '@clientdesk/contracts';
+import type { CommentVisibility, RequestComment } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { useAddRequestComment } from './api.ts';
 

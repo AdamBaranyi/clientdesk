@@ -5,7 +5,7 @@ import {
   type Customer,
   type ListResponse,
   type ServiceContract,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { seedWorkspaceWithOwner, type SeededWorkspace } from '../helpers/fixtures.ts';
 import { startTestServer, type TestClient, type TestServer } from '../helpers/test-server.ts';
 

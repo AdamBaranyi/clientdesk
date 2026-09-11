@@ -1,4 +1,4 @@
-import type { RequestPriority, RequestStatus } from '@clientdesk/contracts';
+import type { RequestPriority, RequestStatus } from '@tallyroom/contracts';
 import { REQUEST_STATUS_LABELS } from './status-labels.ts';
 
 const STATUS_STYLE: Record<RequestStatus, { dot: string; text: string }> = {

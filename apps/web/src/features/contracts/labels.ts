@@ -1,4 +1,4 @@
-import type { ContractVisibleStatus } from '@clientdesk/contracts';
+import type { ContractVisibleStatus } from '@tallyroom/contracts';
 
 export const CONTRACT_STATUS_LABELS: Record<ContractVisibleStatus, string> = {
   draft: 'Entwurf',

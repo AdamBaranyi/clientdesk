@@ -8,7 +8,7 @@ import type {
   ListResponse,
   RateInput,
   ServiceContract,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { apiRequest } from '../../lib/api.ts';
 
 interface ListParams extends Partial<ContractListQuery> {

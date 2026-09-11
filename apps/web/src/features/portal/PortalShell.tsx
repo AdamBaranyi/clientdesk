@@ -10,7 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import { Outlet, useNavigate } from 'react-router';
-import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
+import type { SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useLogout } from '../auth/use-session.ts';

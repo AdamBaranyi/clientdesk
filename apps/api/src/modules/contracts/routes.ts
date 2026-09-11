@@ -6,7 +6,7 @@ import {
   contractUpdateSchema,
   paginationQuerySchema,
   rateInputSchema,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import {
   getWorkspace,

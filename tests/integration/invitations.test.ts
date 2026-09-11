@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { CreatedInvitation, InvitationPreview, SessionUser } from '@clientdesk/contracts';
+import type { CreatedInvitation, InvitationPreview, SessionUser } from '@tallyroom/contracts';
 import { seedWorkspaceWithOwner } from '../helpers/fixtures.ts';
 import { buildScenario, login, post, type Scenario } from '../helpers/scenario.ts';
 import { startTestServer, type TestServer } from '../helpers/test-server.ts';

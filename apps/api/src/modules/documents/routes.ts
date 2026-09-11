@@ -5,7 +5,7 @@ import {
   documentListQuerySchema,
   documentVisibilitySchema,
   MAX_DOCUMENT_BYTES,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import {
   getWorkspace,

@@ -12,10 +12,10 @@ import {
   or,
   sql,
 } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
-import { customers, projects, serviceContracts, serviceRequests } from '@clientdesk/db';
-import type { CustomerListQuery } from '@clientdesk/contracts';
-import { RUNNING_PROJECT_STATUS } from '@clientdesk/contracts';
+import type { Database } from '@tallyroom/db';
+import { customers, projects, serviceContracts, serviceRequests } from '@tallyroom/db';
+import type { CustomerListQuery } from '@tallyroom/contracts';
+import { RUNNING_PROJECT_STATUS } from '@tallyroom/contracts';
 
 /**
  * Unterabfrage statt Join: ein Join auf Projekte würde jeden Kunden je Projekt

@@ -7,7 +7,7 @@ import {
   projectInputSchema,
   projectListQuerySchema,
   projectUpdateSchema,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import {
   getWorkspace,

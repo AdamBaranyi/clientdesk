@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { THEME_CHOICES, type ThemeChoice } from '@clientdesk/contracts';
+import { THEME_CHOICES, type ThemeChoice } from '@tallyroom/contracts';
 import { ThemeContext, type ThemeContextValue } from './theme-context.ts';
 
-const STORAGE_KEY = 'clientdesk.theme';
+const STORAGE_KEY = 'tallyroom.theme';
 
 function isThemeChoice(value: unknown): value is ThemeChoice {
   return typeof value === 'string' && (THEME_CHOICES as readonly string[]).includes(value);

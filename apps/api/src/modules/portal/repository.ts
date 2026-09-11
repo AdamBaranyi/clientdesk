@@ -1,5 +1,5 @@
 import { and, asc, desc, eq, inArray, ne, sql } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
+import type { Database } from '@tallyroom/db';
 import {
   customers,
   documents,
@@ -9,7 +9,7 @@ import {
   serviceContracts,
   serviceRequests,
   users,
-} from '@clientdesk/db';
+} from '@tallyroom/db';
 
 /**
  * Alle Abfragen dieser Schicht sind fest auf einen Workspace und einen Kunden

@@ -1,5 +1,5 @@
 import { inArray, sql } from 'drizzle-orm';
-import { sessions, users, workspaces, type Database } from '@clientdesk/db';
+import { sessions, users, workspaces, type Database } from '@tallyroom/db';
 import type { Logger } from '../../lib/logger.ts';
 import type { DocumentStorage } from '../../storage/types.ts';
 import type { DemoRepository } from './repository.ts';

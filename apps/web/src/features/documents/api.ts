@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { ClientDeskDocument, DocumentListQuery } from '@clientdesk/contracts';
+import type { TallyroomDocument, DocumentListQuery } from '@tallyroom/contracts';
 import { apiRequest } from '../../lib/api.ts';
 
 const key = (workspaceId: string) => ['documents', workspaceId] as const;
@@ -13,7 +13,7 @@ export function useDocuments(workspaceId: string, query: DocumentListQuery = {})
       if (query.projectId) search.set('projectId', query.projectId);
       const suffix = search.toString() ? `?${search.toString()}` : '';
       return (
-        await apiRequest<{ data: ClientDeskDocument[] }>(
+        await apiRequest<{ data: TallyroomDocument[] }>(
           `/workspaces/${workspaceId}/documents${suffix}`,
         )
       ).data;
@@ -37,7 +37,7 @@ export function useUploadDocument(workspaceId: string) {
       if (args.projectId) search.set('projectId', args.projectId);
 
       // Rohes PDF im Body statt Multipart — dasselbe Format erwartet die API.
-      return apiRequest<ClientDeskDocument>(
+      return apiRequest<TallyroomDocument>(
         `/workspaces/${workspaceId}/documents?${search.toString()}`,
         {
           method: 'POST',
@@ -55,7 +55,7 @@ export function useAddSampleDocument(workspaceId: string) {
   const invalidate = useInvalidate(workspaceId);
   return useMutation({
     mutationFn: (customerId: string) =>
-      apiRequest<ClientDeskDocument>(
+      apiRequest<TallyroomDocument>(
         `/workspaces/${workspaceId}/documents/sample?customerId=${customerId}`,
         { method: 'POST' },
       ),
@@ -67,7 +67,7 @@ export function useSetDocumentVisibility(workspaceId: string) {
   const invalidate = useInvalidate(workspaceId);
   return useMutation({
     mutationFn: (args: { documentId: string; clientVisible: boolean }) =>
-      apiRequest<ClientDeskDocument>(
+      apiRequest<TallyroomDocument>(
         `/workspaces/${workspaceId}/documents/${args.documentId}/visibility`,
         {
           method: 'PATCH',

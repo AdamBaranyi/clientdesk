@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, ilike, isNotNull, lt, or, sql } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
-import { customers, milestones, projects, users } from '@clientdesk/db';
-import type { ProjectListQuery } from '@clientdesk/contracts';
+import type { Database } from '@tallyroom/db';
+import { customers, milestones, projects, users } from '@tallyroom/db';
+import type { ProjectListQuery } from '@tallyroom/contracts';
 
 /**
  * Meilensteinzahlen kommen aus Unterabfragen. Ein Join auf milestones würde

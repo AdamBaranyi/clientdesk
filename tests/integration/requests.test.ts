@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { ClientRequest, ListResponse, ServiceRequest } from '@clientdesk/contracts';
+import type { ClientRequest, ListResponse, ServiceRequest } from '@tallyroom/contracts';
 import { buildScenario, post, type Scenario } from '../helpers/scenario.ts';
 import { startTestServer, type TestServer } from '../helpers/test-server.ts';
 

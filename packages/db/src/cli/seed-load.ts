@@ -14,7 +14,7 @@ async function main(): Promise<void> {
   }
 
   const result = await seedLoadWorkspace(connectionString, {
-    email: 'last@clientdesk.test',
+    email: 'last@tallyroom.test',
     password: 'Lastdaten-Passwort-2026',
   });
 
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
   console.log(`Verträge:  ${result.counts.contracts}`);
   console.log(`Anfragen:  ${result.counts.requests}`);
   console.log(`Dauer:     ${(result.durationMs / 1000).toFixed(1)} s`);
-  console.log('\nAnmeldung: last@clientdesk.test / Lastdaten-Passwort-2026');
+  console.log('\nAnmeldung: last@tallyroom.test / Lastdaten-Passwort-2026');
 }
 
 main().catch((error: unknown) => {

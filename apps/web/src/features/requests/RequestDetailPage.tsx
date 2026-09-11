@@ -4,7 +4,7 @@ import {
   ALLOWED_TRANSITIONS,
   type RequestStatus,
   type WorkspaceSummary,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
 import { ApiRequestError } from '../../lib/api.ts';

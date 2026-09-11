@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Customer, Dashboard, ServiceContract } from '@clientdesk/contracts';
+import type { Customer, Dashboard, ServiceContract } from '@tallyroom/contracts';
 import { seedWorkspaceWithOwner, type SeededWorkspace } from '../helpers/fixtures.ts';
 import { startTestServer, type TestClient, type TestServer } from '../helpers/test-server.ts';
 

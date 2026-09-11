@@ -6,7 +6,7 @@ import {
   type Customer,
   type RequestFormValues,
   type RequestInput,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';

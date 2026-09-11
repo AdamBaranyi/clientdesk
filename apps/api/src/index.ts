@@ -1,4 +1,4 @@
-import { createDatabase, createPool } from '@clientdesk/db';
+import { createDatabase, createPool } from '@tallyroom/db';
 import { createApp } from './app.ts';
 import { loadEnv } from './config/env.ts';
 import { createLogger } from './lib/logger.ts';

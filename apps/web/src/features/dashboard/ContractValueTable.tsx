@@ -1,4 +1,4 @@
-import { formatAmountMinor, type MonthlyValuePoint } from '@clientdesk/contracts';
+import { formatAmountMinor, type MonthlyValuePoint } from '@tallyroom/contracts';
 import { Cell, Row, TableHead, Th } from '../../components/base/DataTable.tsx';
 import { formatDate } from '../../lib/format.ts';
 

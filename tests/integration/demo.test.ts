@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { sql } from 'drizzle-orm';
-import type { Customer, DemoStatus, ListResponse } from '@clientdesk/contracts';
-import { DEMO_LIMITS } from '@clientdesk/contracts';
+import type { Customer, DemoStatus, ListResponse } from '@tallyroom/contracts';
+import { DEMO_LIMITS } from '@tallyroom/contracts';
 import { cleanupExpiredDemos } from '../../apps/api/src/modules/demo/cleanup.ts';
 import { createDemoRepository } from '../../apps/api/src/modules/demo/repository.ts';
 import { startTestServer, type TestClient, type TestServer } from '../helpers/test-server.ts';

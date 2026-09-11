@@ -1,5 +1,5 @@
 import { Clock, FlaskConical, UserRound, Users } from 'lucide-react';
-import type { WorkspaceSummary } from '@clientdesk/contracts';
+import type { WorkspaceSummary } from '@tallyroom/contracts';
 import { workspacePath } from '../../lib/paths.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useDemoStatus, useSwitchIdentity } from './api.ts';

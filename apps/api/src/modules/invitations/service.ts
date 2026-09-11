@@ -1,8 +1,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { and, eq, isNull } from 'drizzle-orm';
-import { customers, invitations, memberships, users, workspaces } from '@clientdesk/db';
-import type { Database } from '@clientdesk/db';
-import { hashPassword, normalizeEmail } from '@clientdesk/db/auth';
+import { customers, invitations, memberships, users, workspaces } from '@tallyroom/db';
+import type { Database } from '@tallyroom/db';
+import { hashPassword, normalizeEmail } from '@tallyroom/db/auth';
 import {
   INVITATION_TTL_HOURS,
   type AcceptInvitation,
@@ -10,7 +10,7 @@ import {
   type Invitation,
   type InvitationInput,
   type InvitationPreview,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { forbidden, HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
 

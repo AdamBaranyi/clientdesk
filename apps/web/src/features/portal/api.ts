@@ -7,7 +7,7 @@ import type {
   ClientRequest,
   ClientRequestInput,
   PortalOverview,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { apiRequest } from '../../lib/api.ts';
 
 const key = (workspaceId: string) => ['portal', workspaceId] as const;

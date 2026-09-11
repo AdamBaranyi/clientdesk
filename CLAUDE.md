@@ -1,4 +1,4 @@
-# Arbeitsregeln für ClientDesk
+# Arbeitsregeln für Tallyroom
 
 Verbindlich für jede weitere Entwicklung an diesem Repository.
 

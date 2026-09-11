@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import type { ServiceRequest } from '@clientdesk/contracts';
+import type { ServiceRequest } from '@tallyroom/contracts';
 import {
   CardItem,
   CardList,

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AlertCircle, Check, Plus } from 'lucide-react';
-import type { Milestone } from '@clientdesk/contracts';
+import type { Milestone } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextField } from '../../components/base/Field.tsx';
 import { useAddMilestone, useUpdateMilestone } from './api.ts';

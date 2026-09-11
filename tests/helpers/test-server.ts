@@ -2,7 +2,7 @@ import { createServer, type Server } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { sql } from 'drizzle-orm';
-import { createDatabase, createPool, type Database, type Pool } from '@clientdesk/db';
+import { createDatabase, createPool, type Database, type Pool } from '@tallyroom/db';
 import { createApp } from '../../apps/api/src/app.ts';
 import { createMemoryStorage } from '../../apps/api/src/storage/memory.ts';
 import { loadEnv } from '../../apps/api/src/config/env.ts';

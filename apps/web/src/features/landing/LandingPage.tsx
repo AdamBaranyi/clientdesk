@@ -28,7 +28,7 @@ export function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
-        <Wordmark name="ClientDesk" />
+        <Wordmark name="Tallyroom" />
         <div className="flex items-center gap-2 pb-4">
           <ThemeToggle />
           {/* Auf 320 Pixeln passt neben Wortmarke und Themenschalter nichts

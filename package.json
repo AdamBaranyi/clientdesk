@@ -1,5 +1,5 @@
 {
-  "name": "clientdesk",
+  "name": "tallyroom",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "bun": ">=1.3.0"
   },
   "scripts": {
-    "dev": "bun run --filter '@clientdesk/api' --filter '@clientdesk/web' dev",
+    "dev": "bun run --filter '@tallyroom/api' --filter '@tallyroom/web' dev",
     "build": "bun run --filter '*' build",
     "typecheck": "bun run --filter '*' typecheck",
     "lint": "eslint .",
@@ -21,20 +21,20 @@
     "verify": "bun run format:check && bun run check:file-length && bun run lint && bun run typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
-    "db:generate": "bun run --filter '@clientdesk/db' generate",
-    "db:migrate": "bun run --filter '@clientdesk/db' migrate",
-    "admin:create": "bun run --filter '@clientdesk/db' admin:create",
-    "seed:demo": "bun run --filter '@clientdesk/db' seed:demo",
-    "seed:load": "bun run --filter '@clientdesk/db' seed:load",
+    "db:generate": "bun run --filter '@tallyroom/db' generate",
+    "db:migrate": "bun run --filter '@tallyroom/db' migrate",
+    "admin:create": "bun run --filter '@tallyroom/db' admin:create",
+    "seed:demo": "bun run --filter '@tallyroom/db' seed:demo",
+    "seed:load": "bun run --filter '@tallyroom/db' seed:load",
     "measure": "bun --env-file=.env scripts/measure-performance.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "check:bundle-size": "bun run --filter '@clientdesk/web' build && bun scripts/check-bundle-size.mjs"
+    "check:bundle-size": "bun run --filter '@tallyroom/web' build && bun scripts/check-bundle-size.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.11.2",
-    "@clientdesk/contracts": "workspace:*",
-    "@clientdesk/db": "workspace:*",
+    "@tallyroom/contracts": "workspace:*",
+    "@tallyroom/db": "workspace:*",
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.57.0",
     "@types/bun": "1.4.2",

@@ -1,12 +1,5 @@
 import { and, eq, lt, sql } from 'drizzle-orm';
-import {
-  customers,
-  documents,
-  memberships,
-  users,
-  workspaces,
-  type Database,
-} from '@clientdesk/db';
+import { customers, documents, memberships, users, workspaces, type Database } from '@tallyroom/db';
 
 export function createDemoRepository(db: Database) {
   return {

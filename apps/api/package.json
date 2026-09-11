@@ -1,5 +1,5 @@
 {
-  "name": "@clientdesk/api",
+  "name": "@tallyroom/api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@clientdesk/contracts": "workspace:*",
-    "@clientdesk/db": "workspace:*",
+    "@tallyroom/contracts": "workspace:*",
+    "@tallyroom/db": "workspace:*",
     "connect-pg-simple": "10.0.0",
     "drizzle-orm": "0.45.2",
     "express": "5.2.1",

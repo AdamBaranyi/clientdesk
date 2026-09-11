@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import type { MonthlyValuePoint } from '@clientdesk/contracts';
+import type { MonthlyValuePoint } from '@tallyroom/contracts';
 import { useChartColors } from '../../lib/use-chart-colors.ts';
 import { ContractValueTable } from './ContractValueTable.tsx';
 

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError } from 'zod';
-import type { ApiError } from '@clientdesk/contracts';
+import type { ApiError } from '@tallyroom/contracts';
 import { HttpError, type FieldErrors } from '../lib/http-error.ts';
 
 function fieldErrorsFromZod(error: ZodError): FieldErrors {

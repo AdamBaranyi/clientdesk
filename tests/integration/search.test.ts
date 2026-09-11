@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { Customer, SearchResult } from '@clientdesk/contracts';
+import type { Customer, SearchResult } from '@tallyroom/contracts';
 import {
   seedClientUser,
   seedWorkspaceWithOwner,

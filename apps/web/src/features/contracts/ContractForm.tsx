@@ -7,7 +7,7 @@ import {
   type ContractFormValues,
   type ContractInput,
   type Customer,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';

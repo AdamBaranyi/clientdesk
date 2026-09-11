@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import type { SearchResult } from '@clientdesk/contracts';
+import type { SearchResult } from '@tallyroom/contracts';
 import { apiRequest } from '../../lib/api.ts';
 
 /** Unter zwei Zeichen fragt die Palette gar nicht erst — der Server lehnt ab. */

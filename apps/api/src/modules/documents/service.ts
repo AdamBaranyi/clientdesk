@@ -1,16 +1,16 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
-import { documents, type Database } from '@clientdesk/db';
+import { documents, type Database } from '@tallyroom/db';
 import {
   ALLOWED_DOCUMENT_MIME,
-  type ClientDeskDocument,
+  type TallyroomDocument,
   type DocumentListQuery,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
 import type { DocumentStorage } from '../../storage/types.ts';
 import type { DemoLimits } from '../demo/limits.ts';
-import { makeSimplePdf } from '@clientdesk/db/seed';
+import { makeSimplePdf } from '@tallyroom/db/seed';
 import { assertAcceptablePdf, sanitizeFileName } from './pdf.ts';
 import type { DocumentRepository } from './repository.ts';
 
@@ -30,7 +30,7 @@ interface Row {
   createdAt: Date;
 }
 
-function toDto(row: Row): ClientDeskDocument {
+function toDto(row: Row): TallyroomDocument {
   // objectKey verlässt den Server nicht — er ist ein Speicherdetail.
   const { objectKey: _objectKey, ...rest } = row;
   return { ...rest, createdAt: row.createdAt.toISOString() };
@@ -71,12 +71,12 @@ export function createDocumentService(
   }
 
   return {
-    async list(workspaceId: string, query: DocumentListQuery): Promise<ClientDeskDocument[]> {
+    async list(workspaceId: string, query: DocumentListQuery): Promise<TallyroomDocument[]> {
       const rows = await repository.list(workspaceId, query);
       return (rows as Row[]).map(toDto);
     },
 
-    async get(workspaceId: string, documentId: string): Promise<ClientDeskDocument> {
+    async get(workspaceId: string, documentId: string): Promise<TallyroomDocument> {
       return toDto(await require(workspaceId, documentId));
     },
 
@@ -84,7 +84,7 @@ export function createDocumentService(
       workspaceId: string,
       actorId: string,
       input: UploadInput,
-    ): Promise<ClientDeskDocument> {
+    ): Promise<TallyroomDocument> {
       await demoLimits.assertUploadAllowed(workspaceId);
       assertAcceptablePdf(input.bytes, input.contentType);
 
@@ -152,7 +152,7 @@ export function createDocumentService(
       workspaceId: string,
       actorId: string,
       customerId: string,
-    ): Promise<ClientDeskDocument> {
+    ): Promise<TallyroomDocument> {
       if (!(await repository.customerExists(workspaceId, customerId))) {
         throw validationFailed('Kunde gehört nicht zu diesem Workspace.', {
           customerId: ['Unbekannter Kunde'],
@@ -206,7 +206,7 @@ export function createDocumentService(
       actorId: string,
       documentId: string,
       clientVisible: boolean,
-    ): Promise<ClientDeskDocument> {
+    ): Promise<TallyroomDocument> {
       await require(workspaceId, documentId);
 
       await db.transaction(async (tx) => {

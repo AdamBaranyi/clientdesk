@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import type { WorkspaceSummary } from '@clientdesk/contracts';
+import type { WorkspaceSummary } from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import { getWorkspace, requireAuth, requireWorkspace } from './context.ts';
 

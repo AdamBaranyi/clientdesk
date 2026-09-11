@@ -1,6 +1,6 @@
 import { Download } from 'lucide-react';
 import { Link } from 'react-router';
-import { formatAmountMinor, type WorkspaceSummary } from '@clientdesk/contracts';
+import { formatAmountMinor, type WorkspaceSummary } from '@tallyroom/contracts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
 import { formatDate } from '../../lib/format.ts';

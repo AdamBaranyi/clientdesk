@@ -140,7 +140,7 @@ und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an
 ## Erledigt — Design-Überarbeitung (10.09.2026)
 
 Richtung: industriell/technisch auf Schweizer Raster. Begründung und Regeln stehen in
-`ClientDesk-Masterprompt-v3.md`, Abschnitt 5.
+`Tallyroom-Masterprompt-v3.md`, Abschnitt 5.
 
 | Schritt | Commit    | Ergebnis                                                                                        |
 | ------- | --------- | ----------------------------------------------------------------------------------------------- |
@@ -159,6 +159,32 @@ Richtung: industriell/technisch auf Schweizer Raster. Begründung und Regeln ste
 (zweimal zugeschlagen — Unterstreichung und Textfarbe), `flushSync` kommt gegen `startTransition`
 nicht an, abgebrochene Seitenübergänge lecken unbehandelte Zurückweisungen, `--faint` erreicht
 dunkel nur 3,7:1.
+
+## Umbenennung ClientDesk → Tallyroom (11.09.2026)
+
+Vor dem ersten Deployment, solange der Name nur Text im Repository war und noch nicht an Domain,
+Zertifikat und verschickten Links hing.
+
+**Warum.** „ClientDesk" war doppelt belegt: eine eingetragene Marke in der Klasse für
+technologische Dienstleistungen (Versicherungs-SaaS, Toronto) und ein aktives Produkt gleichen
+Namens — ein Kundenportal für Freelancer und kleine Agenturen, also fast dasselbe Produkt für
+dieselbe Zielgruppe.
+
+**Wie geprüft.** WIPO Global Brand Database (Schweiz, EU und 87 weitere Register), Websuche nach
+gleichnamiger Software, Firmenregister. Rund zwanzig Kandidaten, die meisten englischen belegt —
+unter anderem durch eine Kundenplattform („Keelson"), eine Software-Anmeldung vom August 2026
+(„Watchbill") und die EU-Marke „PULT" in den Software-Klassen, an der alle „…pult"-Namen
+scheiterten.
+
+**Warum Tallyroom.** Der _tally room_ ist der Raum, in dem am Wahlabend alle Auszählungen
+zusammenlaufen und das Gesamtbild entsteht. Kein Markeneintrag, keine Firma, kein Produkt dieses
+Namens. „Tally" ist in der Software verbreitet, aber gerade weil so viele Tally-Produkte
+nebeneinander existieren, gehört das Wort niemandem allein.
+
+**Umfang.** 142 Dateien, Paketnamen `@tallyroom/*`, Docker-Projekt, Datenbanknamen, Cookie- und
+Speicherschlüssel, Wortmarke. Die alten Docker-Volumes unter `clientdesk` sind nicht gelöscht,
+nur gestoppt. Die Git-Historie bleibt unverändert; die Vorher-Bilder zeigen den alten Namen, weil
+sie den alten Stand zeigen.
 
 ## Offen — nächste Schritte
 
@@ -201,7 +227,7 @@ Mandantentests wie jeder andere Endpunkt.
   Agenten Werkzeuge auf fremde Kundendaten zu geben wäre keine Verbesserung.
 
 **Meilenstein 6: Deployment** — Produktions-Compose mit Caddy, FSIT-KVM-Server einrichten,
-A-Record `clientdesk.adambaranyi.xyz`, Content Security Policy, Secret- und Abhängigkeitsscan in
+A-Record `tallyroom.adambaranyi.xyz`, Content Security Policy, Secret- und Abhängigkeitsscan in
 der CI, Fallstudie. Die Fallstudie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
 Geschmack.
 

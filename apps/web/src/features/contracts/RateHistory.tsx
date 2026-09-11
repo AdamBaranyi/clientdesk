@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
-import { formatAmountMinor, parseAmountToMinor, type ContractRate } from '@clientdesk/contracts';
+import { formatAmountMinor, parseAmountToMinor, type ContractRate } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';

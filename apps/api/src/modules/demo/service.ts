@@ -1,8 +1,8 @@
 import { randomBytes, randomUUID } from 'node:crypto';
-import { memberships, users, workspaces, type Database } from '@clientdesk/db';
-import { hashPassword } from '@clientdesk/db/auth';
-import { attachClientAccounts, seedWorkspaceContent } from '@clientdesk/db/seed';
-import { DEMO_LIFETIME_MINUTES, type DemoIdentity, type DemoStatus } from '@clientdesk/contracts';
+import { memberships, users, workspaces, type Database } from '@tallyroom/db';
+import { hashPassword } from '@tallyroom/db/auth';
+import { attachClientAccounts, seedWorkspaceContent } from '@tallyroom/db/seed';
+import { DEMO_LIFETIME_MINUTES, type DemoIdentity, type DemoStatus } from '@tallyroom/contracts';
 import { forbidden, HttpError, notFound } from '../../lib/http-error.ts';
 import type { DocumentStorage } from '../../storage/types.ts';
 import type { DemoRepository } from './repository.ts';
@@ -71,7 +71,7 @@ export function createDemoService(
           const [user] = await tx
             .insert(users)
             .values({
-              normalizedEmail: `${identity.name.toLowerCase().replace(/\s+/g, '.')}.${suffix}@demo.clientdesk.invalid`,
+              normalizedEmail: `${identity.name.toLowerCase().replace(/\s+/g, '.')}.${suffix}@demo.tallyroom.invalid`,
               displayName: identity.name,
               passwordHash: unusablePassword,
             })

@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { MAX_DOCUMENT_BYTES, type ClientDeskDocument } from '@clientdesk/contracts';
+import { MAX_DOCUMENT_BYTES, type TallyroomDocument } from '@tallyroom/contracts';
 import { makePdfBytes } from '../helpers/fixtures.ts';
 import { buildScenario, type Scenario } from '../helpers/scenario.ts';
 import { startTestServer, type TestServer } from '../helpers/test-server.ts';
@@ -49,7 +49,7 @@ describe('Was beim Hochladen abgewiesen wird', () => {
     const response = await upload({ bytes: makePdfBytes() });
     expect(response.status).toBe(201);
 
-    const created = (await response.json()) as ClientDeskDocument;
+    const created = (await response.json()) as TallyroomDocument;
     expect(created.mimeType).toBe('application/pdf');
     // Standardmässig intern. Freigabe ist eine eigene Handlung.
     expect(created.clientVisible).toBe(false);
@@ -108,16 +108,16 @@ describe('Was beim Hochladen abgewiesen wird', () => {
     });
     expect(response.status).toBe(201);
 
-    const created = (await response.json()) as ClientDeskDocument;
+    const created = (await response.json()) as TallyroomDocument;
     expect(created.originalName).toBe('passwd.pdf');
     expect(created).not.toHaveProperty('objectKey');
   });
 });
 
 describe('Download und Löschen', () => {
-  async function uploadOne(): Promise<ClientDeskDocument> {
+  async function uploadOne(): Promise<TallyroomDocument> {
     const response = await upload({ bytes: makePdfBytes() });
-    return (await response.json()) as ClientDeskDocument;
+    return (await response.json()) as TallyroomDocument;
   }
 
   it('liefert das Dokument als Anhang mit Ausführungssperre', async () => {
@@ -154,7 +154,7 @@ describe('Download und Löschen', () => {
     expect(deleted.status).toBe(204);
     expect(server.storage.size()).toBe(0);
 
-    const liste = await s.team.json<{ data: ClientDeskDocument[] }>(internal('documents'));
+    const liste = await s.team.json<{ data: TallyroomDocument[] }>(internal('documents'));
     expect(liste.data).toHaveLength(0);
 
     const nachher = await s.team.request(internal(`documents/${created.id}/download`));

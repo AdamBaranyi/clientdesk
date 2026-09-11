@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { customerInputSchema, type Customer, type CustomerInput } from '@clientdesk/contracts';
+import { customerInputSchema, type Customer, type CustomerInput } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';

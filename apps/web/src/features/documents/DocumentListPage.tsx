@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Download, Eye, EyeOff, FilePlus2, Trash2, Upload } from 'lucide-react';
-import { MAX_DOCUMENT_BYTES, type WorkspaceSummary } from '@clientdesk/contracts';
+import { MAX_DOCUMENT_BYTES, type WorkspaceSummary } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { Card } from '../../components/base/Card.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';

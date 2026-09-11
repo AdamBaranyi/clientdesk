@@ -1,4 +1,4 @@
-import { formatAmountMinor } from '@clientdesk/contracts';
+import { formatAmountMinor } from '@tallyroom/contracts';
 
 export interface DisplayAmount {
   /** Ganze Franken in Schweizer Schreibweise, zum Beispiel `2'970`. */

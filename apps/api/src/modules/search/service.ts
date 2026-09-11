@@ -5,8 +5,8 @@ import {
   serviceContracts,
   serviceRequests,
   type Database,
-} from '@clientdesk/db';
-import { SEARCH_LIMIT_PER_KIND, type SearchHit, type SearchResult } from '@clientdesk/contracts';
+} from '@tallyroom/db';
+import { SEARCH_LIMIT_PER_KIND, type SearchHit, type SearchResult } from '@tallyroom/contracts';
 
 /**
  * Die gebündelte Suche der Kommandopalette.

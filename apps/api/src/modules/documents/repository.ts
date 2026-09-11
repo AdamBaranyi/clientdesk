@@ -1,6 +1,6 @@
 import { and, desc, eq, ne } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
-import { customers, documents, projects, users } from '@clientdesk/db';
+import type { Database } from '@tallyroom/db';
+import { customers, documents, projects, users } from '@tallyroom/db';
 
 export function createDocumentRepository(db: Database) {
   const columns = {

@@ -1,5 +1,5 @@
 import { AlertCircle } from 'lucide-react';
-import type { ClientProject } from '@clientdesk/contracts';
+import type { ClientProject } from '@tallyroom/contracts';
 import { formatDate } from '../../lib/format.ts';
 
 /**

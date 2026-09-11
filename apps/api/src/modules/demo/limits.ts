@@ -6,8 +6,8 @@ import {
   serviceRequests,
   workspaces,
   type Database,
-} from '@clientdesk/db';
-import { DEMO_LIMIT_LABELS, DEMO_LIMITS, type DemoLimitedEntity } from '@clientdesk/contracts';
+} from '@tallyroom/db';
+import { DEMO_LIMIT_LABELS, DEMO_LIMITS, type DemoLimitedEntity } from '@tallyroom/contracts';
 import { HttpError } from '../../lib/http-error.ts';
 
 const TABLES = {

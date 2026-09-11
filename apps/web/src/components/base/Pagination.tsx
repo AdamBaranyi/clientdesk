@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Pagination as PaginationInfo } from '@clientdesk/contracts';
+import type { Pagination as PaginationInfo } from '@tallyroom/contracts';
 
 interface Props {
   pagination: PaginationInfo;

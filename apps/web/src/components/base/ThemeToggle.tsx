@@ -1,5 +1,5 @@
 import { Monitor, Moon, Sun } from 'lucide-react';
-import { THEME_CHOICES, type ThemeChoice } from '@clientdesk/contracts';
+import { THEME_CHOICES, type ThemeChoice } from '@tallyroom/contracts';
 import { useTheme } from '../../lib/theme-context.ts';
 
 const LABELS: Record<ThemeChoice, string> = {

@@ -7,7 +7,7 @@ import {
   Settings,
   Users,
 } from 'lucide-react';
-import type { WorkspaceSummary } from '@clientdesk/contracts';
+import type { WorkspaceSummary } from '@tallyroom/contracts';
 import { NavItem } from './base/NavItem.tsx';
 import { Wordmark } from './base/Wordmark.tsx';
 import { workspacePath } from '../lib/paths.ts';
@@ -35,7 +35,7 @@ interface SidebarProps {
 export function Sidebar({ workspace, onNavigate }: SidebarProps) {
   return (
     <div className="flex h-full flex-col bg-[var(--sidebar-bg)] p-3">
-      <Wordmark name="ClientDesk" />
+      <Wordmark name="Tallyroom" />
 
       <div className="flex items-center gap-2.5 border border-line bg-surface px-2.5 py-2.5">
         <span

@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import type { Database, Executor } from '@clientdesk/db';
+import type { Database, Executor } from '@tallyroom/db';
 
 /**
  * Die Kennzahlenregel, ausgeschrieben:

@@ -1,5 +1,5 @@
-import { hashPassword, normalizeEmail } from '@clientdesk/db/auth';
-import { customers, memberships, users, workspaces, type Database } from '@clientdesk/db';
+import { hashPassword, normalizeEmail } from '@tallyroom/db/auth';
+import { customers, memberships, users, workspaces, type Database } from '@tallyroom/db';
 
 export interface SeededWorkspace {
   workspaceId: string;

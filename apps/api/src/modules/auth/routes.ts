@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { loginSchema, type CsrfToken } from '@clientdesk/contracts';
-import { normalizeEmail } from '@clientdesk/db/auth';
+import { loginSchema, type CsrfToken } from '@tallyroom/contracts';
+import { normalizeEmail } from '@tallyroom/db/auth';
 import { ensureCsrfToken } from '../../middleware/csrf.ts';
 import { destroySession, regenerateSession, saveSession } from '../../middleware/session.ts';
 import { rateLimit, type RateLimitOptions } from '../../middleware/rate-limit.ts';
@@ -47,7 +47,7 @@ export function createAuthRouter(service: AuthService, options: AuthRouterOption
   router.post('/logout', async (req, res) => {
     // Serverseitig zerstören, nicht nur das Cookie löschen.
     await destroySession(req);
-    res.clearCookie('clientdesk.sid', { path: '/' });
+    res.clearCookie('tallyroom.sid', { path: '/' });
     res.status(204).end();
   });
 

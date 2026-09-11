@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
-import { idempotencyKeys, type Executor } from '@clientdesk/db';
+import { idempotencyKeys, type Executor } from '@tallyroom/db';
 import { HttpError } from './http-error.ts';
 
 /** Ein Schlüssel gilt einen Tag; danach ist derselbe Wert wieder frei. */

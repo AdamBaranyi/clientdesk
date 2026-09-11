@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { DemoStatus } from '@clientdesk/contracts';
+import type { DemoStatus } from '@tallyroom/contracts';
 import { apiRequest, resetCsrfToken } from '../../lib/api.ts';
 
 export function useStartDemo() {

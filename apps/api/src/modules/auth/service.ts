@@ -1,5 +1,5 @@
-import { hashPassword, verifyPassword } from '@clientdesk/db/auth';
-import type { SessionUser, WorkspaceSummary } from '@clientdesk/contracts';
+import { hashPassword, verifyPassword } from '@tallyroom/db/auth';
+import type { SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
 import { unauthenticated } from '../../lib/http-error.ts';
 import type { AuthRepository, MembershipRecord, UserRecord } from './repository.ts';
 

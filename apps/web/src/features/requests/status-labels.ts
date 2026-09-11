@@ -1,4 +1,4 @@
-import type { RequestStatus } from '@clientdesk/contracts';
+import type { RequestStatus } from '@tallyroom/contracts';
 
 export const REQUEST_STATUS_LABELS: Record<RequestStatus, string> = {
   open: 'Offen',

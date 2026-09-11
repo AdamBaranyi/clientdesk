@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import type { Pool } from '@clientdesk/db';
+import type { Pool } from '@tallyroom/db';
 
 /**
  * Liveness prüft nur, ob der Prozess antwortet. Readiness prüft zusätzlich die

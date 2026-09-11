@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TEST_DATABASE_URL: postgresql://clientdesk:clientdesk_local@localhost:5432/clientdesk_test
+  TEST_DATABASE_URL: postgresql://tallyroom:tallyroom_local@localhost:5432/tallyroom_test
 
 jobs:
   qualitaet:
@@ -47,13 +47,13 @@ jobs:
       postgres:
         image: postgres:18.1-alpine
         env:
-          POSTGRES_USER: clientdesk
-          POSTGRES_PASSWORD: clientdesk_local
-          POSTGRES_DB: clientdesk_test
+          POSTGRES_USER: tallyroom
+          POSTGRES_PASSWORD: tallyroom_local
+          POSTGRES_DB: tallyroom_test
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U clientdesk -d clientdesk_test"
+          --health-cmd "pg_isready -U tallyroom -d tallyroom_test"
           --health-interval 5s
           --health-timeout 3s
           --health-retries 10
@@ -74,7 +74,7 @@ jobs:
       - name: Datenbank erreichbar
         run: |
           bun --eval "
-            const { createPool } = await import('@clientdesk/db');
+            const { createPool } = await import('@tallyroom/db');
             const pool = createPool({ connectionString: process.env.TEST_DATABASE_URL });
             await pool.query('SELECT 1');
             await pool.end();
@@ -97,4 +97,4 @@ jobs:
       - run: bun install --frozen-lockfile
 
       - name: Weboberfläche bauen
-        run: bun run --filter '@clientdesk/web' build
+        run: bun run --filter '@tallyroom/web' build

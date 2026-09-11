@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import { milestones, type Database } from '@clientdesk/db';
-import type { Milestone, MilestoneInput, MilestoneUpdate } from '@clientdesk/contracts';
+import { milestones, type Database } from '@tallyroom/db';
+import type { Milestone, MilestoneInput, MilestoneUpdate } from '@tallyroom/contracts';
 import { HttpError, notFound } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
 import { todayInTimezone } from '../../lib/workspace-date.ts';

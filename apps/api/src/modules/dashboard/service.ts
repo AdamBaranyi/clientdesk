@@ -1,6 +1,6 @@
 import { and, count, eq, isNull } from 'drizzle-orm';
-import { customers, projects, type Database } from '@clientdesk/db';
-import type { Dashboard, MonthlyValuePoint } from '@clientdesk/contracts';
+import { customers, projects, type Database } from '@tallyroom/db';
+import type { Dashboard, MonthlyValuePoint } from '@tallyroom/contracts';
 import { monthEndPoints, todayInTimezone } from '../../lib/workspace-date.ts';
 import { monthlyContractValueMinor } from '../contracts/metrics.ts';
 

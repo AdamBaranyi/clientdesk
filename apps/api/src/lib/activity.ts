@@ -1,4 +1,4 @@
-import { activityEvents, type Executor } from '@clientdesk/db';
+import { activityEvents, type Executor } from '@tallyroom/db';
 
 /**
  * Erlaubte Metadaten je Aktionstyp. Alles, was hier nicht steht, wird

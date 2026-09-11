@@ -4,7 +4,7 @@ import {
   ALLOWED_DOCUMENT_MIME,
   clientRequestInputSchema,
   commentInputSchema,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import type { AuthRepository } from '../auth/repository.ts';
 import { getPortal, requirePortalClient } from './context.ts';
 import type { PortalService } from './service.ts';

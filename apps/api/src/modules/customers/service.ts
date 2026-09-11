@@ -1,5 +1,5 @@
 import { and, eq, sql } from 'drizzle-orm';
-import { customers, type Database } from '@clientdesk/db';
+import { customers, type Database } from '@tallyroom/db';
 import type {
   ArchiveBlockers,
   Customer,
@@ -7,7 +7,7 @@ import type {
   CustomerListQuery,
   CustomerUpdate,
   ListResponse,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
 import type { DemoLimits } from '../demo/limits.ts';

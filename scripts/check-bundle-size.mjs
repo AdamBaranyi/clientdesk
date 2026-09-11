@@ -35,7 +35,7 @@ function pruefe(name, gemessen, grenze, befunde) {
 }
 
 const dateien = await readdir(DIST).catch(() => {
-  throw new Error(`${DIST} fehlt. Zuerst bauen: bun run --filter '@clientdesk/web' build`);
+  throw new Error(`${DIST} fehlt. Zuerst bauen: bun run --filter '@tallyroom/web' build`);
 });
 
 const js = dateien.filter((d) => d.endsWith('.js'));

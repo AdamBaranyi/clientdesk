@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CreatedInvitation, Invitation, InvitationInput } from '@clientdesk/contracts';
+import type { CreatedInvitation, Invitation, InvitationInput } from '@tallyroom/contracts';
 import { apiRequest } from '../../lib/api.ts';
 
 const key = (workspaceId: string) => ['invitations', workspaceId] as const;

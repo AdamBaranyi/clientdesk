@@ -8,7 +8,7 @@ import type {
   ProjectInput,
   ProjectListQuery,
   ProjectUpdate,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { apiRequest } from '../../lib/api.ts';
 
 interface ListParams extends Partial<ProjectListQuery> {

@@ -1,7 +1,7 @@
 import express, { type Express } from 'express';
 import helmet from 'helmet';
 import { pinoHttp } from 'pino-http';
-import type { Database, Pool } from '@clientdesk/db';
+import type { Database, Pool } from '@tallyroom/db';
 import type { Env } from './config/env.ts';
 import { createLogger, type Logger } from './lib/logger.ts';
 import { createS3Storage } from './storage/s3.ts';

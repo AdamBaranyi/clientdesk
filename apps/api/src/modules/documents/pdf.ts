@@ -1,4 +1,4 @@
-import { ALLOWED_DOCUMENT_MIME, MAX_DOCUMENT_BYTES } from '@clientdesk/contracts';
+import { ALLOWED_DOCUMENT_MIME, MAX_DOCUMENT_BYTES } from '@tallyroom/contracts';
 import { validationFailed } from '../../lib/http-error.ts';
 
 /** %PDF- als Bytefolge. Jede gültige PDF-Datei beginnt damit. */

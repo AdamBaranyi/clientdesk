@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { createDatabase, createPool, workspaces } from '@clientdesk/db';
+import { createDatabase, createPool, workspaces } from '@tallyroom/db';
 import { eq } from 'drizzle-orm';
 import { createApp } from '../apps/api/src/app.ts';
 import { loadEnv } from '../apps/api/src/config/env.ts';
@@ -75,7 +75,7 @@ async function main(): Promise<void> {
       'x-csrf-token': csrfToken,
     },
     body: JSON.stringify({
-      email: 'last@clientdesk.test',
+      email: 'last@tallyroom.test',
       password: 'Lastdaten-Passwort-2026',
     }),
   });

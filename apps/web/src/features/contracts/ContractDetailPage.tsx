@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router';
-import { formatAmountMinor, type WorkspaceSummary } from '@clientdesk/contracts';
+import { formatAmountMinor, type WorkspaceSummary } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';

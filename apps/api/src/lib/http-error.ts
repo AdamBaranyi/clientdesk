@@ -1,4 +1,4 @@
-import { ERROR_STATUS, type ErrorCode } from '@clientdesk/contracts';
+import { ERROR_STATUS, type ErrorCode } from '@tallyroom/contracts';
 
 export type FieldErrors = Record<string, string[]>;
 

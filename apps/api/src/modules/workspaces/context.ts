@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
-import { isInternalRole, type MembershipRole } from '@clientdesk/contracts';
+import { isInternalRole, type MembershipRole } from '@tallyroom/contracts';
 import { forbidden, notFound, unauthenticated } from '../../lib/http-error.ts';
 import type { AuthRepository } from '../auth/repository.ts';
 

@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes, useParams } from 'react-router';
-import type { SessionUser } from '@clientdesk/contracts';
+import type { SessionUser } from '@tallyroom/contracts';
 import { AppShell } from './components/AppShell.tsx';
 import { JoinPage } from './features/auth/JoinPage.tsx';
 import { LandingPage } from './features/landing/LandingPage.tsx';

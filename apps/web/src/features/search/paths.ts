@@ -1,4 +1,4 @@
-import type { SearchHit } from '@clientdesk/contracts';
+import type { SearchHit } from '@tallyroom/contracts';
 import { workspacePath } from '../../lib/paths.ts';
 
 const SEGMENT: Record<SearchHit['kind'], string> = {

@@ -1,8 +1,8 @@
 import { alias } from 'drizzle-orm/pg-core';
 import { and, asc, count, desc, eq, ilike, or } from 'drizzle-orm';
-import type { Database } from '@clientdesk/db';
-import { customers, projects, requestComments, serviceRequests, users } from '@clientdesk/db';
-import type { RequestListQuery } from '@clientdesk/contracts';
+import type { Database } from '@tallyroom/db';
+import { customers, projects, requestComments, serviceRequests, users } from '@tallyroom/db';
+import type { RequestListQuery } from '@tallyroom/contracts';
 
 const assignee = alias(users, 'assignee');
 const author = alias(users, 'author');

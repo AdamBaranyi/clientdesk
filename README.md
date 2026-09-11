@@ -1,4 +1,4 @@
-# ClientDesk
+# Tallyroom
 
 SaaS-Dashboard mit Kundenportal für kleine Digitalagenturen. Ein Team führt Kunden, Projekte,
 monatliche Serviceverträge, Anfragen und Dokumente an einem Ort zusammen; Kunden sehen über ein
@@ -61,7 +61,7 @@ Alternativ einen Workspace mit Vorführdaten anlegen — acht erfundene Kunden, 
 Meilensteine mit sinnvollen Fristen:
 
 ```bash
-bun run seed:demo -- --email demo@clientdesk.test --password Dein-Passwort
+bun run seed:demo -- --email demo@tallyroom.test --password Dein-Passwort
 ```
 
 Der Befehl legt zusätzlich zwei Kundenzugänge an und nennt sie am Ende. Damit lässt sich der

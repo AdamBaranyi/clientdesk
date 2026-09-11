@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import type { SearchHit } from '@clientdesk/contracts';
+import type { SearchHit } from '@tallyroom/contracts';
 import { Modal } from '../../components/base/Modal.tsx';
 import { MIN_TERM_LENGTH, useSearch } from './api.ts';
 import { KIND_LABEL, hitPath } from './paths.ts';

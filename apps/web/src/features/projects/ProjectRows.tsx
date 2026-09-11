@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { AlertCircle } from 'lucide-react';
-import type { Project } from '@clientdesk/contracts';
+import type { Project } from '@tallyroom/contracts';
 import {
   CardItem,
   CardList,

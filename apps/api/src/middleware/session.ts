@@ -1,7 +1,7 @@
 import connectPgSimple from 'connect-pg-simple';
 import session from 'express-session';
 import type { RequestHandler } from 'express';
-import type { Pool } from '@clientdesk/db';
+import type { Pool } from '@tallyroom/db';
 import { isProduction, type Env } from '../config/env.ts';
 
 /** Absolute Obergrenze einer Sitzung, unabhängig von Aktivität. */
@@ -13,7 +13,7 @@ export function createSessionMiddleware(env: Env, pool: Pool): RequestHandler {
   const PgStore = connectPgSimple(session);
 
   return session({
-    name: 'clientdesk.sid',
+    name: 'tallyroom.sid',
     secret: env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,

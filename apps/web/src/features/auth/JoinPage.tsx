@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import type { InvitationPreview } from '@clientdesk/contracts';
+import type { InvitationPreview } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError, apiRequest } from '../../lib/api.ts';
@@ -57,7 +57,7 @@ export function JoinPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
-        <Wordmark name="ClientDesk" />
+        <Wordmark name="Tallyroom" />
         <span className="pb-4">
           <ThemeToggle />
         </span>

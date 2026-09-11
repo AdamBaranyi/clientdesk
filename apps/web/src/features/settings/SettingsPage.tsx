@@ -5,7 +5,7 @@ import {
   type CreatedInvitation,
   type MembershipRole,
   type WorkspaceSummary,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';

@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { formatAmountMinor, type ServiceContract } from '@clientdesk/contracts';
+import { formatAmountMinor, type ServiceContract } from '@tallyroom/contracts';
 import {
   CardItem,
   CardList,

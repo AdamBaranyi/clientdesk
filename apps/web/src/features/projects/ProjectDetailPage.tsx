@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useParams } from 'react-router';
-import { PROJECT_STATUS, type ProjectStatus, type WorkspaceSummary } from '@clientdesk/contracts';
+import { PROJECT_STATUS, type ProjectStatus, type WorkspaceSummary } from '@tallyroom/contracts';
 import { workspacePath } from '../../lib/paths.ts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';

@@ -1,5 +1,5 @@
 import { and, eq, sql } from 'drizzle-orm';
-import { contractRates, serviceContracts, type Database } from '@clientdesk/db';
+import { contractRates, serviceContracts, type Database } from '@tallyroom/db';
 import type {
   ContractInput,
   ContractListQuery,
@@ -9,7 +9,7 @@ import type {
   ListResponse,
   RateInput,
   ServiceContract,
-} from '@clientdesk/contracts';
+} from '@tallyroom/contracts';
 import { HttpError, notFound, validationFailed } from '../../lib/http-error.ts';
 import { recordActivity } from '../../lib/activity.ts';
 import type { DemoLimits } from '../demo/limits.ts';

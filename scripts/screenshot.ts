@@ -9,7 +9,7 @@ import { chromium, type Browser, type BrowserContext } from 'playwright';
  *
  * Der Vorher-Stand läuft aus einem zweiten Arbeitsbaum:
  *
- *   git worktree add /tmp/clientdesk-vorher a998cfb
+ *   git worktree add /tmp/tallyroom-vorher a998cfb
  *
  * Beide Stände sprechen dieselbe API auf Port 4000. Die Demo-Sitzung wird
  * deshalb immer über 5173 gestartet — nur dieser Ursprung ist der API als

@@ -23,7 +23,7 @@ export const documentSchema = z.object({
   createdAt: z.string(),
 });
 
-export type ClientDeskDocument = z.infer<typeof documentSchema>;
+export type TallyroomDocument = z.infer<typeof documentSchema>;
 
 /**
  * Kundenansicht: kein Objektschlüssel, kein Freigabe-Flag, kein Hochladender,

@@ -1,4 +1,4 @@
-import type { Customer, Project, ServiceContract, ServiceRequest } from '@clientdesk/contracts';
+import type { Customer, Project, ServiceContract, ServiceRequest } from '@tallyroom/contracts';
 import { seedClientUser, seedWorkspaceWithOwner, type SeededWorkspace } from './fixtures.ts';
 import type { TestClient, TestServer } from './test-server.ts';
 

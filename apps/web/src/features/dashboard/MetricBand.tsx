@@ -1,4 +1,4 @@
-import type { Dashboard } from '@clientdesk/contracts';
+import type { Dashboard } from '@tallyroom/contracts';
 import { formatDate } from '../../lib/format.ts';
 import { splitAmountForDisplay } from '../../lib/money-display.ts';
 import { MetricFigure } from './MetricFigure.tsx';
