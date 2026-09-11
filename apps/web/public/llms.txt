@@ -1,0 +1,21 @@
+# Tallyroom
+
+> Kundenübersicht und Kundenportal für kleine Digitalagenturen. Ein Portfolio-Projekt von Adam Baranyi mit einer Demo, die jeder ohne Konto starten kann. Alle Firmen, Personen und Zahlen darin sind erfunden.
+
+Ein Agenturteam führt in Tallyroom Kunden, Projekte, monatliche Servicevereinbarungen, Anfragen und Dokumente zusammen. Kunden sehen in einem getrennten Portal nur, was ausdrücklich für sie freigegeben ist. Die Anwendung liegt hinter einer Anmeldung. Öffentlich sind nur die Startseite mit dem Start der Demo und die Rechtsseiten.
+
+Die Demo läuft 60 Minuten, hat einen eigenen Datenbestand je Besucher und wird danach samt Dateien gelöscht. Sie enthält drei Team-Identitäten und zwei Kundenzugänge, zwischen denen man wechseln kann.
+
+## Seiten
+
+- [Startseite](https://tallyroom.adambaranyi.xyz/): Beschreibung und Start der Demo
+- [Impressum](https://tallyroom.adambaranyi.xyz/impressum)
+- [Datenschutzerklärung](https://tallyroom.adambaranyi.xyz/datenschutz)
+
+## Quelltext und Dokumentation
+
+- [Repository](https://github.com/AdamBaranyi/tallyroom): Quelltext, zur Ansicht öffentlich, alle Rechte vorbehalten
+- [Architektur](https://github.com/AdamBaranyi/tallyroom/blob/main/docs/ARCHITECTURE.md): Aufbau und Entscheidungen
+- [Sicherheit](https://github.com/AdamBaranyi/tallyroom/blob/main/docs/SECURITY.md): Mandantentrennung, Sitzungen, Header, offene Grenzen
+- [Tests](https://github.com/AdamBaranyi/tallyroom/blob/main/docs/TESTING.md): was geprüft wird und wie
+- [Diagnosen](https://github.com/AdamBaranyi/tallyroom/blob/main/docs/DIAGNOSTICS.md): Befunde samt Fehldiagnosen

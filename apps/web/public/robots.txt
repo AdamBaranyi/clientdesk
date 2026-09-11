@@ -1,0 +1,14 @@
+# Team- und Kundenansicht liegen hinter einer Anmeldung und haben in einem
+# Suchindex nichts verloren. Alles andere bleibt offen, auch Skripte und
+# Schriften: ohne sie kann eine Suchmaschine die Startseite nicht darstellen.
+#
+# Die eine erlaubte API-Route fragt den Anmeldestatus ab. Wäre sie gesperrt,
+# sähe ein Crawler statt der Startseite "Server nicht erreichbar".
+User-agent: *
+Disallow: /app/
+Disallow: /portal/
+Disallow: /join/
+Disallow: /api/
+Allow: /api/v1/auth/me
+
+Sitemap: https://tallyroom.adambaranyi.xyz/sitemap.xml
