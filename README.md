@@ -112,6 +112,8 @@ Denselben Weg gibt es für die API auf Port 4000.
 ```bash
 bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
+bun run test:e2e # Playwright über sechs Breiten
+bun run test:e2e:browsers # dieselben Prüfungen in Safaris und Firefox' Engine
 ```
 
 Die Integrationstests brauchen die laufende Testdatenbank und `TEST_DATABASE_URL` aus der `.env`.

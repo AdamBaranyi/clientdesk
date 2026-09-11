@@ -119,7 +119,8 @@ PostgreSQL und Garage aus `infra/compose.prod.yml`, lokal auf `https://localhost
 `unsafe-inline`, dann eine Demo durch jede Seite der Teamansicht, eine Detailseite mit
 Seitenübergang, die Kommandopalette mit Treffern, ein Dokument über die API (PDF, Anhang,
 `sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Vorher einmal der ganze
-Rundgang, mit dem jede neue Demo beginnt. Jeder Konsolenfehler lässt den
+Rundgang, mit dem jede neue Demo beginnt. Zum Schluss abmelden: das führt zur Startseite, nicht
+zur Anmeldung. Jeder Konsolenfehler lässt den
 Test scheitern, auch jeder CSP-Verstoss — und weil nicht jeder Verstoss in der Konsole erscheint,
 hört zusätzlich ein Skript im Dokument auf `securitypolicyviolation`, auf jeder Seite neu. Wie es
 dazu kam, steht in [DIAGNOSTICS.md](DIAGNOSTICS.md), Nummer 17.
@@ -136,6 +137,23 @@ sonst keiner.
 Gegen den Server (`PRODUCTION_URL=https://tallyroom.adambaranyi.xyz`) am 11.09.2026 nach dem
 zweiten Deploy: **3 von 3 grün.** Lighthouse gegen dieselbe Adresse, je zwei Läufe: mobil
 Leistung 98 bis 99, die übrigen drei Kategorien 100; Desktop viermal 100.
+
+### In Safari und Firefox
+
+```bash
+bunx playwright install webkit firefox   # einmalig
+bun run test:e2e:browsers
+```
+
+Dieselbe Suite in den Engines von Safari und Firefox, auf Geräten statt nur auf Breiten: iPhone SE
+und iPhone 15 und iPad Pro 11 mit Touch, Pixeldichte und iOS-Kennung (WebKit), Safari und Firefox
+bei 1440 Pixeln, Firefox bei 390. Ergebnis vom 11.09.2026: **232 bestanden, keine rot**, dazu 56
+übersprungene, die an eine bestimmte Breite gebunden sind. Der erste Lauf hatte 14 rote; keiner
+davon war ein Fehler der Anwendung (DIAGNOSTICS Nummer 22).
+
+Nicht Teil der CI, weil beide Browser ein eigener Download sind. WebKit auf dem Mac ist Safaris
+Engine, aber nicht iOS; ein echtes iPhone ersetzt es nicht. Edge ist Chromium und damit durch die
+Hauptsuite abgedeckt, der Internet Explorer ist seit 2022 eingestellt.
 
 ### Sicherung und Wiederherstellung
 

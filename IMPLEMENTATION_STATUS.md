@@ -302,6 +302,15 @@ Bewegung steht der Nebel still. Nur auf der Startseite.
 Nebenbei gefunden: Die Barrierefreiheitsprüfung lief nie wirklich ohne Bewegung, und die
 E2E-Tests liefen durch keinen Typecheck (DIAGNOSTICS Nummer 20). Beides behoben.
 
+## Erledigt — Abmelden zur Startseite, Safari und Firefox (11.09.2026)
+
+- Nach dem Abmelden geht es zur Startseite statt zur Anmeldung, in Teamansicht und Kundenportal;
+  Wunsch des Betreibers. Mit vollständigem Neuladen, weil die geschützte Seite sonst zuerst zur
+  Anmeldung schickt (DIAGNOSTICS Nummer 23). Die Produktionsprüfung meldet sich am Ende ab.
+- Die ganze Suite läuft zusätzlich in WebKit und Firefox, auf iPhone, iPad und am Schreibtisch
+  (`bun run test:e2e:browsers`): 232 bestanden. Die Fokustests öffnen jetzt per Tastatur, weil
+  Safari Knöpfe bei einem Klick nicht fokussiert (DIAGNOSTICS Nummer 22).
+
 ## Offen — Meilenstein 6: Deployment
 
 Plan vom 11.09.2026, in dieser Reihenfolge:

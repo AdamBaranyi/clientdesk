@@ -465,6 +465,51 @@ im Entwicklungsmodus absichtlich.
 
 ---
 
+## 22 · Safari und Firefox: zwei Befunde, die keine Fehler der Anwendung waren
+
+**Symptom.** Die ganze Suite in Safaris und Firefox' Engine: 14 von 234 Prüfungen rot. Zwölf in
+WebKit, immer dieselben drei: der Fokus kehre nach einem Dialog nicht an seinen Auslöser zurück.
+Zwei im Sprachtest, in WebKit und Firefox: nach der Wahl von Englisch kam die Meldung der API auf
+Deutsch.
+
+**Messung, Fokus.** In WebKit von Hand: nach einem Mausklick auf «Kunde anlegen» steht der Fokus
+im Dialog, nach Escape auf `body`. Derselbe Knopf per Tastatur geöffnet — fokussieren, Enter,
+Escape: der Fokus steht wieder auf «Kunde anlegen». Bei der Kommandopalette ebenso.
+
+**Messung, Sprache.** Der Header der Anmeldung je Browser: Chromium `en`, Firefox und WebKit
+`de-CH`. Dieselbe Probe ohne Playwrights Sprachsimulation: alle drei senden die gewählte
+Sprache, `fr`, und bekommen die Meldung auf Französisch.
+
+**Ursache.** Safari fokussiert einen Knopf bei einem Mausklick grundsätzlich nicht; es gibt dann
+nichts, wohin der Fokus zurückkehren könnte. Die Rückgabe ist für Tastaturbedienung da, und dort
+funktioniert sie. Beim Sprachtest setzt Playwright die simulierte Browsersprache in Firefox und
+WebKit auf Netzebene durch und überschreibt dabei den Header, den die Seite selbst setzt.
+
+**Korrektur.** Die drei Fokustests öffnen per Tastatur, in allen Browsern — das prüft den Zweck
+genauer als ein Klick. Der Sprachtest mit der API läuft nur in Chromium, mit dieser Begründung im
+Test. Danach: 232 bestanden, keiner rot.
+
+**Regel.** Ein roter Test in einem anderen Browser ist zuerst eine Frage, kein Urteil: an der
+Anwendung messen, bevor man sie ändert.
+
+---
+
+## 23 · Abmelden führte trotzdem zur Anmeldung
+
+**Symptom.** Gewünscht: nach dem Abmelden zur Startseite. Umgesetzt mit `navigate('/')` nach dem
+Leeren der Sitzung. Die Produktionsprüfung landete trotzdem auf `/login`.
+
+**Ursache.** Das Leeren der Sitzung zeichnet die geschützte Seite noch einmal, bevor der Sprung
+greift. Deren Regel — ohne Sitzung zur Anmeldung — schlug zuerst zu.
+
+**Korrektur.** Nach dem Abmelden lädt die Seite vollständig neu, auf der Startseite. Wie beim
+Rollenwechsel der Demo bleibt dabei nichts vom vorherigen Konto im Speicher. Die
+Produktionsprüfung meldet sich jetzt am Ende ab und erwartet «Demo starten».
+
+**Regel.** Wer eine Weiterleitung ändert, prüft sie am Ende des echten Wegs, nicht im Code.
+
+---
+
 ## Was daraus als Werkzeug geblieben ist
 
 | Werkzeug                    | Hält fest                                                    |

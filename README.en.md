@@ -111,6 +111,8 @@ The same applies to the API on port 4000.
 ```bash
 bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
+bun run test:e2e # Playwright über sechs Breiten
+bun run test:e2e:browsers # dieselben Prüfungen in Safaris und Firefox' Engine
 ```
 
 The integration tests need the test database running and `TEST_DATABASE_URL` from `.env`.
