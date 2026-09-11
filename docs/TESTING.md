@@ -3,7 +3,7 @@
 Befunde, die beim Prüfen entstanden sind, stehen in [DIAGNOSTICS.md](DIAGNOSTICS.md) —
 mit Messung, Ursache und Korrektur, einschliesslich der drei Fehldiagnosen.
 
-Stand: 11.09.2026, nach dem Wechsel auf Garage und dem ersten Produktionsaufbau.
+Stand: 11.09.2026, mit vier Sprachen und dem Rundgang durch die Demo.
 
 ## In der CI
 
@@ -26,8 +26,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 11.09.2026: **170 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
-allen vier Paketen sauber, alle Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
+Ergebnis vom 11.09.2026: **195 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+allen vier Paketen sauber, alle Code-Dateien unter der 400-Zeilen-Grenze (längste: 378 Zeilen).
 
 Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
 
@@ -46,9 +46,10 @@ bun run test:e2e        # alle sechs Breiten
 bun run test:e2e:ui     # zum Nachsehen, wenn etwas rot ist
 ```
 
-**177 Prüfungen im Lauf, rund 55 Sekunden** (11.09.2026). Dazu kommen 15 übersprungene: Die drei
-Messungen gegen Lastdaten laufen nur bei 1440 Pixeln, sechsmal dieselbe Zahl wäre keine
-zusätzliche Erkenntnis.
+**210 Prüfungen im Lauf, rund 85 Sekunden** (11.09.2026). Dazu kommen 60 übersprungene,
+alle mit Absicht: Die drei Messungen gegen Lastdaten und die sechs Sprachprüfungen laufen nur bei
+1440 Pixeln, die drei Breitenprüfungen der Übersetzungen nur bei 320. Sechsmal dieselbe Zahl
+wäre keine zusätzliche Erkenntnis.
 
 Sechs Projekte, eines je Prüfbreite. **Es wird nie mitten im Test die Fenstergrösse verändert.**
 Manche Umgebungen ändern das Layout, ohne der Seite Bescheid zu sagen — dann feuert weder `resize`
@@ -81,6 +82,19 @@ ausschliesslich lesen — **ein Test, der schreibt, darf diese Sitzung nicht ben
 und Datenschutz, in beiden
 Erscheinungsbildern, dazu der offene Dialog und die Kommandopalette mit Treffern. Null Verstösse.
 
+**Sprachen** (`e2e/language.spec.ts`, `e2e/widths.spec.ts`): Ein Browser mit `en-GB`, `fr-CH`,
+`it-CH` oder `rm-CH` bekommt Englisch, Französisch, Italienisch oder Deutsch. Die Wahl gilt sofort,
+bleibt nach dem Neuladen, und die Meldungen der API und der gemeinsamen Schemas folgen ihr. Jede
+Übersetzung der Rechtsseiten sagt, dass die deutsche Fassung gilt. Bei 320 Pixeln läuft in
+Französisch, Italienisch und Englisch keine von zehn Seiten seitlich — die Übersetzungen sind oft
+ein Drittel länger als das Deutsche.
+
+**Rundgang** (`e2e/tour.spec.ts`, alle sechs Breiten): Er öffnet sich einmal, führt durch alle
+sechs Schritte, die Karte steht dabei ganz im Bild, der ausgesparte Rahmen liegt über Kennzahlen
+und Rollenwechsel, und nach dem Ende bleibt er zu. Der Knopf im Banner startet ihn neu, Escape
+beendet ihn, der Fokus kehrt an den Knopf zurück. axe hell und dunkel ohne Verstoss. Die
+Platzierung selbst rechnen elf Unit-Tests nach (`tour-position.test.ts`).
+
 ### Gegen den Produktionsaufbau
 
 ```bash
@@ -93,7 +107,8 @@ PostgreSQL und Garage aus `infra/compose.prod.yml`, lokal auf `https://localhost
 `PRODUCTION_URL` gegen den Server. Geprüft: die Sicherheitsheader samt Content Security Policy ohne
 `unsafe-inline`, dann eine Demo durch jede Seite der Teamansicht, eine Detailseite mit
 Seitenübergang, die Kommandopalette mit Treffern, ein Dokument über die API (PDF, Anhang,
-`sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Jeder Konsolenfehler lässt den
+`sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Vorher einmal der ganze
+Rundgang, mit dem jede neue Demo beginnt. Jeder Konsolenfehler lässt den
 Test scheitern, auch jeder CSP-Verstoss.
 
 Dazu prüft ein eigener Test, dass das Impressum Anschrift und E-Mail nennt. Die Angaben kommen

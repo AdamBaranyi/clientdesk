@@ -260,6 +260,26 @@ auch in der deutschen Oberfläche. Sie folgen jetzt der gewählten Sprache.
 - Wiederholungslauf für Löschungen, die am Objektspeicher gescheitert sind
 - Zwei deutsche Texte auf der Einladungsseite waren grammatisch falsch
 
+**Rundgang durch die Demo (D6b).** Eine neue Demo beginnt mit sechs Schritten: was Tallyroom ist,
+die Kennzahlen, die Bereiche der Navigation mit je einem Satz, die Kommandopalette, der
+Rollenwechsel ins Kundenportal und wo der Rundgang neu startet. Jeder Schritt spart das
+Bedienelement aus, um das es geht; bei 320 Pixeln rückt es nach oben, wenn die Karte es sonst
+verdecken würde. Einmal von selbst, danach über den Knopf im Demo-Banner. Echter modaler Dialog,
+Fokus auf «Weiter», Escape beendet, keine Bibliothek. Im Kundenportal gibt es ihn nicht.
+
+**Nachladen statt Erstlast.** Mit vier Sprachen lag die Erstlast bei 191 KB gzip, über der
+Grenze von 170 KB. Teamansicht, Kundenportal und Rechtsseiten kommen jetzt erst beim Aufruf; die
+Startseite lädt 135.7 KB, die Grenze liegt neu bei 142 KB. Am 10.09.2026, nur auf Deutsch, waren
+es 149 KB. Die Messung zählt jetzt, was `index.html` anfordert, nicht eine einzelne Datei.
+
+**Zwei Befunde der CI** nach dem Push der Sprachen:
+
+- Der Secret-Scan meldete das Testpasswort in `password-change.test.ts`. Falschmeldung, einzeln
+  in `.gitleaksignore` eingetragen und in `docs/SECURITY.md` begründet.
+- Lokal gebaut war die Oberfläche eine Entwicklungsfassung von React: Bun lädt `.env` mit
+  `NODE_ENV=development` automatisch, und Vite übernimmt das. Das Bauskript setzt jetzt
+  `NODE_ENV=production`, sonst misst der lokale Budgetcheck etwas anderes als die CI.
+
 ## Offen — Meilenstein 6: Deployment
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
@@ -273,7 +293,7 @@ Plan vom 11.09.2026, in dieser Reihenfolge:
 | D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt     |
 | D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt     |
 | D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | als Nächstes |
-| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | geplant      |
+| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt     |
 | D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
 | D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen        |
 
@@ -356,14 +376,11 @@ Lauf auf dem Server erzeugt, Datenbanksicherung vor jeder Migration, Rollback ü
 Commit. Dazu auf dem Server `443/udp` in der Firewall freigeben. Caddy bietet HTTP/3 an, bisher ist
 dafür nur TCP offen, und Browser fallen dann still auf HTTP/2 zurück.
 
-**D6b im Einzelnen: Rundgang durch die Demo.** Wunsch des Betreibers vom 11.09.2026. Wer die Demo
-startet, bekommt einmal einen kurzen Rundgang: was Tallyroom ist, dann Schritt für Schritt
-Kennzahlen, Kunden, Projekte, Verträge, Anfragen und Dokumente, zum Schluss der Rollenwechsel ins
-Kundenportal — der Moment, in dem die Trennung sichtbar wird. Jeder Schritt zeigt auf das
-Bedienelement, um das es geht. Überspringbar, jederzeit neu startbar aus dem Demo-Banner, mit
-Tastatur und Screenreader bedienbar, ohne Bewegung bei `prefers-reduced-motion`, ab 320 Pixeln.
-Keine Bibliothek: ein fremdes Skript bräuchte eine Ausnahme in der CSP und brächte mehr, als der
-Rundgang braucht.
+**D6b im Einzelnen: Rundgang durch die Demo.** Wunsch des Betreibers vom 11.09.2026, erledigt am
+selben Tag; was gebaut ist, steht oben unter „Vier Sprachen und geschlossene Lücken". Anders als
+geplant erklärt ein einziger Schritt alle Bereiche der Navigation, statt je Bereich einen: sechs
+Schritte statt acht, und jeder Bereich trotzdem mit einem eigenen Satz. Keine Bibliothek: ein
+fremdes Skript bräuchte eine Ausnahme in der CSP und brächte mehr, als der Rundgang braucht.
 
 **D8 im Einzelnen: Fallstudie.** Sie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
 Geschmack.
