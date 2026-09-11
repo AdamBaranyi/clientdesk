@@ -11,6 +11,13 @@ import {
 } from './paths.ts';
 
 /**
+ * Die Konfiguration gilt nur für die Tests, nicht für diesen eigenen Browser.
+ * Ohne Angabe meldet Chromium en-US, und die Startseite käme auf Englisch —
+ * dann fände das Setup den Knopf «Demo starten» nicht.
+ */
+const LOCALE = 'de-CH';
+
+/**
  * Startet genau eine Demo für den ganzen Lauf.
  *
  * Zuerst startete jeder Test seine eigene — bei sechs Breiten sind das zwei
@@ -35,7 +42,7 @@ async function bestehendeSitzungLaeuftNoch(baseURL: string): Promise<boolean> {
   };
   const browser = await chromium.launch();
   try {
-    const context = await browser.newContext({ baseURL, storageState: STATE_FILE });
+    const context = await browser.newContext({ baseURL, locale: LOCALE, storageState: STATE_FILE });
     const page = await context.newPage();
     await page.goto(`/app/${workspaceId}/dashboard`);
     await page.waitForLoadState('networkidle');
@@ -61,7 +68,7 @@ async function lastZugangVorbereiten(baseURL: string): Promise<void> {
   await mkdir(AUTH_DIR, { recursive: true });
   const browser = await chromium.launch();
   try {
-    const context = await browser.newContext({ baseURL });
+    const context = await browser.newContext({ baseURL, locale: LOCALE });
     const page = await context.newPage();
     await page.goto('/login');
     await page.getByLabel('E-Mail').fill(LOAD_ZUGANG.email);
@@ -87,7 +94,7 @@ async function globalSetup(config: FullConfig): Promise<void> {
   if (await bestehendeSitzungLaeuftNoch(baseURL)) return;
 
   const browser = await chromium.launch();
-  const context = await browser.newContext({ baseURL });
+  const context = await browser.newContext({ baseURL, locale: LOCALE });
   const page = await context.newPage();
 
   await page.goto('/');

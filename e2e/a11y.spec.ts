@@ -114,7 +114,7 @@ test.describe('Barrierefreiheit', () => {
   test('die Kommandopalette mit Treffern, dunkel', async ({ page }) => {
     await page.goto(`/app/${demoWorkspaceId()}/dashboard`);
     await page.getByRole('button', { name: /Suche öffnen/i }).click();
-    await page.getByRole('combobox').fill('berg');
+    await page.getByRole('dialog').getByRole('combobox').fill('berg');
     await expect(page.getByRole('option').first()).toBeVisible();
     await pruefe(page, 'dark');
   });

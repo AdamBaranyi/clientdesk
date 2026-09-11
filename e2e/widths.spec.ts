@@ -83,3 +83,45 @@ test.describe('Prüfbreiten', () => {
     expect(basis).toBe('16px');
   });
 });
+
+/*
+ * Französisch und Italienisch sind oft ein Drittel länger als Deutsch. Die
+ * schmalste Breite ist die, an der ein zu langes Wort die Seite aufdrückt.
+ */
+test.describe('Übersetzungen bei 320 Pixeln', () => {
+  test.skip(({ viewport }) => viewport?.width !== 320, 'Die schmalste Breite genügt.');
+
+  const SECTIONS = [
+    'dashboard',
+    'customers',
+    'projects',
+    'contracts',
+    'requests',
+    'documents',
+    'settings',
+  ];
+
+  for (const locale of ['fr', 'it', 'en'] as const) {
+    test(`${locale}: keine Seite läuft seitlich`, async ({ page }) => {
+      await page.addInitScript(
+        (value) => window.localStorage.setItem('tallyroom.locale', value),
+        locale,
+      );
+      const workspaceId = demoWorkspaceId();
+      const paths = [
+        '/',
+        '/impressum',
+        '/datenschutz',
+        ...SECTIONS.map((s) => `/app/${workspaceId}/${s}`),
+      ];
+
+      for (const path of paths) {
+        await page.goto(path);
+        await warteAufSchriften(page);
+        await expect(page.locator('html')).toHaveAttribute('lang', `${locale}-CH`);
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+        await expectNoHorizontalOverflow(page);
+      }
+    });
+  }
+});

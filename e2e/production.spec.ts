@@ -92,7 +92,7 @@ test('ein Demo-Durchgang ohne CSP-Verstoss und ohne Konsolenfehler', async ({ pa
 
   // Kommandopalette mit Treffern. Die Suche beginnt ab zwei Zeichen.
   await page.getByRole('button', { name: /Springen zu/ }).click();
-  await page.getByRole('combobox').fill('al');
+  await page.getByRole('dialog').getByRole('combobox').fill('al');
   await expect(page.getByRole('option').first()).toBeVisible();
   await page.keyboard.press('Escape');
 

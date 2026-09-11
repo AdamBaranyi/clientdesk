@@ -84,7 +84,7 @@ test.describe('Fokus und Tastatur', () => {
     const ausloeser = page.getByRole('button', { name: /Suche öffnen/i });
     await ausloeser.click();
 
-    const eingabe = page.getByRole('combobox');
+    const eingabe = page.getByRole('dialog').getByRole('combobox');
     await expect(eingabe).toBeFocused();
 
     await eingabe.fill('berg');
@@ -104,7 +104,7 @@ test.describe('Fokus und Tastatur', () => {
     await warteAufSchriften(page);
 
     await page.getByRole('button', { name: /Suche öffnen/i }).click();
-    const eingabe = page.getByRole('combobox');
+    const eingabe = page.getByRole('dialog').getByRole('combobox');
     await eingabe.fill('berg');
 
     const treffer = page.getByRole('option');
