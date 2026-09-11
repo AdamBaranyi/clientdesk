@@ -50,14 +50,22 @@ export function useLogin() {
   });
 }
 
+/**
+ * Nach dem Abmelden geht es zur Startseite, nicht zur Anmeldung: wer sich
+ * abmeldet, will gehen, nicht sich gleich wieder anmelden. Aus einer Demo
+ * heraus steht dort auch gleich «Demo starten». Wunsch des Betreibers.
+ *
+ * Mit vollständigem Neuladen, nicht mit navigate(). Leert man zuerst die
+ * Sitzung, zeichnet die geschützte Seite noch einmal und schickt zur
+ * Anmeldung, bevor der Sprung zur Startseite greift. Das Neuladen lässt
+ * ausserdem nichts vom vorherigen Konto im Speicher — wie beim Rollenwechsel.
+ */
 export function useLogout() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: () => apiRequest<void>('/auth/logout', { method: 'POST' }),
     onSuccess: () => {
       resetCsrfToken();
-      queryClient.setQueryData(SESSION_KEY, null);
-      void queryClient.invalidateQueries();
+      window.location.assign('/');
     },
   });
 }

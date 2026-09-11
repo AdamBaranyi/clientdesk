@@ -136,5 +136,10 @@ test('ein Demo-Durchgang ohne CSP-Verstoss und ohne Konsolenfehler', async ({ pa
   const portalPages = await visitEveryLinkIn(page, 'Portalnavigation');
   expect(portalPages.length).toBeGreaterThan(0);
 
+  // Abmelden führt zur Startseite, nicht zur Anmeldung.
+  await page.getByRole('button', { name: 'Abmelden' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('button', { name: 'Demo starten' })).toBeVisible();
+
   expect(problems, problems.join('\n')).toEqual([]);
 });

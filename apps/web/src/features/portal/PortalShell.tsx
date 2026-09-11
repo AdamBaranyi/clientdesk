@@ -10,7 +10,7 @@ import {
   UserRound,
   X,
 } from 'lucide-react';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
 import { LanguageToggle } from '../../components/base/LanguageToggle.tsx';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
@@ -44,7 +44,6 @@ interface Props {
 
 export function PortalShell({ user, workspace }: Props) {
   const [navOpen, setNavOpen] = useState(false);
-  const navigate = useNavigate();
   const logout = useLogout();
   const m = useMessages(portalMessages);
 
@@ -138,7 +137,7 @@ export function PortalShell({ user, workspace }: Props) {
             <span className="hidden text-[13px] text-muted md:inline">{user.displayName}</span>
             <button
               type="button"
-              onClick={() => logout.mutate(undefined, { onSuccess: () => void navigate('/login') })}
+              onClick={() => logout.mutate()}
               disabled={logout.isPending}
               className="flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-[13px] font-medium text-muted hover:text-ink disabled:opacity-60"
             >

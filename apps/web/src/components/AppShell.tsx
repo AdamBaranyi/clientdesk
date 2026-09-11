@@ -94,7 +94,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
             onOpenNavigation={() => setNavigationOpen(true)}
             onOpenSearch={() => palette.setOpen(true)}
             loggingOut={logout.isPending}
-            onLogout={() => logout.mutate(undefined, { onSuccess: () => void navigate('/login') })}
+            onLogout={() => logout.mutate()}
           />
           <DemoBanner workspace={workspace} />
           <main id="inhalt" className="flex-1 px-3 py-5 sm:px-6 sm:py-6">
