@@ -6,7 +6,7 @@ war, was gemessen wurde, woran es lag, was es jetzt hält.
 Der Sinn ist nicht Vollständigkeit, sondern Nachvollziehbarkeit. Ein Fehler, der einmal still
 zugeschlagen hat, schlägt wieder zu — und beim zweiten Mal soll die Suche kurz sein.
 
-Drei Einträge sind **Fehldiagnosen**: dort war die erste Erklärung falsch. Die stehen hier
+Vier Einträge sind **Fehldiagnosen**: dort war die erste Erklärung falsch. Die stehen hier
 ausdrücklich mit drin, weil eine falsche Fährte teurer ist als der Fehler selbst.
 
 ---
@@ -251,6 +251,64 @@ getrennt. Der Platzhalter ist genauso hoch wie das Diagramm — sonst springt de
 Nachladen, und genau das zählt der CLS-Wert.
 
 **Regel.** Die Auslieferungsgrösse ist eine Zahl mit Grenze in der CI, keine Einschätzung.
+
+---
+
+## 13 · Der Server wartete bei jedem Start zwei Minuten
+
+**Symptom.** Nach dem ersten Neustart meldete `systemctl is-system-running` den Zustand
+`degraded`. `systemd-networkd-wait-online` wartete 120 Sekunden und schlug dann fehl.
+
+**Messung.** `networkctl list` zeigte die Netzwerkkarte dauerhaft im Zustand `configuring`. Die
+IPv6-Adresse war gesetzt, eine IPv6-Standardroute fehlte. Das Gateway aus der Netzwerkvorlage des
+Anbieters liegt ausserhalb des eigenen /64-Netzes, ist also nicht direkt erreichbar. Von Hand
+gesetzt (`ip -6 route add default via … dev eth0 onlink`) funktionierte die Route sofort. Über
+Netplan dagegen nicht, auch nicht mit `on-link: true` und `accept-ra: false`.
+
+**Ursache.** Die Vorlage des Anbieters. Von innen lässt sich das nur mit Handgriffen umgehen, die
+beim nächsten Neustart wieder fehlen.
+
+**Korrektur.** Der Server läuft vorerst nur mit IPv4, im DNS steht kein AAAA-Eintrag. Der Wartedienst
+bekommt über eine systemd-Ergänzung 15 statt 120 Sekunden. In der Datei steht, wann sie wieder
+entfernt wird. Der Anbieter bekommt den Befund.
+
+Jede Netzwerkänderung lief mit einem Totmannschalter: `systemd-run --on-active=180` legte die
+Originaldatei nach drei Minuten zurück, sofern er nicht vorher abgebrochen wurde.
+
+**Regel.** Netzwerkänderungen an einem entfernten Server nur mit automatischem Rückweg. Und jede
+Übergangslösung nennt in der Datei selbst die Bedingung, unter der sie wieder verschwindet.
+
+---
+
+## 14 · Fehldiagnose: IPv6 bremst die Paketquellen
+
+**Symptom.** `apt-get update` brauchte anderthalb Minuten. Bei `security.ubuntu.com` stand zuerst
+`Ign:`, dann `Hit:`. Alle anderen Quellen antworteten in Sekunden.
+
+**Erste Erklärung.** „Das kaputte IPv6 aus Eintrag 13: apt versucht zuerst IPv6 und wartet, bis das
+abläuft." Die Korrektur war schon angekündigt: eine Zeile, die apt auf IPv4 zwingt.
+
+**Messung, die das widerlegt.** Dieselbe Datei einmal über jede Adressfamilie:
+
+|                                           | Ergebnis                         |
+| ----------------------------------------- | -------------------------------- |
+| IPv6                                      | Fehler nach 7 ms, ohne Wartezeit |
+| IPv4                                      | keine Antwort nach 20 s          |
+| alle neun IPv4-Adressen einzeln           | keine Antwort nach 5 bis 10 s    |
+| anderer Ubuntu-Spiegel zum Vergleich      | 0,12 s                           |
+| dieselben Adressen aus einem zweiten Netz | keine Antwort                    |
+
+Ohne Route scheitert IPv6 sofort, es kostet also keine Zeit. Langsam war IPv4, und zwar nur zu
+diesem einen Ziel und aus beiden Netzen gleich.
+
+**Ursache.** Bei Canonical oder auf dem Weg dorthin, weder beim Anbieter noch bei IPv6. Die Updates
+kamen trotzdem an, weil apt die nächste Adresse versucht.
+
+**Korrektur.** Am Server keine. Die angekündigte IPv4-Zeile hätte nichts beschleunigt, und eine
+Meldung an den Anbieter wäre eine Falschmeldung gewesen.
+
+**Regel.** Den offensichtlich kaputten Teil nicht verdächtigen, bevor beide Wege getrennt gemessen
+sind. Und bevor ein Befund an Dritte geht, einmal aus einem zweiten Netz prüfen.
 
 ---
 
