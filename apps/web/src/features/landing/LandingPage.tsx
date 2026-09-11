@@ -1,30 +1,37 @@
 import { Link, useNavigate } from 'react-router';
+import { DEMO_LIFETIME_MINUTES } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
+import { LanguageToggle } from '../../components/base/LanguageToggle.tsx';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
 import { ApiRequestError } from '../../lib/api.ts';
+import { useMessages } from '../../i18n/messages.ts';
 import { SITE_URL } from '../../lib/site.ts';
+import { useDocumentTitle } from '../../lib/use-document-title.ts';
 import { useStartDemo } from '../demo/api.ts';
 import { SiteFooter } from '../legal/SiteFooter.tsx';
 import { LandingFeatures } from './LandingFeatures.tsx';
-
-/** Kenndaten der Demo. Nachprüfbar, nichts davon behauptet. */
-const DEMO_FACTS = [
-  { label: 'Laufzeit', value: '60 Minuten' },
-  { label: 'Datenbestand', value: 'eigener je Besucher' },
-  { label: 'Danach', value: 'gelöscht, samt Dateien' },
-  { label: 'Firmen und Zahlen', value: 'erfunden' },
-];
+import { landingMessages } from './messages.ts';
 
 export function LandingPage() {
   const navigate = useNavigate();
   const startDemo = useStartDemo();
+  const m = useMessages(landingMessages);
+  useDocumentTitle(m.documentTitle);
+
+  /** Kenndaten der Demo. Nachprüfbar, nichts davon behauptet. */
+  const demoFacts = [
+    { label: m.facts.runtime.label, value: m.facts.runtime.value(DEMO_LIFETIME_MINUTES) },
+    m.facts.data,
+    m.facts.after,
+    m.facts.fictional,
+  ];
 
   const message =
     startDemo.error instanceof ApiRequestError
       ? startDemo.error.message
       : startDemo.error
-        ? 'Die Demo konnte nicht gestartet werden. Bitte später erneut versuchen.'
+        ? m.demoFailed
         : null;
 
   return (
@@ -33,15 +40,16 @@ export function LandingPage() {
       <header className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
         <Wordmark name="Tallyroom" />
         <div className="flex items-center gap-2 pb-4">
+          <LanguageToggle />
           <ThemeToggle />
-          {/* Auf 320 Pixeln passt neben Wortmarke und Themenschalter nichts
-              mehr. Der Anmelden-Link steht ohnehin direkt darunter im Hero —
-              hier wegzulassen kostet nichts, überlaufen zu lassen schon. */}
+          {/* Auf 320 Pixeln passt neben Wortmarke, Sprach- und Themenschalter
+              nichts mehr. Der Anmelden-Link steht ohnehin direkt darunter im
+              Hero — hier wegzulassen kostet nichts, überlaufen zu lassen schon. */}
           <Link
             to="/login"
             className="text-dense hidden min-h-11 items-center rounded-sm border border-line px-3 font-medium text-muted hover:text-ink sm:inline-flex"
           >
-            Anmelden
+            {m.signIn}
           </Link>
         </div>
       </header>
@@ -53,13 +61,9 @@ export function LandingPage() {
               {/* Links ausgerichtet, nicht mittig. Eine zentrierte Spalte ist
                   die Vorgabe jeder Startseitenvorlage — hier führt die Kante. */}
               <h1 className="text-page sm:text-figure lg:text-hero leading-tight font-semibold tracking-[-0.03em]">
-                Kundenübersicht und Kundenportal für kleine Agenturen
+                {m.headline}
               </h1>
-              <p className="text-body mt-6 max-w-[58ch] text-muted">
-                Projektstände, monatliche Servicevereinbarungen, Unterlagen und Kundenanfragen an
-                einem Ort — und ein getrenntes Portal, in dem der Kunde genau das sieht, was
-                freigegeben ist.
-              </p>
+              <p className="text-body mt-6 max-w-[58ch] text-muted">{m.lead}</p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button
@@ -72,13 +76,13 @@ export function LandingPage() {
                     })
                   }
                 >
-                  {startDemo.isPending ? 'Demo wird vorbereitet …' : 'Demo starten'}
+                  {startDemo.isPending ? m.preparingDemo : m.startDemo}
                 </Button>
                 <Link
                   to="/login"
                   className="text-body inline-flex min-h-11 items-center justify-center rounded-sm border border-line px-4 font-medium"
                 >
-                  Anmelden
+                  {m.signIn}
                 </Link>
               </div>
 
@@ -94,7 +98,7 @@ export function LandingPage() {
 
             {/* Statt eines Werbebildes: was die Demo tatsächlich tut. */}
             <dl className="flex flex-col self-start border-t border-line">
-              {DEMO_FACTS.map((fact) => (
+              {demoFacts.map((fact) => (
                 <div
                   key={fact.label}
                   className="flex items-baseline justify-between gap-4 border-b border-line py-3"

@@ -5,6 +5,8 @@ import { Button } from '../../components/base/Button.tsx';
 import { TextField } from '../../components/base/Field.tsx';
 import { useAddMilestone, useUpdateMilestone } from './api.ts';
 import { formatDate } from '../../lib/format.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { projectMessages } from './messages.ts';
 
 interface Props {
   workspaceId: string;
@@ -17,6 +19,7 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
   const [dueDate, setDueDate] = useState('');
   const add = useAddMilestone(workspaceId, projectId);
   const update = useUpdateMilestone(workspaceId);
+  const m = useMessages(projectMessages);
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -35,9 +38,7 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
   return (
     <div className="flex flex-col">
       {milestones.length === 0 && (
-        <p className="px-4 pb-4 text-sm text-muted sm:px-5">
-          Noch keine Meilensteine. Ohne sie zeigt das Projekt bewusst keinen Fortschritt an.
-        </p>
+        <p className="px-4 pb-4 text-sm text-muted sm:px-5">{m.milestones.empty}</p>
       )}
 
       <ul className="flex flex-col">
@@ -66,8 +67,8 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
               <Check size={16} strokeWidth={2.4} aria-hidden="true" />
               <span className="sr-only">
                 {milestone.status === 'done'
-                  ? `${milestone.title} wieder öffnen`
-                  : `${milestone.title} als erledigt markieren`}
+                  ? m.milestones.reopen(milestone.title)
+                  : m.milestones.markDone(milestone.title)}
               </span>
             </button>
 
@@ -84,12 +85,12 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
                 {milestone.dueDate ? (
                   <span className="font-mono text-muted">{formatDate(milestone.dueDate)}</span>
                 ) : (
-                  <span className="text-muted">Ohne Termin</span>
+                  <span className="text-muted">{m.milestones.noDueDate}</span>
                 )}
                 {milestone.overdue && (
                   <span className="inline-flex items-center gap-1.5 font-medium text-danger">
                     <AlertCircle size={13} strokeWidth={2} aria-hidden="true" />
-                    Überfällig
+                    {m.milestones.overdue}
                   </span>
                 )}
               </span>
@@ -105,31 +106,31 @@ export function MilestoneList({ workspaceId, projectId, milestones }: Props) {
         <div className="flex-1">
           <TextField
             id="meilenstein-titel"
-            label="Neuer Meilenstein"
+            label={m.milestones.newMilestone}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            placeholder="Was ist zu erreichen?"
+            placeholder={m.milestones.titlePlaceholder}
           />
         </div>
         <div className="sm:w-44">
           <TextField
             id="meilenstein-termin"
-            label="Fällig am"
+            label={m.milestones.dueDate}
             type="date"
-            hint="Optional"
+            hint={m.optional}
             value={dueDate}
             onChange={(event) => setDueDate(event.target.value)}
           />
         </div>
         <Button type="submit" disabled={add.isPending || title.trim() === ''}>
           <Plus size={16} strokeWidth={2} aria-hidden="true" />
-          {add.isPending ? 'Wird ergänzt …' : 'Ergänzen'}
+          {add.isPending ? m.milestones.adding : m.milestones.add}
         </Button>
       </form>
 
       {add.isError && (
         <p role="alert" className="px-4 pb-4 text-sm text-danger sm:px-5">
-          Der Meilenstein konnte nicht ergänzt werden. Bitte erneut versuchen.
+          {m.milestones.addFailed}
         </p>
       )}
     </div>

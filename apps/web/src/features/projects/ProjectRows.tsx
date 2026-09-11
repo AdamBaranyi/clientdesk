@@ -13,6 +13,8 @@ import {
 import { RecordLink } from '../../components/base/RecordLink.tsx';
 import { ProjectStatusBadge } from '../../components/base/StatusBadge.tsx';
 import { formatDate } from '../../lib/format.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { projectMessages } from './messages.ts';
 
 interface Props {
   projects: Project[];
@@ -22,8 +24,9 @@ interface Props {
 
 /** Fortschritt als Balken und als Zahl — nicht allein über die Farbe. */
 function ProgressCell({ project }: { project: Project }) {
+  const m = useMessages(projectMessages);
   if (project.progress === null) {
-    return <span className="text-micro">Noch keine Meilensteine</span>;
+    return <span className="text-micro">{m.noMilestonesYet}</span>;
   }
   const percent = Math.round(project.progress * 100);
   return (
@@ -39,16 +42,18 @@ function ProgressCell({ project }: { project: Project }) {
 }
 
 function OverdueMark({ count }: { count: number }) {
+  const m = useMessages(projectMessages);
   if (count === 0) return null;
   return (
     <span className="text-micro inline-flex items-center gap-1.5 font-medium text-danger">
       <AlertCircle size={13} strokeWidth={2} aria-hidden="true" />
-      {count === 1 ? '1 überfällig' : `${count} überfällig`}
+      {m.rows.overdue(count)}
     </span>
   );
 }
 
 export function ProjectRows({ projects, basePath, showCustomer = true }: Props) {
+  const m = useMessages(projectMessages);
   return (
     <>
       <CardList>
@@ -76,11 +81,11 @@ export function ProjectRows({ projects, basePath, showCustomer = true }: Props) 
 
       <DataTable>
         <TableHead>
-          <Th>Projekt</Th>
-          {showCustomer && <Th>Kunde</Th>}
-          <Th>Status</Th>
-          <Th>Zieltermin</Th>
-          <Th>Fortschritt</Th>
+          <Th>{m.rows.project}</Th>
+          {showCustomer && <Th>{m.customer}</Th>}
+          <Th>{m.status}</Th>
+          <Th>{m.targetDate}</Th>
+          <Th>{m.rows.progress}</Th>
         </TableHead>
         <tbody>
           {projects.map((project) => (

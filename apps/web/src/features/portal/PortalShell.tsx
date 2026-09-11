@@ -11,13 +11,16 @@ import {
 } from 'lucide-react';
 import { Outlet, useNavigate } from 'react-router';
 import type { SessionUser, WorkspaceSummary } from '@tallyroom/contracts';
+import { LanguageToggle } from '../../components/base/LanguageToggle.tsx';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useLogout } from '../auth/use-session.ts';
 import { DemoBanner } from '../demo/DemoBanner.tsx';
 import { LegalLinks } from '../legal/LegalLinks.tsx';
 import { NavItem } from '../../components/base/NavItem.tsx';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
+import { portalMessages } from './messages.ts';
 
 /**
  * Reduzierte Navigation. Es gibt hier bewusst keinen Workspace-Umschalter:
@@ -25,11 +28,11 @@ import { Wordmark } from '../../components/base/Wordmark.tsx';
  * suggerieren, dass es mehr zu sehen gäbe.
  */
 const NAV_ITEMS = [
-  { to: 'overview', label: 'Übersicht', icon: LayoutGrid },
-  { to: 'projects', label: 'Projekte', icon: FolderKanban },
-  { to: 'contracts', label: 'Verträge', icon: FileText },
-  { to: 'requests', label: 'Anfragen', icon: MessageSquare },
-  { to: 'documents', label: 'Dokumente', icon: Paperclip },
+  { to: 'overview', icon: LayoutGrid },
+  { to: 'projects', icon: FolderKanban },
+  { to: 'contracts', icon: FileText },
+  { to: 'requests', icon: MessageSquare },
+  { to: 'documents', icon: Paperclip },
 ] as const;
 
 interface Props {
@@ -41,6 +44,7 @@ export function PortalShell({ user, workspace }: Props) {
   const [navOpen, setNavOpen] = useState(false);
   const navigate = useNavigate();
   const logout = useLogout();
+  const m = useMessages(portalMessages);
 
   useEffect(() => {
     if (!navOpen) return undefined;
@@ -52,12 +56,12 @@ export function PortalShell({ user, workspace }: Props) {
   }, [navOpen]);
 
   const navigation = (
-    <nav aria-label="Portalnavigation" className="flex flex-col gap-0.5">
+    <nav aria-label={m.shell.navLabel} className="flex flex-col gap-0.5">
       {NAV_ITEMS.map((item) => (
         <NavItem
           key={item.to}
           to={portalPath(workspace.id, item.to)}
-          label={item.label}
+          label={m.nav[item.to]}
           icon={item.icon}
           onNavigate={() => setNavOpen(false)}
         />
@@ -68,26 +72,29 @@ export function PortalShell({ user, workspace }: Props) {
   return (
     <div className="flex min-h-dvh">
       <a href="#portal-inhalt" className="skip-link">
-        Zum Inhalt springen
+        {m.shell.skipToContent}
       </a>
 
       <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line bg-[var(--sidebar-bg)] p-3 lg:flex lg:flex-col">
-        <Wordmark name="Kundenportal" />
+        <Wordmark name={m.shell.wordmark} />
         <div className="mb-4 border border-line bg-surface px-2.5 py-2.5">
           <p className="text-dense truncate font-medium">{workspace.name}</p>
           <p className="font-condensed text-micro tracking-[0.14em] text-muted uppercase">
-            Ihr Zugang
+            {m.shell.yourAccess}
           </p>
         </div>
         {navigation}
-        <LegalLinks className="mt-auto px-2.5 pt-4" />
+        <div className="mt-auto flex flex-col items-start gap-1 px-2.5 pt-4">
+          <LanguageToggle />
+          <LegalLinks />
+        </div>
       </aside>
 
       {navOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
           <button
             type="button"
-            aria-label="Navigation schliessen"
+            aria-label={m.shell.closeNavigation}
             onClick={() => setNavOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
@@ -98,11 +105,14 @@ export function PortalShell({ user, workspace }: Props) {
               className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-sm text-muted hover:text-ink"
             >
               <X size={18} strokeWidth={1.8} aria-hidden="true" />
-              <span className="sr-only">Schliessen</span>
+              <span className="sr-only">{m.shell.close}</span>
             </button>
-            <Wordmark name="Kundenportal" />
+            <Wordmark name={m.shell.wordmark} />
             {navigation}
-            <LegalLinks className="mt-auto px-2.5 pt-4" />
+            <div className="mt-auto flex flex-col items-start gap-1 px-2.5 pt-4">
+              <LanguageToggle />
+              <LegalLinks />
+            </div>
           </div>
         </div>
       )}
@@ -116,7 +126,7 @@ export function PortalShell({ user, workspace }: Props) {
               className="flex size-11 shrink-0 items-center justify-center rounded-sm text-muted hover:text-ink lg:hidden"
             >
               <Menu size={20} strokeWidth={1.8} aria-hidden="true" />
-              <span className="sr-only">Navigation öffnen</span>
+              <span className="sr-only">{m.shell.openNavigation}</span>
             </button>
             <span className="truncate text-[13px] text-muted">{workspace.name}</span>
           </div>
@@ -131,8 +141,8 @@ export function PortalShell({ user, workspace }: Props) {
               className="flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-[13px] font-medium text-muted hover:text-ink disabled:opacity-60"
             >
               <LogOut size={15} strokeWidth={1.8} aria-hidden="true" />
-              <span className="hidden sm:inline">Abmelden</span>
-              <span className="sr-only sm:hidden">Abmelden</span>
+              <span className="hidden sm:inline">{m.shell.signOut}</span>
+              <span className="sr-only sm:hidden">{m.shell.signOut}</span>
             </button>
           </div>
         </header>

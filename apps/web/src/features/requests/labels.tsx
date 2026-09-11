@@ -1,5 +1,6 @@
 import type { RequestPriority, RequestStatus } from '@tallyroom/contracts';
-import { REQUEST_STATUS_LABELS } from './status-labels.ts';
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
 
 const STATUS_STYLE: Record<RequestStatus, { dot: string; text: string }> = {
   open: { dot: 'bg-faint', text: 'text-muted' },
@@ -9,6 +10,7 @@ const STATUS_STYLE: Record<RequestStatus, { dot: string; text: string }> = {
 };
 
 export function RequestStatusBadge({ status }: { status: RequestStatus }) {
+  const m = useMessages(domainMessages);
   const style = STATUS_STYLE[status];
   return (
     <span
@@ -18,16 +20,18 @@ export function RequestStatusBadge({ status }: { status: RequestStatus }) {
       ].join(' ')}
     >
       <span className={['size-1.5 shrink-0', style.dot].join(' ')} aria-hidden="true" />
-      {REQUEST_STATUS_LABELS[status]}
+      {m.requestStatus[status]}
     </span>
   );
 }
 
 export function PriorityBadge({ priority }: { priority: RequestPriority }) {
+  const m = useMessages(domainMessages);
   if (priority === 'normal') return null;
+  // Versalien per CSS: Screenreader lesen „Hoch" als Wort, nicht buchstabiert.
   return (
-    <span className="text-micro inline-flex shrink-0 items-center rounded-sm border border-danger px-1.5 py-0.5 font-condensed font-semibold tracking-[0.12em] text-danger">
-      HOCH
+    <span className="text-micro inline-flex shrink-0 items-center rounded-sm border border-danger px-1.5 py-0.5 font-condensed font-semibold tracking-[0.12em] text-danger uppercase">
+      {m.requestPriority.high}
     </span>
   );
 }

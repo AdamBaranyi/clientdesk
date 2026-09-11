@@ -11,11 +11,7 @@ export const OPERATOR = {
   name: 'Adam Baranyi',
   street: import.meta.env.VITE_OPERATOR_STREET ?? '',
   postalCodeAndCity: import.meta.env.VITE_OPERATOR_CITY ?? '',
-  country: 'Schweiz',
   email: import.meta.env.VITE_OPERATOR_EMAIL ?? '',
   /** Freiwillig. Fehlt sie, steht im Impressum keine Nummer. */
   phone: import.meta.env.VITE_OPERATOR_PHONE ?? '',
 };
-
-/** Stand der Datenschutzerklärung. Bei jeder inhaltlichen Änderung nachführen. */
-export const PRIVACY_NOTICE_DATE = '11. September 2026';

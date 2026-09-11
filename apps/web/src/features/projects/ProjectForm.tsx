@@ -9,6 +9,8 @@ import {
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { projectMessages } from './messages.ts';
 
 interface Props {
   customers: Customer[];
@@ -44,13 +46,10 @@ export function ProjectForm({
     },
   });
 
+  const m = useMessages(projectMessages);
   const errors = form.formState.errors;
   const message =
-    error instanceof ApiRequestError
-      ? error.message
-      : error
-        ? 'Speichern derzeit nicht möglich. Bitte später erneut versuchen.'
-        : null;
+    error instanceof ApiRequestError ? error.message : error ? m.form.saveFailed : null;
 
   return (
     <form
@@ -71,7 +70,7 @@ export function ProjectForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="projekt-kunde" className="text-sm font-medium">
-          Kunde
+          {m.customer}
         </label>
         <select
           id="projekt-kunde"
@@ -89,14 +88,14 @@ export function ProjectForm({
 
       <TextField
         id="projekt-name"
-        label="Projektname"
+        label={m.form.name}
         error={errors.name?.message}
         {...form.register('name')}
       />
       <TextAreaField
         id="projekt-beschreibung"
-        label="Beschreibung"
-        hint="Kundenfreundlich formuliert — erscheint später im Portal"
+        label={m.description}
+        hint={m.form.descriptionHint}
         error={errors.description?.message}
         {...form.register('description')}
       />
@@ -104,16 +103,16 @@ export function ProjectForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <TextField
           id="projekt-start"
-          label="Startdatum"
+          label={m.form.startDate}
           type="date"
           error={errors.startDate?.message}
           {...form.register('startDate')}
         />
         <TextField
           id="projekt-ziel"
-          label="Zieltermin"
+          label={m.targetDate}
           type="date"
-          hint="Optional"
+          hint={m.optional}
           error={errors.targetDate?.message}
           {...form.register('targetDate')}
         />
@@ -121,8 +120,8 @@ export function ProjectForm({
 
       <TextAreaField
         id="projekt-notiz"
-        label="Interne Notiz"
-        hint="Nur für das Team sichtbar"
+        label={m.internalNote}
+        hint={m.form.internalNoteHint}
         error={errors.internalNote?.message}
         {...form.register('internalNote')}
       />
@@ -134,19 +133,17 @@ export function ProjectForm({
           className="mt-0.5 size-5 shrink-0 accent-[var(--action-bg)]"
         />
         <span>
-          Im Kundenportal sichtbar
-          <span className="mt-0.5 block text-xs text-muted">
-            Standardmässig aus. Erst eine bewusste Freigabe zeigt das Projekt dem Kunden.
-          </span>
+          {m.form.clientVisible}
+          <span className="mt-0.5 block text-xs text-muted">{m.form.clientVisibleHint}</span>
         </span>
       </label>
 
       <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="ghost" onClick={onCancel}>
-          Abbrechen
+          {m.cancel}
         </Button>
         <Button type="submit" variant="primary" disabled={pending}>
-          {pending ? 'Wird angelegt …' : 'Projekt anlegen'}
+          {pending ? m.form.creating : m.createProject}
         </Button>
       </div>
     </form>

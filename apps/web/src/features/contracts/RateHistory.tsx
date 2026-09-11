@@ -6,6 +6,8 @@ import { TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';
 import { formatDate } from '../../lib/format.ts';
 import { useAddRate } from './api.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { contractMessages } from './messages.ts';
 
 interface Props {
   workspaceId: string;
@@ -20,17 +22,20 @@ interface Props {
 export function RateHistory({ workspaceId, contractId, rates }: Props) {
   const [effectiveFrom, setEffectiveFrom] = useState('');
   const [amount, setAmount] = useState('');
-  const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  // Nur ob der Betrag ungültig ist, nicht der Text — so folgt die Meldung
+  // einem Sprachwechsel.
+  const [amountInvalid, setAmountInvalid] = useState(false);
   const add = useAddRate(workspaceId, contractId);
+  const m = useMessages(contractMessages);
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
     const minor = parseAmountToMinor(amount);
     if (minor === null) {
-      setAmountError('Betrag in Franken angeben, zum Beispiel 320 oder 320.50');
+      setAmountInvalid(true);
       return;
     }
-    setAmountError(undefined);
+    setAmountInvalid(false);
     add.mutate(
       { effectiveFrom, monthlyAmountMinor: minor },
       {
@@ -43,11 +48,7 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
   }
 
   const message =
-    add.error instanceof ApiRequestError
-      ? add.error.message
-      : add.error
-        ? 'Die Preisversion konnte nicht ergänzt werden.'
-        : null;
+    add.error instanceof ApiRequestError ? add.error.message : add.error ? m.rates.addFailed : null;
 
   return (
     <div className="flex flex-col">
@@ -58,8 +59,10 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
             className="flex flex-wrap items-baseline justify-between gap-3 border-t border-line-soft px-4 py-3 sm:px-5"
           >
             <span className="flex items-baseline gap-3">
-              <span className="font-mono text-sm">ab {formatDate(rate.effectiveFrom)}</span>
-              {index === 0 && <span className="text-xs text-muted">Erste Version</span>}
+              <span className="font-mono text-sm">
+                {m.rates.effectiveFrom(formatDate(rate.effectiveFrom))}
+              </span>
+              {index === 0 && <span className="text-xs text-muted">{m.rates.firstVersion}</span>}
             </span>
             <span className="font-mono text-sm font-medium">
               CHF {formatAmountMinor(rate.monthlyAmountMinor)}
@@ -75,7 +78,7 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
         <div className="sm:w-44">
           <TextField
             id="preis-ab"
-            label="Neuer Preis ab"
+            label={m.rates.newPriceFrom}
             type="date"
             required
             value={effectiveFrom}
@@ -85,16 +88,16 @@ export function RateHistory({ workspaceId, contractId, rates }: Props) {
         <div className="flex-1">
           <TextField
             id="preis-betrag"
-            label="Monatlich in CHF"
+            label={m.rates.monthlyInChf}
             inputMode="decimal"
             value={amount}
             onChange={(event) => setAmount(event.target.value)}
-            error={amountError}
+            error={amountInvalid ? m.rates.amountInvalid : undefined}
           />
         </div>
         <Button type="submit" disabled={add.isPending || effectiveFrom === '' || amount === ''}>
           <Plus size={16} strokeWidth={2} aria-hidden="true" />
-          {add.isPending ? 'Wird ergänzt …' : 'Ergänzen'}
+          {add.isPending ? m.adding : m.add}
         </Button>
       </form>
 

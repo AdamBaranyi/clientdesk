@@ -2,8 +2,10 @@ import type { CSSProperties } from 'react';
 import { useMemo } from 'react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { MonthlyValuePoint } from '@tallyroom/contracts';
+import { useMessages } from '../../i18n/messages.ts';
 import { useChartColors } from '../../lib/use-chart-colors.ts';
 import { ContractValueTable } from './ContractValueTable.tsx';
+import { dashboardMessages } from './messages.ts';
 
 /**
  * Ein Balken. Recharts animiert seine Balken nur alle gleichzeitig; der
@@ -39,6 +41,7 @@ function GrowingBar({ x, y, width, height, fill, index = 0 }: BarShapeProps) {
 
 export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }) {
   const colors = useChartColors();
+  const m = useMessages(dashboardMessages);
 
   // Ohne useMemo entstünde bei jedem Render ein neues Array, und Recharts
   // startete seine Balkenanimation jedes Mal von vorn — sichtbar als Diagramm,
@@ -87,7 +90,7 @@ export function ContractValueChart({ history }: { history: MonthlyValuePoint[] }
               labelStyle={{ color: 'var(--muted)', fontFamily: 'var(--font-condensed)' }}
               formatter={(value) => [
                 `CHF ${typeof value === 'number' ? value.toLocaleString('de-CH') : '—'}`,
-                'Monatswert',
+                m.history.tooltipLabel,
               ]}
             />
             {/* Eigene Animation statt der von Recharts: gestaffelt, mit den

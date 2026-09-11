@@ -1,12 +1,8 @@
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { THEME_CHOICES, type ThemeChoice } from '@tallyroom/contracts';
 import { useTheme } from '../../lib/theme-context.ts';
-
-const LABELS: Record<ThemeChoice, string> = {
-  system: 'Gerät',
-  light: 'Hell',
-  dark: 'Dunkel',
-};
+import { useMessages } from '../../i18n/messages.ts';
+import { shellMessages } from '../messages.ts';
 
 const ICONS: Record<ThemeChoice, typeof Monitor> = {
   system: Monitor,
@@ -21,11 +17,12 @@ const ICONS: Record<ThemeChoice, typeof Monitor> = {
  */
 export function ThemeToggle() {
   const { choice, setChoice } = useTheme();
+  const m = useMessages(shellMessages);
 
   return (
     <div
       role="group"
-      aria-label="Erscheinungsbild"
+      aria-label={m.appearance}
       className="flex items-center gap-0.5 rounded-sm border border-line bg-surface p-[3px]"
     >
       {THEME_CHOICES.map((option) => {
@@ -37,7 +34,7 @@ export function ThemeToggle() {
             type="button"
             onClick={() => setChoice(option)}
             aria-pressed={active}
-            title={LABELS[option]}
+            title={m.theme[option]}
             className={[
               // 44 Pixel hoch auf Touch-Breiten, ab sm die kompakte Variante
               // aus dem Entwurf. Die Breite bleibt bei 36 Pixeln, damit die
@@ -49,7 +46,7 @@ export function ThemeToggle() {
             ].join(' ')}
           >
             <Icon size={15} strokeWidth={1.8} aria-hidden="true" />
-            <span className="sr-only">{LABELS[option]}</span>
+            <span className="sr-only">{m.theme[option]}</span>
           </button>
         );
       })}

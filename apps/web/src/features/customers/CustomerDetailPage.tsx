@@ -8,28 +8,29 @@ import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { Dialog } from '../../components/base/Dialog.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
 import { ArchivedBadge } from '../../components/base/StatusBadge.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { ProjectRows } from '../projects/ProjectRows.tsx';
 import { useProjects } from '../projects/api.ts';
 import { ArchiveSection } from './ArchiveSection.tsx';
 import { useCustomer, useUpdateCustomer } from './api.ts';
 import { CustomerForm } from './CustomerForm.tsx';
+import { customerMessages } from './messages.ts';
 import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
 import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
 
 export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { customerId } = useParams();
   const [editing, setEditing] = useState(false);
+  const m = useMessages(customerMessages);
 
   const query = useCustomer(workspace.id, customerId);
   const projects = useProjects(workspace.id, { customerId });
   const update = useUpdateCustomer(workspace.id, customerId ?? '');
 
   const preview = useRecordTitlePreview();
-  if (query.isPending) return <PendingRecord title={preview} label="Kunde wird geladen …" />;
+  if (query.isPending) return <PendingRecord title={preview} label={m.detail.loading} />;
   if (query.isError || !query.data) {
-    return (
-      <ErrorState detail="Dieser Kunde existiert nicht oder gehört zu einem anderen Workspace." />
-    );
+    return <ErrorState detail={m.detail.notFound} />;
   }
 
   const customer = query.data;
@@ -41,7 +42,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
-        Alle Kunden
+        {m.detail.back}
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -54,18 +55,18 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
         </div>
         <Button onClick={() => setEditing(true)}>
           <Pencil size={15} strokeWidth={1.8} aria-hidden="true" />
-          Bearbeiten
+          {m.detail.edit}
         </Button>
       </div>
 
       <Card>
-        <CardHeader title="Übersicht" />
+        <CardHeader title={m.detail.overview} />
         <dl className="grid grid-cols-1 gap-x-6 gap-y-4 px-4 pb-5 sm:grid-cols-2 sm:px-5">
-          <Entry label="E-Mail" value={customer.email} href={mailto(customer.email)} />
-          <Entry label="Telefon" value={customer.phone} href={tel(customer.phone)} />
-          <Entry label="Webseite" value={customer.website} href={customer.website} />
+          <Entry label={m.fields.email} value={customer.email} href={mailto(customer.email)} />
+          <Entry label={m.fields.phone} value={customer.phone} href={tel(customer.phone)} />
+          <Entry label={m.fields.website} value={customer.website} href={customer.website} />
           <Entry
-            label="Laufende Projekte"
+            label={m.fields.runningProjects}
             value={String(customer.activeProjectCount)}
             href={null}
           />
@@ -74,7 +75,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
         {customer.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
             <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
-              Interne Notiz
+              {m.fields.internalNote}
             </dt>
             {/* Erscheint nie im Kundenportal — die Client-DTOs führen dieses Feld gar nicht. */}
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
@@ -85,12 +86,10 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
       </Card>
 
       <Card>
-        <CardHeader title="Projekte" />
-        {projects.isPending && <LoadingState label="Projekte werden geladen …" />}
+        <CardHeader title={m.detail.projects} />
+        {projects.isPending && <LoadingState label={m.detail.projectsLoading} />}
         {projects.data && projects.data.data.length === 0 && (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">
-            Für diesen Kunden gibt es noch kein Projekt.
-          </p>
+          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.detail.noProjects}</p>
         )}
         {projects.data && projects.data.data.length > 0 && (
           <ProjectRows
@@ -103,7 +102,7 @@ export function CustomerDetailPage({ workspace }: { workspace: WorkspaceSummary 
 
       <ArchiveSection workspace={workspace} customer={customer} />
 
-      <Dialog open={editing} title="Kunde bearbeiten" onClose={() => setEditing(false)}>
+      <Dialog open={editing} title={m.editCustomer} onClose={() => setEditing(false)}>
         <CustomerForm
           customer={customer}
           pending={update.isPending}
@@ -135,6 +134,7 @@ function Entry({
   value: string | null;
   href: string | null;
 }) {
+  const m = useMessages(customerMessages);
   return (
     <div className="min-w-0">
       <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">{label}</dt>
@@ -148,7 +148,7 @@ function Entry({
             <span className="break-words">{value}</span>
           )
         ) : (
-          <span className="text-muted">Nicht erfasst</span>
+          <span className="text-muted">{m.detail.notRecorded}</span>
         )}
       </dd>
     </div>

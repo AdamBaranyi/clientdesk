@@ -1,20 +1,5 @@
-const FEATURES = [
-  {
-    title: 'Kunden, Projekte, Meilensteine',
-    detail:
-      'Wer wird betreut, was läuft, was ist überfällig. Fortschritt entsteht aus erledigten Meilensteinen und nicht aus einer Schätzung.',
-  },
-  {
-    title: 'Verträge mit Preisversionen',
-    detail:
-      'Eine Preisänderung gilt ab ihrem Datum und lässt vergangene Monatswerte unberührt. Der monatliche Vertragswert ist zu jedem Stichtag nachvollziehbar.',
-  },
-  {
-    title: 'Getrenntes Kundenportal',
-    detail:
-      'Der Kunde sieht freigegebene Projekte, Unterlagen und den öffentlichen Teil des Verlaufs. Interne Notizen und Kommentare erreichen ihn nicht.',
-  },
-];
+import { useMessages } from '../../i18n/messages.ts';
+import { landingMessages } from './messages.ts';
 
 /**
  * Die drei Punkte als Zeilen, nicht als drei gleich breite Karten.
@@ -29,9 +14,11 @@ const FEATURES = [
  * nichts und ahmte nur das Aussehen einer Ordnung nach.
  */
 export function LandingFeatures() {
+  const features = Object.values(useMessages(landingMessages).features);
+
   return (
     <ol className="mt-20 flex flex-col border-t border-line">
-      {FEATURES.map((feature) => (
+      {features.map((feature) => (
         <li
           key={feature.title}
           className="grid gap-x-8 gap-y-2 border-b border-line py-6 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]"

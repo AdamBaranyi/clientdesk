@@ -13,14 +13,9 @@ import { formatDate } from '../../lib/format.ts';
 import { useMilestones, useProject, useUpdateProject } from './api.ts';
 import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
 import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
-
-const STATUS_LABELS: Record<ProjectStatus, string> = {
-  planned: 'Geplant',
-  active: 'Aktiv',
-  paused: 'Pausiert',
-  completed: 'Abgeschlossen',
-  archived: 'Archiviert',
-};
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { projectMessages } from './messages.ts';
 
 export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }) {
   const { projectId } = useParams();
@@ -28,13 +23,13 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
   const query = useProject(workspace.id, projectId);
   const milestones = useMilestones(workspace.id, projectId);
   const update = useUpdateProject(workspace.id, projectId ?? '');
+  const m = useMessages(projectMessages);
+  const domain = useMessages(domainMessages);
 
   const preview = useRecordTitlePreview();
-  if (query.isPending) return <PendingRecord title={preview} label="Projekt wird geladen …" />;
+  if (query.isPending) return <PendingRecord title={preview} label={m.detail.loading} />;
   if (query.isError || !query.data) {
-    return (
-      <ErrorState detail="Dieses Projekt existiert nicht oder gehört zu einem anderen Workspace." />
-    );
+    return <ErrorState detail={m.detail.notFound} />;
   }
 
   const project = query.data;
@@ -65,7 +60,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
-        Alle Projekte
+        {m.detail.back}
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -75,7 +70,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         </div>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="projekt-status" className="text-xs font-medium text-muted">
-            Status
+            {m.status}
           </label>
           <select
             id="projekt-status"
@@ -86,7 +81,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
           >
             {PROJECT_STATUS.map((option) => (
               <option key={option} value={option}>
-                {STATUS_LABELS[option]}
+                {domain.projectStatus[option]}
               </option>
             ))}
           </select>
@@ -98,16 +93,16 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
           role="alert"
           className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
         >
-          Das Projekt wurde inzwischen von jemand anderem geändert. Bitte Seite neu laden.
+          {m.detail.conflict}
         </p>
       )}
 
       <Card>
-        <CardHeader title="Übersicht" />
+        <CardHeader title={m.detail.overview} />
         <dl className="grid grid-cols-1 gap-x-6 gap-y-4 px-4 pb-5 sm:grid-cols-3 sm:px-5">
           <div>
             <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
-              Status
+              {m.status}
             </dt>
             <dd className="mt-1.5">
               <ProjectStatusBadge status={project.status} />
@@ -115,13 +110,13 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
           </div>
           <div>
             <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
-              Start
+              {m.detail.start}
             </dt>
             <dd className="mt-1.5 font-mono text-sm">{formatDate(project.startDate)}</dd>
           </div>
           <div>
             <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
-              Zieltermin
+              {m.targetDate}
             </dt>
             <dd className="mt-1.5 font-mono text-sm">
               {project.targetDate ? formatDate(project.targetDate) : '—'}
@@ -132,7 +127,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         {project.description && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
             <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
-              Beschreibung
+              {m.description}
             </dt>
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
               {project.description}
@@ -143,7 +138,7 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
         {project.internalNote && (
           <div className="border-t border-line-soft px-4 py-4 sm:px-5">
             <dt className="text-[10px] font-semibold tracking-[0.09em] text-muted uppercase">
-              Interne Notiz
+              {m.internalNote}
             </dt>
             <dd className="mt-1.5 max-w-[70ch] text-sm whitespace-pre-line">
               {project.internalNote}
@@ -154,16 +149,16 @@ export function ProjectDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
       <Card>
         <CardHeader
-          title="Meilensteine"
+          title={m.detail.milestones}
           action={
             <span className="text-xs text-muted">
               {project.milestoneCount === 0
-                ? 'Noch keine Meilensteine'
-                : `${project.milestonesDone} von ${project.milestoneCount} erledigt`}
+                ? m.noMilestonesYet
+                : m.detail.milestonesDone(project.milestonesDone, project.milestoneCount)}
             </span>
           }
         />
-        {milestones.isPending && <LoadingState label="Meilensteine werden geladen …" />}
+        {milestones.isPending && <LoadingState label={m.detail.milestonesLoading} />}
         {milestones.data && projectId && (
           <MilestoneList
             workspaceId={workspace.id}

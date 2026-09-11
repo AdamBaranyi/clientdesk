@@ -12,6 +12,8 @@ import {
 import { RecordLink } from '../../components/base/RecordLink.tsx';
 import { formatDate } from '../../lib/format.ts';
 import { ContractStatusBadge } from './ContractStatusBadge.tsx';
+import { useMessages } from '../../i18n/messages.ts';
+import { contractMessages } from './messages.ts';
 
 interface Props {
   contracts: ServiceContract[];
@@ -25,24 +27,27 @@ interface Props {
  * Zahl, auf die es ankommt.
  */
 function Amount({ contract }: { contract: ServiceContract }) {
+  const m = useMessages(contractMessages);
   if (contract.amountAtDateMinor === null) {
     // Bei einem geplanten Vertrag gibt es sehr wohl einen Preis — er gilt am
     // Stichtag nur noch nicht. „Kein Preis" würde einen Datenfehler nahelegen.
     return (
       <span className="text-micro whitespace-nowrap">
-        {contract.visibleStatus === 'planned' ? 'Ab Vertragsbeginn' : 'Kein Preis hinterlegt'}
+        {contract.visibleStatus === 'planned' ? m.rows.fromContractStart : m.noPrice}
       </span>
     );
   }
   return <>{formatAmountMinor(contract.amountAtDateMinor)}</>;
 }
 
-function term(contract: ServiceContract): string {
+/** Der Text für ein offenes Ende kommt aus dem Katalog der Komponente. */
+function term(contract: ServiceContract, openTerm: (start: string) => string): string {
   const start = formatDate(contract.startDate);
-  return contract.endDate ? `${start} – ${formatDate(contract.endDate)}` : `${start} – offen`;
+  return contract.endDate ? `${start} – ${formatDate(contract.endDate)}` : openTerm(start);
 }
 
 export function ContractRows({ contracts, basePath, showCustomer = true }: Props) {
+  const m = useMessages(contractMessages);
   return (
     <>
       <CardList>
@@ -64,7 +69,7 @@ export function ContractRows({ contracts, basePath, showCustomer = true }: Props
               <span className="flex flex-wrap items-center gap-3">
                 <ContractStatusBadge status={contract.visibleStatus} />
                 <span className="text-micro font-mono tabular-nums text-muted">
-                  {term(contract)}
+                  {term(contract, m.rows.openTerm)}
                 </span>
               </span>
             </Link>
@@ -74,11 +79,11 @@ export function ContractRows({ contracts, basePath, showCustomer = true }: Props
 
       <DataTable>
         <TableHead>
-          <Th>Bezeichnung</Th>
-          {showCustomer && <Th>Kunde</Th>}
-          <Th>Status</Th>
-          <Th>Laufzeit</Th>
-          <Th right>Monatlich · CHF</Th>
+          <Th>{m.name}</Th>
+          {showCustomer && <Th>{m.customer}</Th>}
+          <Th>{m.status}</Th>
+          <Th>{m.rows.term}</Th>
+          <Th right>{m.rows.monthlyChf}</Th>
         </TableHead>
         <tbody>
           {contracts.map((contract) => (
@@ -90,7 +95,7 @@ export function ContractRows({ contracts, basePath, showCustomer = true }: Props
               <Cell>
                 <ContractStatusBadge status={contract.visibleStatus} />
               </Cell>
-              <Cell numeric>{term(contract)}</Cell>
+              <Cell numeric>{term(contract, m.rows.openTerm)}</Cell>
               <Cell right numeric>
                 <Amount contract={contract} />
               </Cell>

@@ -9,6 +9,9 @@ import { Wordmark } from '../../components/base/Wordmark.tsx';
 import { Button } from '../../components/base/Button.tsx';
 import { CONTROL_BASE } from '../../components/base/control-style.ts';
 import { SiteFooter } from '../legal/SiteFooter.tsx';
+import { LanguageToggle } from '../../components/base/LanguageToggle.tsx';
+import { useMessages } from '../../i18n/messages.ts';
+import { authMessages } from './messages.ts';
 
 export function LoginPage() {
   const session = useSession();
@@ -18,6 +21,8 @@ export function LoginPage() {
     defaultValues: { email: '', password: '' },
   });
 
+  const m = useMessages(authMessages).login;
+
   if (session.data) return <Navigate to="/app" replace />;
 
   const submitError = login.error;
@@ -25,24 +30,23 @@ export function LoginPage() {
     submitError instanceof ApiRequestError
       ? submitError.message
       : submitError
-        ? 'Anmeldung derzeit nicht möglich. Bitte später erneut versuchen.'
+        ? m.unavailable
         : null;
 
   return (
     <div className="flex min-h-dvh flex-col">
       <div className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
         <Wordmark name="Tallyroom" />
-        <span className="pb-4">
+        <span className="flex items-center gap-2 pb-4">
+          <LanguageToggle />
           <ThemeToggle />
         </span>
       </div>
 
       <main className="flex flex-1 items-center justify-center px-3 py-6 sm:px-6">
         <div className="w-full max-w-[400px] border border-line bg-surface p-5 sm:p-7">
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Anmelden</h1>
-          <p className="mt-1.5 text-sm text-muted">
-            Interne Konten werden über den Admin-Befehl eingerichtet.
-          </p>
+          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.title}</h1>
+          <p className="mt-1.5 text-sm text-muted">{m.intro}</p>
 
           <form
             noValidate
@@ -60,14 +64,14 @@ export function LoginPage() {
             )}
 
             <Field
-              label="E-Mail"
+              label={m.email}
               type="email"
               autoComplete="username"
               error={form.formState.errors.email?.message}
               registration={form.register('email')}
             />
             <Field
-              label="Passwort"
+              label={m.password}
               type="password"
               autoComplete="current-password"
               error={form.formState.errors.password?.message}
@@ -75,7 +79,7 @@ export function LoginPage() {
             />
 
             <Button type="submit" variant="primary" disabled={login.isPending}>
-              {login.isPending ? 'Wird geprüft …' : 'Anmelden'}
+              {login.isPending ? m.checking : m.submit}
             </Button>
           </form>
         </div>

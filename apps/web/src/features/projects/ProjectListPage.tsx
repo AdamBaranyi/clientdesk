@@ -13,18 +13,15 @@ import { useCreateProject, useProjects } from './api.ts';
 import { ProjectForm } from './ProjectForm.tsx';
 import { ProjectRows } from './ProjectRows.tsx';
 import { SearchField, SelectField } from '../../components/base/Controls.tsx';
-
-const STATUS_LABELS: Record<ProjectStatus, string> = {
-  planned: 'Geplant',
-  active: 'Aktiv',
-  paused: 'Pausiert',
-  completed: 'Abgeschlossen',
-  archived: 'Archiviert',
-};
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { projectMessages } from './messages.ts';
 
 export function ProjectListPage({ workspace }: { workspace: WorkspaceSummary }) {
   const [params, setParams] = useSearchParams();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const m = useMessages(projectMessages);
+  const domain = useMessages(domainMessages);
 
   const search = params.get('search') ?? '';
   const status = (params.get('status') as ProjectStatus | null) ?? undefined;
@@ -51,8 +48,8 @@ export function ProjectListPage({ workspace }: { workspace: WorkspaceSummary }) 
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Projekte</h1>
-          <p className="mt-1 text-sm text-muted">Alle Projekte über alle Kunden.</p>
+          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.list.title}</h1>
+          <p className="mt-1 text-sm text-muted">{m.list.lead}</p>
         </div>
         <Button
           variant="primary"
@@ -60,7 +57,7 @@ export function ProjectListPage({ workspace }: { workspace: WorkspaceSummary }) 
           onClick={() => setDialogOpen(true)}
         >
           <Plus size={16} strokeWidth={2} aria-hidden="true" />
-          Projekt anlegen
+          {m.createProject}
         </Button>
       </div>
 
@@ -68,41 +65,39 @@ export function ProjectListPage({ workspace }: { workspace: WorkspaceSummary }) 
         <SearchField
           value={search}
           onChange={(wert) => patchParams({ search: wert })}
-          placeholder="Projekt oder Kunde"
-          label="Projekte durchsuchen"
+          placeholder={m.list.searchPlaceholder}
+          label={m.list.searchLabel}
         />
 
         <SelectField
           id="projekt-status-filter"
-          label="Nach Status filtern"
+          label={m.list.statusFilter}
           labelHidden
           value={status ?? ''}
           onChange={(event) => patchParams({ status: event.target.value || null })}
         >
-          <option value="">Alle Status</option>
+          <option value="">{m.list.allStatuses}</option>
           {PROJECT_STATUS.map((option) => (
             <option key={option} value={option}>
-              {STATUS_LABELS[option]}
+              {domain.projectStatus[option]}
             </option>
           ))}
         </SelectField>
       </div>
 
       <Card>
-        {query.isPending && <LoadingState label="Projekte werden geladen …" />}
-        {query.isError && (
-          <ErrorState detail="Die Projektliste konnte nicht geladen werden. Bitte Seite neu laden." />
-        )}
+        {query.isPending && <LoadingState label={m.list.loading} />}
+        {query.isError && <ErrorState detail={m.list.loadFailed} />}
 
         {query.data && query.data.data.length === 0 && (
           <EmptyState
-            title={search || status ? 'Kein Treffer' : 'Noch keine Projekte'}
+            title={search || status ? m.list.noMatchTitle : m.list.emptyTitle}
             detail={
               search || status
-                ? 'In dieser Ansicht gibt es kein Projekt. Suchbegriff oder Statusfilter ändern.'
+                ? m.list.noMatchDetail
                 : availableCustomers.length === 0
-                  ? 'Ein Projekt gehört immer zu einem Kunden. Lege zuerst einen Kunden an.'
-                  : 'Sobald das erste Projekt angelegt ist, erscheint es hier mit Fortschritt und Zieltermin.'
+                  ? m.list.noCustomersDetail
+                  : m.list.emptyDetail
             }
           />
         )}
@@ -123,7 +118,7 @@ export function ProjectListPage({ workspace }: { workspace: WorkspaceSummary }) 
         )}
       </Card>
 
-      <Dialog open={dialogOpen} title="Projekt anlegen" onClose={() => setDialogOpen(false)}>
+      <Dialog open={dialogOpen} title={m.createProject} onClose={() => setDialogOpen(false)}>
         <ProjectForm
           customers={availableCustomers}
           pending={create.isPending}

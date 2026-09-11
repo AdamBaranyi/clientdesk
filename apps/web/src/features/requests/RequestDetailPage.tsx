@@ -7,11 +7,13 @@ import {
 } from '@tallyroom/contracts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { workspacePath } from '../../lib/paths.ts';
 import { CommentThread } from './CommentThread.tsx';
 import { PriorityBadge, RequestStatusBadge } from './labels.tsx';
-import { REQUEST_STATUS_LABELS } from './status-labels.ts';
+import { requestMessages } from './messages.ts';
 import { useChangeRequestStatus, useRequest, useRequestComments } from './api.ts';
 import { PendingRecord, RecordHeading } from '../../components/base/RecordLink.tsx';
 import { useRecordTitlePreview } from '../../lib/use-record-title.ts';
@@ -21,13 +23,13 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
   const query = useRequest(workspace.id, requestId);
   const comments = useRequestComments(workspace.id, requestId);
   const changeStatus = useChangeRequestStatus(workspace.id, requestId ?? '');
+  const m = useMessages(requestMessages).detail;
+  const statusLabels = useMessages(domainMessages).requestStatus;
 
   const preview = useRecordTitlePreview();
-  if (query.isPending) return <PendingRecord title={preview} label="Anfrage wird geladen …" />;
+  if (query.isPending) return <PendingRecord title={preview} label={m.loading} />;
   if (query.isError || !query.data) {
-    return (
-      <ErrorState detail="Diese Anfrage existiert nicht oder gehört zu einem anderen Workspace." />
-    );
+    return <ErrorState detail={m.notFound} />;
   }
 
   const request = query.data;
@@ -41,7 +43,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
         className="inline-flex items-center gap-1.5 text-sm text-muted no-underline hover:text-ink"
       >
         <ArrowLeft size={15} strokeWidth={1.8} aria-hidden="true" />
-        Alle Anfragen
+        {m.backToList}
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -67,7 +69,7 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
               onClick={() => changeStatus.mutate({ status: next, version: request.version })}
               className="min-h-11 rounded-sm border border-line px-3 text-sm font-medium text-muted transition-colors hover:text-ink disabled:opacity-60"
             >
-              {REQUEST_STATUS_LABELS[next]}
+              {statusLabels[next]}
             </button>
           ))}
         </div>
@@ -78,16 +80,16 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
           role="alert"
           className="rounded-sm border border-line bg-raised px-4 py-3 text-sm text-danger"
         >
-          Die Anfrage wurde inzwischen geändert. Bitte Seite neu laden.
+          {m.conflict}
         </p>
       )}
 
       <Card>
         <CardHeader
-          title="Anliegen"
+          title={m.concern}
           action={
             <span className="text-xs text-muted">
-              {request.createdByName ? `Erfasst von ${request.createdByName}` : 'Aus dem Portal'}
+              {request.createdByName ? m.recordedBy(request.createdByName) : m.fromPortal}
             </span>
           }
         />
@@ -96,14 +98,10 @@ export function RequestDetailPage({ workspace }: { workspace: WorkspaceSummary }
 
       <Card>
         <CardHeader
-          title="Verlauf"
-          action={
-            <span className="text-xs text-muted">
-              Interne Kommentare erreichen das Kundenportal nie
-            </span>
-          }
+          title={m.history}
+          action={<span className="text-xs text-muted">{m.historyHint}</span>}
         />
-        {comments.isPending && <LoadingState label="Kommentare werden geladen …" />}
+        {comments.isPending && <LoadingState label={m.commentsLoading} />}
         {comments.data && requestId && (
           <CommentThread
             workspaceId={workspace.id}

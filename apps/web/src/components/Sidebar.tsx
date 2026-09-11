@@ -8,10 +8,14 @@ import {
   Users,
 } from 'lucide-react';
 import type { WorkspaceSummary } from '@tallyroom/contracts';
+import { LanguageToggle } from './base/LanguageToggle.tsx';
 import { NavItem } from './base/NavItem.tsx';
 import { Wordmark } from './base/Wordmark.tsx';
 import { LegalLinks } from '../features/legal/LegalLinks.tsx';
+import { domainMessages } from '../i18n/domain-messages.ts';
+import { useMessages } from '../i18n/messages.ts';
 import { workspacePath } from '../lib/paths.ts';
+import { shellMessages } from './messages.ts';
 
 /**
  * Es stehen nur Einträge in der Navigation, deren Seite es tatsächlich gibt.
@@ -19,13 +23,13 @@ import { workspacePath } from '../lib/paths.ts';
  * Funktion wäre ein Versprechen, das die Anwendung nicht hält.
  */
 const NAV_ITEMS = [
-  { to: 'dashboard', label: 'Dashboard', icon: LayoutGrid },
-  { to: 'customers', label: 'Kunden', icon: Users },
-  { to: 'projects', label: 'Projekte', icon: FolderKanban },
-  { to: 'contracts', label: 'Verträge', icon: FileText },
-  { to: 'requests', label: 'Anfragen', icon: MessageSquare },
-  { to: 'documents', label: 'Dokumente', icon: Paperclip },
-  { to: 'settings', label: 'Einstellungen', icon: Settings },
+  { to: 'dashboard', icon: LayoutGrid },
+  { to: 'customers', icon: Users },
+  { to: 'projects', icon: FolderKanban },
+  { to: 'contracts', icon: FileText },
+  { to: 'requests', icon: MessageSquare },
+  { to: 'documents', icon: Paperclip },
+  { to: 'settings', icon: Settings },
 ] as const;
 
 interface SidebarProps {
@@ -34,6 +38,9 @@ interface SidebarProps {
 }
 
 export function Sidebar({ workspace, onNavigate }: SidebarProps) {
+  const m = useMessages(shellMessages);
+  const roles = useMessages(domainMessages).role;
+
   return (
     <div className="flex h-full flex-col bg-[var(--sidebar-bg)] p-3">
       <Wordmark name="Tallyroom" />
@@ -48,24 +55,27 @@ export function Sidebar({ workspace, onNavigate }: SidebarProps) {
         <span className="flex min-w-0 flex-col">
           <span className="text-dense truncate font-medium">{workspace.name}</span>
           <span className="font-condensed text-micro tracking-[0.14em] text-muted uppercase">
-            {roleLabel(workspace.role)}
+            {roles[workspace.role]}
           </span>
         </span>
       </div>
 
-      <nav aria-label="Hauptnavigation" className="mt-4 flex flex-col gap-0.5">
+      <nav aria-label={m.mainNavigation} className="mt-4 flex flex-col gap-0.5">
         {NAV_ITEMS.map((item) => (
           <NavItem
             key={item.to}
             to={workspacePath(workspace.id, item.to)}
-            label={item.label}
+            label={m.sections[item.to]}
             icon={item.icon}
             onNavigate={onNavigate}
           />
         ))}
       </nav>
 
-      <LegalLinks className="mt-auto px-2.5 pt-4" />
+      <div className="mt-auto flex flex-col items-start gap-1 px-2.5 pt-4">
+        <LanguageToggle />
+        <LegalLinks />
+      </div>
     </div>
   );
 }
@@ -77,10 +87,4 @@ function initials(name: string): string {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() ?? '')
     .join('');
-}
-
-function roleLabel(role: WorkspaceSummary['role']): string {
-  if (role === 'owner') return 'Owner';
-  if (role === 'member') return 'Mitglied';
-  return 'Kundenzugang';
 }

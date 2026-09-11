@@ -11,6 +11,8 @@ import {
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError } from '../../lib/api.ts';
+import { useMessages } from '../../i18n/messages.ts';
+import { contractMessages } from './messages.ts';
 
 interface Props {
   customers: Customer[];
@@ -23,7 +25,10 @@ interface Props {
 export function ContractForm({ customers, pending, error, onSubmit, onCancel }: Props) {
   // Der Betrag wird als Text erfasst und erst beim Absenden in Rappen gewandelt.
   const [amount, setAmount] = useState('');
-  const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  // Nur ob der Betrag ungültig ist, nicht der Text — so folgt die Meldung
+  // einem Sprachwechsel.
+  const [amountInvalid, setAmountInvalid] = useState(false);
+  const m = useMessages(contractMessages);
 
   const form = useForm<ContractFormValues, unknown, ContractInput>({
     resolver: zodResolver(contractInputSchema),
@@ -42,19 +47,15 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
 
   const errors = form.formState.errors;
   const message =
-    error instanceof ApiRequestError
-      ? error.message
-      : error
-        ? 'Speichern derzeit nicht möglich. Bitte später erneut versuchen.'
-        : null;
+    error instanceof ApiRequestError ? error.message : error ? m.form.saveFailed : null;
 
   function submit(values: ContractInput) {
     const minor = parseAmountToMinor(amount);
     if (minor === null) {
-      setAmountError('Betrag in Franken angeben, zum Beispiel 250 oder 250.50');
+      setAmountInvalid(true);
       return;
     }
-    setAmountError(undefined);
+    setAmountInvalid(false);
     onSubmit({ ...values, monthlyAmountMinor: minor, endDate: values.endDate || null });
   }
 
@@ -71,7 +72,7 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="vertrag-kunde" className="text-sm font-medium">
-          Kunde
+          {m.customer}
         </label>
         <select
           id="vertrag-kunde"
@@ -89,35 +90,35 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
 
       <TextField
         id="vertrag-name"
-        label="Bezeichnung"
-        placeholder="Hosting, Wartung, Support …"
+        label={m.name}
+        placeholder={m.form.namePlaceholder}
         error={errors.name?.message}
         {...form.register('name')}
       />
 
       <TextField
         id="vertrag-betrag"
-        label="Monatlicher Betrag in CHF"
+        label={m.form.monthlyAmount}
         inputMode="decimal"
         value={amount}
         onChange={(event) => setAmount(event.target.value)}
-        hint="Wird als Ganzzahl in Rappen gespeichert. Null ist erlaubt."
-        error={amountError}
+        hint={m.form.monthlyAmountHint}
+        error={amountInvalid ? m.form.amountInvalid : undefined}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <TextField
           id="vertrag-start"
-          label="Beginn"
+          label={m.start}
           type="date"
           error={errors.startDate?.message}
           {...form.register('startDate')}
         />
         <TextField
           id="vertrag-ende"
-          label="Ende"
+          label={m.form.end}
           type="date"
-          hint="Optional, exklusiv"
+          hint={m.form.endHint}
           error={errors.endDate?.message}
           {...form.register('endDate')}
         />
@@ -125,29 +126,29 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="vertrag-status" className="text-sm font-medium">
-          Freigabestatus
+          {m.form.confirmationStatus}
         </label>
         <select
           id="vertrag-status"
           {...form.register('confirmationStatus')}
           className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
-          <option value="confirmed">Bestätigt — zählt in die Kennzahlen</option>
-          <option value="draft">Entwurf — zählt nicht</option>
+          <option value="confirmed">{m.form.confirmed}</option>
+          <option value="draft">{m.form.draft}</option>
         </select>
       </div>
 
       <TextAreaField
         id="vertrag-leistung"
-        label="Öffentliche Leistungsbeschreibung"
-        hint="Erscheint im Kundenportal, sobald der Vertrag freigegeben ist"
+        label={m.form.publicDescription}
+        hint={m.form.publicDescriptionHint}
         error={errors.publicDescription?.message}
         {...form.register('publicDescription')}
       />
       <TextAreaField
         id="vertrag-notiz"
-        label="Interne Notiz"
-        hint="Nur für das Team sichtbar"
+        label={m.internalNote}
+        hint={m.form.internalNoteHint}
         error={errors.internalNote?.message}
         {...form.register('internalNote')}
       />
@@ -159,19 +160,17 @@ export function ContractForm({ customers, pending, error, onSubmit, onCancel }: 
           className="mt-0.5 size-5 shrink-0 accent-[var(--action-bg)]"
         />
         <span>
-          Im Kundenportal sichtbar
-          <span className="mt-0.5 block text-xs text-muted">
-            Standardmässig aus. Die interne Notiz bleibt in jedem Fall intern.
-          </span>
+          {m.form.clientVisible}
+          <span className="mt-0.5 block text-xs text-muted">{m.form.clientVisibleHint}</span>
         </span>
       </label>
 
       <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="ghost" onClick={onCancel}>
-          Abbrechen
+          {m.cancel}
         </Button>
         <Button type="submit" variant="primary" disabled={pending}>
-          {pending ? 'Wird angelegt …' : 'Vertrag anlegen'}
+          {pending ? m.form.creating : m.createContract}
         </Button>
       </div>
     </form>

@@ -8,6 +8,8 @@ import { CommandPalette } from '../features/search/CommandPalette.tsx';
 import { useCommandPalette } from '../features/search/use-command-palette.ts';
 import { Sidebar } from './Sidebar.tsx';
 import { Topbar } from './Topbar.tsx';
+import { useMessages } from '../i18n/messages.ts';
+import { shellMessages } from './messages.ts';
 
 interface AppShellProps {
   user: SessionUser;
@@ -24,6 +26,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
   const palette = useCommandPalette();
   const navigate = useNavigate();
   const logout = useLogout();
+  const m = useMessages(shellMessages);
 
   // Escape schliesst das Panel, damit es per Tastatur wieder verlassen werden kann.
   useEffect(() => {
@@ -38,7 +41,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
   return (
     <div className="flex min-h-dvh">
       <a href="#inhalt" className="skip-link">
-        Zum Inhalt springen
+        {m.skipToContent}
       </a>
 
       {palette.open && <CommandPalette workspaceId={workspace.id} onClose={palette.close} />}
@@ -51,7 +54,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
         <div className="fixed inset-0 z-40 lg:hidden">
           <button
             type="button"
-            aria-label="Navigation schliessen"
+            aria-label={m.closeNavigation}
             onClick={() => setNavigationOpen(false)}
             className="absolute inset-0 bg-black/50"
           />
@@ -62,7 +65,7 @@ export function AppShell({ user, workspace }: AppShellProps) {
               className="absolute top-3 right-3 flex size-11 items-center justify-center rounded-sm text-muted hover:text-ink"
             >
               <X size={18} strokeWidth={1.8} aria-hidden="true" />
-              <span className="sr-only">Navigation schliessen</span>
+              <span className="sr-only">{m.closeNavigation}</span>
             </button>
             <Sidebar workspace={workspace} onNavigate={() => setNavigationOpen(false)} />
           </div>

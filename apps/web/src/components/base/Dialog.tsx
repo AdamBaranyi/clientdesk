@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { Modal } from './Modal.tsx';
+import { useMessages } from '../../i18n/messages.ts';
+import { shellMessages } from '../messages.ts';
 
 interface DialogProps {
   open: boolean;
@@ -16,6 +18,7 @@ interface DialogProps {
  * Fokusfalle, inerter Hintergrund und Fokusrückgabe kommen aus `Modal`.
  */
 export function Dialog({ open, title, onClose, children }: DialogProps) {
+  const m = useMessages(shellMessages);
   if (!open) return null;
 
   return (
@@ -29,7 +32,7 @@ export function Dialog({ open, title, onClose, children }: DialogProps) {
             className="flex size-11 shrink-0 items-center justify-center rounded-sm text-muted hover:text-ink"
           >
             <X size={18} strokeWidth={1.8} aria-hidden="true" />
-            <span className="sr-only">Schliessen</span>
+            <span className="sr-only">{m.close}</span>
           </button>
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">{children}</div>

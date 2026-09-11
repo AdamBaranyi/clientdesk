@@ -7,12 +7,15 @@ import { Card } from '../../components/base/Card.tsx';
 import { Dialog } from '../../components/base/Dialog.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { RequestStatusBadge } from '../requests/labels.tsx';
 import { useAssignableProjects, useCreatePortalRequest, usePortalRequests } from './api.ts';
+import { portalMessages } from './messages.ts';
 
 export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary }) {
+  const m = useMessages(portalMessages).requests;
   const [open, setOpen] = useState(false);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -51,33 +54,26 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
     create.error instanceof ApiRequestError
       ? create.error.message
       : create.error
-        ? 'Die Anfrage konnte nicht gesendet werden. Bitte erneut versuchen.'
+        ? m.sendFailed
         : null;
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Anfragen</h1>
-          <p className="mt-1 max-w-[62ch] text-sm text-muted">
-            Alle Anfragen Ihres Unternehmens — auch die Ihrer Kolleginnen und Kollegen mit Zugang.
-          </p>
+          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
+          <p className="mt-1 max-w-[62ch] text-sm text-muted">{m.lead}</p>
         </div>
         <Button variant="primary" onClick={openDialog}>
           <Plus size={16} strokeWidth={2} aria-hidden="true" />
-          Anfrage stellen
+          {m.create}
         </Button>
       </div>
 
       <Card>
-        {query.isPending && <LoadingState label="Anfragen werden geladen …" />}
-        {query.isError && <ErrorState detail="Die Anfragen konnten nicht geladen werden." />}
-        {query.data?.length === 0 && (
-          <EmptyState
-            title="Noch keine Anfrage"
-            detail="Stellen Sie eine Anfrage, und wir melden uns darauf zurück."
-          />
-        )}
+        {query.isPending && <LoadingState label={m.loading} />}
+        {query.isError && <ErrorState detail={m.loadFailed} />}
+        {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
 
         <ul className="flex flex-col">
           {(query.data ?? []).map((request) => (
@@ -99,7 +95,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
         </ul>
       </Card>
 
-      <Dialog open={open} title="Anfrage stellen" onClose={() => setOpen(false)}>
+      <Dialog open={open} title={m.create} onClose={() => setOpen(false)}>
         <form noValidate onSubmit={submit} className="flex flex-col gap-4">
           {message && (
             <p
@@ -112,7 +108,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="portal-projekt" className="text-sm font-medium">
-              Projekt
+              {m.project}
             </label>
             <select
               id="portal-projekt"
@@ -120,7 +116,7 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
               onChange={(event) => setProjectId(event.target.value)}
               className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
             >
-              <option value="">Ohne Projekt</option>
+              <option value="">{m.noProject}</option>
               {/* Die Auswahl kommt vom Server — hier steht nichts, was nicht erlaubt wäre. */}
               {(projects.data ?? []).map((project) => (
                 <option key={project.id} value={project.id}>
@@ -132,13 +128,13 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
 
           <TextField
             id="portal-betreff"
-            label="Betreff"
+            label={m.subject}
             value={subject}
             onChange={(event) => setSubject(event.target.value)}
           />
           <TextAreaField
             id="portal-text"
-            label="Ihr Anliegen"
+            label={m.body}
             rows={5}
             value={body}
             onChange={(event) => setBody(event.target.value)}
@@ -146,14 +142,14 @@ export function PortalRequestsPage({ workspace }: { workspace: WorkspaceSummary 
 
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
-              Abbrechen
+              {m.cancel}
             </Button>
             <Button
               type="submit"
               variant="primary"
               disabled={create.isPending || subject.trim() === '' || body.trim() === ''}
             >
-              {create.isPending ? 'Wird gesendet …' : 'Anfrage senden'}
+              {create.isPending ? m.sending : m.send}
             </Button>
           </div>
         </form>

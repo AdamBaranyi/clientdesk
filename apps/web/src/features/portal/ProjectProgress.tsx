@@ -1,16 +1,20 @@
 import { AlertCircle } from 'lucide-react';
 import type { ClientProject } from '@tallyroom/contracts';
+import { useMessages } from '../../i18n/messages.ts';
 import { formatDate } from '../../lib/format.ts';
+import { portalMessages } from './messages.ts';
 
 /**
  * Ohne Meilensteine gibt es keinen Fortschritt — auch hier nicht. Eine leere
  * Leiste als „0 Prozent" wäre eine Aussage, die nicht getroffen wurde.
  */
 export function ProjectProgress({ project }: { project: ClientProject }) {
+  const m = useMessages(portalMessages).progress;
+
   return (
     <div className="flex flex-col gap-2">
       {project.progress === null ? (
-        <span className="text-xs text-muted">Noch keine Meilensteine</span>
+        <span className="text-xs text-muted">{m.noMilestones}</span>
       ) : (
         <span className="flex items-center gap-2">
           <span className="h-1.5 w-24 shrink-0 overflow-hidden bg-line" aria-hidden="true">
@@ -20,14 +24,14 @@ export function ProjectProgress({ project }: { project: ClientProject }) {
             />
           </span>
           <span className="font-mono text-xs text-muted">
-            {project.milestonesDone} von {project.milestoneCount} erledigt
+            {m.done(project.milestonesDone, project.milestoneCount)}
           </span>
         </span>
       )}
 
       {project.nextMilestone && (
         <span className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-muted">Nächster Schritt: {project.nextMilestone.title}</span>
+          <span className="text-muted">{m.nextStep(project.nextMilestone.title)}</span>
           {project.nextMilestone.dueDate && (
             <span
               className={[

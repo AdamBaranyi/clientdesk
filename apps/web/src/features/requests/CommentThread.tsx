@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Lock, Send, Users } from 'lucide-react';
 import type { CommentVisibility, RequestComment } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
+import { languageTag } from '../../i18n/detect.ts';
+import { useLocale } from '../../i18n/locale-context.ts';
+import { useMessages } from '../../i18n/messages.ts';
 import { useAddRequestComment } from './api.ts';
+import { requestMessages } from './messages.ts';
 
 interface Props {
   workspaceId: string;
@@ -10,8 +14,8 @@ interface Props {
   comments: RequestComment[];
 }
 
-function formatMoment(iso: string): string {
-  return new Date(iso).toLocaleString('de-CH', {
+function formatMoment(iso: string, tag: string): string {
+  return new Date(iso).toLocaleString(tag, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -29,6 +33,8 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
   const [body, setBody] = useState('');
   const [visibility, setVisibility] = useState<CommentVisibility>('internal');
   const add = useAddRequestComment(workspaceId, requestId);
+  const m = useMessages(requestMessages).comments;
+  const { locale } = useLocale();
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -38,9 +44,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
 
   return (
     <div className="flex flex-col">
-      {comments.length === 0 && (
-        <p className="px-4 pb-4 text-sm text-muted sm:px-5">Noch keine Kommentare.</p>
-      )}
+      {comments.length === 0 && <p className="px-4 pb-4 text-sm text-muted sm:px-5">{m.empty}</p>}
 
       <ul className="flex flex-col">
         {comments.map((comment) => {
@@ -54,7 +58,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
               ].join(' ')}
             >
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm font-medium">{comment.authorName ?? 'Unbekannt'}</span>
+                <span className="text-sm font-medium">{comment.authorName ?? m.unknownAuthor}</span>
                 <span
                   className={[
                     'inline-flex items-center gap-1.5 text-xs font-medium',
@@ -66,10 +70,10 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
                   ) : (
                     <Users size={12} strokeWidth={2} aria-hidden="true" />
                   )}
-                  {isInternal ? 'Nur intern' : 'Für den Kunden sichtbar'}
+                  {isInternal ? m.internalOnly : m.visibleToCustomer}
                 </span>
                 <span className="font-mono text-xs text-muted">
-                  {formatMoment(comment.createdAt)}
+                  {formatMoment(comment.createdAt, languageTag(locale))}
                 </span>
               </div>
               <p className="mt-2 max-w-[75ch] text-sm whitespace-pre-line">{comment.body}</p>
@@ -84,7 +88,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
       >
         <div className="flex flex-col gap-1.5">
           <label htmlFor="kommentar-text" className="text-sm font-medium">
-            Kommentar
+            {m.label}
           </label>
           <textarea
             id="kommentar-text"
@@ -96,7 +100,7 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
         </div>
 
         <fieldset className="flex flex-col gap-2">
-          <legend className="text-xs font-medium text-muted">Sichtbarkeit</legend>
+          <legend className="text-xs font-medium text-muted">{m.visibility}</legend>
           <div className="flex flex-col gap-2 sm:flex-row">
             {(['internal', 'public'] as const).map((option) => (
               <label
@@ -117,12 +121,12 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
                 {option === 'internal' ? (
                   <>
                     <Lock size={14} strokeWidth={2} aria-hidden="true" />
-                    Nur intern
+                    {m.internalOnly}
                   </>
                 ) : (
                   <>
                     <Users size={14} strokeWidth={2} aria-hidden="true" />
-                    Für den Kunden sichtbar
+                    {m.visibleToCustomer}
                   </>
                 )}
               </label>
@@ -133,13 +137,13 @@ export function CommentThread({ workspaceId, requestId, comments }: Props) {
         <div className="flex justify-end">
           <Button type="submit" variant="primary" disabled={add.isPending || body.trim() === ''}>
             <Send size={15} strokeWidth={2} aria-hidden="true" />
-            {add.isPending ? 'Wird gespeichert …' : 'Kommentieren'}
+            {add.isPending ? m.saving : m.submit}
           </Button>
         </div>
 
         {add.isError && (
           <p role="alert" className="text-sm text-danger">
-            Der Kommentar konnte nicht gespeichert werden. Bitte erneut versuchen.
+            {m.saveFailed}
           </p>
         )}
       </form>

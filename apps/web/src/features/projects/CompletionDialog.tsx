@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Button } from '../../components/base/Button.tsx';
 import { Dialog } from '../../components/base/Dialog.tsx';
 import { TextAreaField } from '../../components/base/Field.tsx';
+import { useMessages } from '../../i18n/messages.ts';
+import { projectMessages } from './messages.ts';
 
 interface Props {
   open: boolean;
@@ -19,31 +21,28 @@ const MIN_LENGTH = 10;
  */
 export function CompletionDialog({ open, openMilestones, pending, onConfirm, onClose }: Props) {
   const [reason, setReason] = useState('');
+  const m = useMessages(projectMessages);
   const tooShort = reason.trim().length < MIN_LENGTH;
 
   return (
-    <Dialog open={open} title="Projekt abschliessen" onClose={onClose}>
+    <Dialog open={open} title={m.completion.title} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <p className="text-sm text-muted">
-          {openMilestones === 1
-            ? 'Ein Meilenstein ist noch offen.'
-            : `${openMilestones} Meilensteine sind noch offen.`}{' '}
-          Bitte kurz festhalten, warum das Projekt trotzdem abgeschlossen wird. Die Begründung
-          erscheint im Aktivitätsprotokoll.
+          {m.completion.openMilestones(openMilestones)} {m.completion.explain}
         </p>
 
         <TextAreaField
           id="abschluss-begruendung"
-          label="Begründung"
+          label={m.completion.reason}
           rows={4}
           value={reason}
           onChange={(event) => setReason(event.target.value)}
-          hint={`Mindestens ${MIN_LENGTH} Zeichen`}
+          hint={m.completion.minLength(MIN_LENGTH)}
         />
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="ghost" onClick={onClose}>
-            Abbrechen
+            {m.cancel}
           </Button>
           <Button
             type="button"
@@ -51,7 +50,7 @@ export function CompletionDialog({ open, openMilestones, pending, onConfirm, onC
             disabled={tooShort || pending}
             onClick={() => onConfirm(reason.trim())}
           >
-            {pending ? 'Wird abgeschlossen …' : 'Abschliessen'}
+            {pending ? m.completion.completing : m.completion.complete}
           </Button>
         </div>
       </div>

@@ -3,7 +3,9 @@ import { useForm } from 'react-hook-form';
 import { customerInputSchema, type Customer, type CustomerInput } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { ApiRequestError } from '../../lib/api.ts';
+import { customerMessages } from './messages.ts';
 
 interface Props {
   customer?: Customer;
@@ -13,12 +15,12 @@ interface Props {
   onCancel: () => void;
 }
 
-function messageFor(error: unknown): string | null {
+function messageFor(error: unknown, fallback: string): string | null {
   if (error instanceof ApiRequestError) {
     if (error.code === 'VERSION_CONFLICT') return error.message;
     return error.message;
   }
-  return error ? 'Speichern derzeit nicht möglich. Bitte später erneut versuchen.' : null;
+  return error ? fallback : null;
 }
 
 /**
@@ -26,6 +28,7 @@ function messageFor(error: unknown): string | null {
  * Eingaben stehen — react-hook-form hält den Zustand, es wird nichts geleert.
  */
 export function CustomerForm({ customer, pending, error, onSubmit, onCancel }: Props) {
+  const m = useMessages(customerMessages);
   const form = useForm<CustomerInput>({
     resolver: zodResolver(customerInputSchema),
     defaultValues: {
@@ -38,7 +41,7 @@ export function CustomerForm({ customer, pending, error, onSubmit, onCancel }: P
     },
   });
 
-  const message = messageFor(error);
+  const message = messageFor(error, m.form.saveFailed);
   const errors = form.formState.errors;
 
   return (
@@ -54,59 +57,59 @@ export function CustomerForm({ customer, pending, error, onSubmit, onCancel }: P
 
       <TextField
         id="kunde-name"
-        label="Name"
+        label={m.fields.name}
         autoComplete="organization"
         error={errors.name?.message}
         {...form.register('name')}
       />
       <TextField
         id="kunde-kontakt"
-        label="Hauptkontakt"
-        hint="Optional"
+        label={m.fields.mainContact}
+        hint={m.form.optional}
         autoComplete="name"
         error={errors.contactName?.message}
         {...form.register('contactName')}
       />
       <TextField
         id="kunde-email"
-        label="E-Mail"
+        label={m.fields.email}
         type="email"
-        hint="Optional"
+        hint={m.form.optional}
         autoComplete="email"
         error={errors.email?.message}
         {...form.register('email')}
       />
       <TextField
         id="kunde-telefon"
-        label="Telefon"
+        label={m.fields.phone}
         type="tel"
-        hint="Optional"
+        hint={m.form.optional}
         autoComplete="tel"
         error={errors.phone?.message}
         {...form.register('phone')}
       />
       <TextField
         id="kunde-website"
-        label="Webseite"
+        label={m.fields.website}
         type="url"
-        hint="Optional, mit https:// beginnen"
+        hint={m.form.websiteHint}
         error={errors.website?.message}
         {...form.register('website')}
       />
       <TextAreaField
         id="kunde-notiz"
-        label="Interne Notiz"
-        hint="Nur für das Team sichtbar, nie im Kundenportal"
+        label={m.fields.internalNote}
+        hint={m.form.internalNoteHint}
         error={errors.internalNote?.message}
         {...form.register('internalNote')}
       />
 
       <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="ghost" onClick={onCancel}>
-          Abbrechen
+          {m.form.cancel}
         </Button>
         <Button type="submit" variant="primary" disabled={pending}>
-          {pending ? 'Wird gespeichert …' : customer ? 'Änderungen speichern' : 'Kunde anlegen'}
+          {pending ? m.form.saving : customer ? m.form.saveChanges : m.createCustomer}
         </Button>
       </div>
     </form>

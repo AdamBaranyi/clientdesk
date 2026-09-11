@@ -1,4 +1,6 @@
 import { Link } from 'react-router';
+import { useMessages } from '../../i18n/messages.ts';
+import { legalMessages } from './legal-messages.ts';
 
 const LINK_CLASS = 'inline-flex min-h-11 items-center hover:text-ink';
 
@@ -9,16 +11,18 @@ const LINK_CLASS = 'inline-flex min-h-11 items-center hover:text-ink';
  * die Schrift klein ist.
  */
 export function LegalLinks({ className = '' }: { className?: string }) {
+  const m = useMessages(legalMessages);
+
   return (
     <nav
-      aria-label="Rechtliches"
+      aria-label={m.navigation}
       className={`text-micro flex flex-wrap gap-x-4 text-muted ${className}`}
     >
       <Link to="/impressum" className={LINK_CLASS}>
-        Impressum
+        {m.imprint}
       </Link>
       <Link to="/datenschutz" className={LINK_CLASS}>
-        Datenschutz
+        {m.privacy}
       </Link>
     </nav>
   );

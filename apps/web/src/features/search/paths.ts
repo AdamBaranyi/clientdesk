@@ -8,13 +8,6 @@ const SEGMENT: Record<SearchHit['kind'], string> = {
   request: 'requests',
 };
 
-export const KIND_LABEL: Record<SearchHit['kind'], string> = {
-  customer: 'Kunde',
-  project: 'Projekt',
-  contract: 'Vertrag',
-  request: 'Anfrage',
-};
-
 export function hitPath(workspaceId: string, hit: SearchHit): string {
   return workspacePath(workspaceId, SEGMENT[hit.kind], hit.id);
 }

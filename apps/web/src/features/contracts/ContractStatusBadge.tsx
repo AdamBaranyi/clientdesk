@@ -1,18 +1,21 @@
 import type { ContractVisibleStatus } from '@tallyroom/contracts';
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
 
 /**
  * Jeder Zustand trägt Punkt und Wort. Die Farbe allein dürfte den Unterschied
- * nicht tragen.
+ * nicht tragen. Das Wort kommt aus domainMessages.
  */
-const LABELS: Record<ContractVisibleStatus, { label: string; dot: string; text: string }> = {
-  draft: { label: 'Entwurf', dot: 'bg-faint', text: 'text-muted' },
-  planned: { label: 'Geplant', dot: 'bg-[var(--warning-mark)]', text: 'text-warning' },
-  active: { label: 'Aktiv', dot: 'bg-positive', text: 'text-positive' },
-  ended: { label: 'Beendet', dot: 'bg-faint', text: 'text-muted' },
+const STYLES: Record<ContractVisibleStatus, { dot: string; text: string }> = {
+  draft: { dot: 'bg-faint', text: 'text-muted' },
+  planned: { dot: 'bg-[var(--warning-mark)]', text: 'text-warning' },
+  active: { dot: 'bg-positive', text: 'text-positive' },
+  ended: { dot: 'bg-faint', text: 'text-muted' },
 };
 
 export function ContractStatusBadge({ status }: { status: ContractVisibleStatus }) {
-  const entry = LABELS[status];
+  const labels = useMessages(domainMessages).contractStatus;
+  const entry = STYLES[status];
   return (
     <span
       className={[
@@ -21,7 +24,7 @@ export function ContractStatusBadge({ status }: { status: ContractVisibleStatus 
       ].join(' ')}
     >
       <span className={['size-1.5 shrink-0', entry.dot].join(' ')} aria-hidden="true" />
-      {entry.label}
+      {labels[status]}
     </span>
   );
 }

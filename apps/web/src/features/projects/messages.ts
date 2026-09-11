@@ -1,0 +1,166 @@
+import { defineMessages } from '../../i18n/messages.ts';
+
+/**
+ * Texte des Projektbereichs: Liste, Detail, Meilensteine, Formular.
+ * Die Projektzustände selbst stehen in domainMessages.
+ */
+export const projectMessages = defineMessages({
+  de: {
+    cancel: 'Abbrechen',
+    status: 'Status',
+    customer: 'Kunde',
+    targetDate: 'Zieltermin',
+    description: 'Beschreibung',
+    internalNote: 'Interne Notiz',
+    optional: 'Optional',
+    noMilestonesYet: 'Noch keine Meilensteine',
+    createProject: 'Projekt anlegen',
+    list: {
+      title: 'Projekte',
+      lead: 'Alle Projekte über alle Kunden.',
+      searchPlaceholder: 'Projekt oder Kunde',
+      searchLabel: 'Projekte durchsuchen',
+      statusFilter: 'Nach Status filtern',
+      allStatuses: 'Alle Status',
+      loading: 'Projekte werden geladen …',
+      loadFailed: 'Die Projektliste konnte nicht geladen werden. Bitte Seite neu laden.',
+      noMatchTitle: 'Kein Treffer',
+      noMatchDetail:
+        'In dieser Ansicht gibt es kein Projekt. Suchbegriff oder Statusfilter ändern.',
+      emptyTitle: 'Noch keine Projekte',
+      noCustomersDetail: 'Ein Projekt gehört immer zu einem Kunden. Lege zuerst einen Kunden an.',
+      emptyDetail:
+        'Sobald das erste Projekt angelegt ist, erscheint es hier mit Fortschritt und Zieltermin.',
+    },
+    rows: {
+      project: 'Projekt',
+      progress: 'Fortschritt',
+      overdue: (count: number) => `${count} überfällig`,
+    },
+    detail: {
+      loading: 'Projekt wird geladen …',
+      notFound: 'Dieses Projekt existiert nicht oder gehört zu einem anderen Workspace.',
+      back: 'Alle Projekte',
+      conflict: 'Das Projekt wurde inzwischen von jemand anderem geändert. Bitte Seite neu laden.',
+      overview: 'Übersicht',
+      start: 'Start',
+      milestones: 'Meilensteine',
+      milestonesDone: (done: number, total: number) => `${done} von ${total} erledigt`,
+      milestonesLoading: 'Meilensteine werden geladen …',
+    },
+    completion: {
+      title: 'Projekt abschliessen',
+      openMilestones: (count: number) =>
+        count === 1 ? 'Ein Meilenstein ist noch offen.' : `${count} Meilensteine sind noch offen.`,
+      explain:
+        'Bitte kurz festhalten, warum das Projekt trotzdem abgeschlossen wird. Die Begründung erscheint im Aktivitätsprotokoll.',
+      reason: 'Begründung',
+      minLength: (min: number) => `Mindestens ${min} Zeichen`,
+      completing: 'Wird abgeschlossen …',
+      complete: 'Abschliessen',
+    },
+    milestones: {
+      empty: 'Noch keine Meilensteine. Ohne sie zeigt das Projekt bewusst keinen Fortschritt an.',
+      reopen: (title: string) => `${title} wieder öffnen`,
+      markDone: (title: string) => `${title} als erledigt markieren`,
+      noDueDate: 'Ohne Termin',
+      overdue: 'Überfällig',
+      newMilestone: 'Neuer Meilenstein',
+      titlePlaceholder: 'Was ist zu erreichen?',
+      dueDate: 'Fällig am',
+      adding: 'Wird ergänzt …',
+      add: 'Ergänzen',
+      addFailed: 'Der Meilenstein konnte nicht ergänzt werden. Bitte erneut versuchen.',
+    },
+    form: {
+      saveFailed: 'Speichern derzeit nicht möglich. Bitte später erneut versuchen.',
+      name: 'Projektname',
+      descriptionHint: 'Kundenfreundlich formuliert — erscheint später im Portal',
+      startDate: 'Startdatum',
+      internalNoteHint: 'Nur für das Team sichtbar',
+      clientVisible: 'Im Kundenportal sichtbar',
+      clientVisibleHint:
+        'Standardmässig aus. Erst eine bewusste Freigabe zeigt das Projekt dem Kunden.',
+      creating: 'Wird angelegt …',
+    },
+  },
+  en: {
+    cancel: 'Cancel',
+    status: 'Status',
+    customer: 'Customer',
+    targetDate: 'Target date',
+    description: 'Description',
+    internalNote: 'Internal note',
+    optional: 'Optional',
+    noMilestonesYet: 'No milestones yet',
+    createProject: 'Create project',
+    list: {
+      title: 'Projects',
+      lead: 'All projects across all customers.',
+      searchPlaceholder: 'Project or customer',
+      searchLabel: 'Search projects',
+      statusFilter: 'Filter by status',
+      allStatuses: 'All statuses',
+      loading: 'Loading projects …',
+      loadFailed: 'The project list could not be loaded. Please reload the page.',
+      noMatchTitle: 'No matches',
+      noMatchDetail:
+        'There are no projects in this view. Change the search term or the status filter.',
+      emptyTitle: 'No projects yet',
+      noCustomersDetail: 'A project always belongs to a customer. Create a customer first.',
+      emptyDetail:
+        'Once the first project has been created, it appears here with its progress and target date.',
+    },
+    rows: {
+      project: 'Project',
+      progress: 'Progress',
+      overdue: (count: number) => `${count} overdue`,
+    },
+    detail: {
+      loading: 'Loading project …',
+      notFound: 'This project does not exist or belongs to another workspace.',
+      back: 'All projects',
+      conflict: 'Someone else has changed this project in the meantime. Please reload the page.',
+      overview: 'Overview',
+      start: 'Start',
+      milestones: 'Milestones',
+      milestonesDone: (done: number, total: number) => `${done} of ${total} done`,
+      milestonesLoading: 'Loading milestones …',
+    },
+    completion: {
+      title: 'Complete project',
+      openMilestones: (count: number) =>
+        count === 1 ? 'One milestone is still open.' : `${count} milestones are still open.`,
+      explain:
+        'Please note briefly why the project is being completed anyway. The reason appears in the activity log.',
+      reason: 'Reason',
+      minLength: (min: number) => `At least ${min} characters`,
+      completing: 'Completing …',
+      complete: 'Complete',
+    },
+    milestones: {
+      empty: 'No milestones yet. Without them, the project deliberately shows no progress.',
+      reopen: (title: string) => `Reopen ${title}`,
+      markDone: (title: string) => `Mark ${title} as done`,
+      noDueDate: 'No due date',
+      overdue: 'Overdue',
+      newMilestone: 'New milestone',
+      titlePlaceholder: 'What needs to be achieved?',
+      dueDate: 'Due date',
+      adding: 'Adding …',
+      add: 'Add',
+      addFailed: 'The milestone could not be added. Please try again.',
+    },
+    form: {
+      saveFailed: 'Saving is not possible right now. Please try again later.',
+      name: 'Project name',
+      descriptionHint: 'Written for the customer — appears in the portal later',
+      startDate: 'Start date',
+      internalNoteHint: 'Visible to the team only',
+      clientVisible: 'Visible in the client portal',
+      clientVisibleHint:
+        'Off by default. The customer only sees the project once it has been deliberately shared.',
+      creating: 'Creating …',
+    },
+  },
+});

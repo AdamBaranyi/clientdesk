@@ -1,6 +1,8 @@
 import type { Dashboard } from '@tallyroom/contracts';
+import { useMessages } from '../../i18n/messages.ts';
 import { formatDate } from '../../lib/format.ts';
 import { splitAmountForDisplay } from '../../lib/money-display.ts';
+import { dashboardMessages } from './messages.ts';
 import { MetricFigure } from './MetricFigure.tsx';
 
 interface Props {
@@ -25,44 +27,44 @@ interface Props {
  * in ihrem Kielwasser. Ein choreografierter Moment statt vier einzelner.
  */
 export function MetricBand({ data, base }: Props) {
+  const m = useMessages(dashboardMessages);
   const value = splitAmountForDisplay(data.monthlyContractValueMinor);
   const stichtag = formatDate(data.contractDate);
-  const pausiert = data.pausedProjects === 1 ? '1 pausiert' : `${data.pausedProjects} pausiert`;
 
   return (
-    <section aria-label="Kennzahlen" className="flex flex-col">
+    <section aria-label={m.metrics.label} className="flex flex-col">
       <div aria-hidden className="motion-rule h-px w-full bg-line" />
 
       <div className="grid gap-6 pt-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,9fr)_repeat(3,minmax(0,4fr))]">
         <MetricFigure
           index={0}
           lead
-          label="Monatlicher Vertragswert"
-          unit="CHF pro Monat"
+          label={m.monthlyContractValue}
+          unit={m.metrics.contractValueUnit}
           figure={value.francs}
           cents={value.cents}
-          note={`Am ${stichtag} · vereinbart, kein Zahlungseingang`}
+          note={m.metrics.contractValueNote(stichtag)}
           to={`${base}/contracts?status=active`}
         />
         <MetricFigure
           index={1}
-          label="Aktive Kunden"
+          label={m.metrics.activeCustomers}
           figure={String(data.activeCustomers)}
-          note="Nicht archiviert · aktueller Stand"
+          note={m.metrics.activeCustomersNote}
           to={`${base}/customers`}
         />
         <MetricFigure
           index={2}
-          label="Laufende Projekte"
+          label={m.metrics.runningProjects}
           figure={String(data.runningProjects)}
-          note={`${pausiert} · aktueller Stand`}
+          note={m.metrics.runningProjectsNote(data.pausedProjects)}
           to={`${base}/projects?status=active`}
         />
         <MetricFigure
           index={3}
-          label="Bestätigte Verträge"
+          label={m.metrics.confirmedContracts}
           figure={String(data.confirmedContracts)}
-          note={`Zählen am ${stichtag}`}
+          note={m.metrics.confirmedContractsNote(stichtag)}
           to={`${base}/contracts`}
         />
       </div>

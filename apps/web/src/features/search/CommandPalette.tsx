@@ -2,8 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import type { SearchHit } from '@tallyroom/contracts';
 import { Modal } from '../../components/base/Modal.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { MIN_TERM_LENGTH, useSearch } from './api.ts';
-import { KIND_LABEL, hitPath } from './paths.ts';
+import { searchMessages } from './messages.ts';
+import { hitPath } from './paths.ts';
 
 interface Props {
   workspaceId: string;
@@ -21,6 +23,7 @@ interface Props {
  */
 export function CommandPalette({ workspaceId, onClose }: Props) {
   const navigate = useNavigate();
+  const m = useMessages(searchMessages);
   const [term, setTerm] = useState('');
   const [markiert, setMarkiert] = useState(0);
   const eingabe = useRef<HTMLInputElement>(null);
@@ -72,7 +75,7 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
   }
 
   return (
-    <Modal label="Springen zu" onClose={onClose} align="top">
+    <Modal label={m.dialogLabel} onClose={onClose} align="top">
       <div className="flex w-full max-w-[560px] flex-col border border-line bg-surface">
         <input
           ref={eingabe}
@@ -83,8 +86,8 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
           aria-expanded={hits.length > 0}
           aria-controls="palette-treffer"
           aria-activedescendant={hits.length > 0 ? `palette-treffer-${markiert}` : undefined}
-          aria-label="Kunde, Projekt, Vertrag oder Anfrage suchen"
-          placeholder="Kunde, Projekt, Vertrag oder Anfrage"
+          aria-label={m.inputLabel}
+          placeholder={m.placeholder}
           className="text-body min-h-12 border-b border-line bg-transparent px-4 text-ink"
         />
 
@@ -99,13 +102,13 @@ export function CommandPalette({ workspaceId, onClose }: Props) {
 
         <p className="text-micro flex items-center gap-4 border-t border-line px-4 py-2 text-muted">
           <span>
-            <Taste>↑</Taste> <Taste>↓</Taste> wählen
+            <Taste>↑</Taste> <Taste>↓</Taste> {m.keys.select}
           </span>
           <span>
-            <Taste>↵</Taste> springen
+            <Taste>↵</Taste> {m.keys.jump}
           </span>
           <span>
-            <Taste>Esc</Taste> schliessen
+            <Taste>Esc</Taste> {m.keys.close}
           </span>
         </p>
       </div>
@@ -129,20 +132,17 @@ interface ErgebnisseProps {
 }
 
 function Ergebnisse({ hits, markiert, term, laedt, onSelect, onHover }: ErgebnisseProps) {
+  const m = useMessages(searchMessages);
   const kurz = term.trim().length < MIN_TERM_LENGTH;
 
   if (kurz) {
-    return (
-      <p className="text-dense px-4 py-6 text-muted">
-        Mindestens {MIN_TERM_LENGTH} Zeichen eingeben.
-      </p>
-    );
+    return <p className="text-dense px-4 py-6 text-muted">{m.tooShort(MIN_TERM_LENGTH)}</p>;
   }
 
   if (hits.length === 0) {
     return (
       <p className="text-dense px-4 py-6 text-muted" role="status">
-        {laedt ? 'Wird gesucht …' : `Kein Treffer für „${term.trim()}".`}
+        {laedt ? m.searching : m.noResults(term.trim())}
       </p>
     );
   }
@@ -151,7 +151,7 @@ function Ergebnisse({ hits, markiert, term, laedt, onSelect, onHover }: Ergebnis
     <ul
       id="palette-treffer"
       role="listbox"
-      aria-label="Treffer"
+      aria-label={m.resultsLabel}
       className="max-h-[50vh] overflow-y-auto"
     >
       {hits.map((hit, index) => (
@@ -176,7 +176,7 @@ function Ergebnisse({ hits, markiert, term, laedt, onSelect, onHover }: Ergebnis
           ].join(' ')}
         >
           <span className="font-condensed text-label w-16 shrink-0 tracking-[0.1em] text-muted uppercase">
-            {KIND_LABEL[hit.kind]}
+            {m.kind[hit.kind]}
           </span>
           <span className="text-dense min-w-0 flex-1 truncate text-ink">{hit.title}</span>
           {hit.subtitle && (

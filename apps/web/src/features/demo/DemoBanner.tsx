@@ -2,7 +2,9 @@ import { Clock, FlaskConical, UserRound, Users } from 'lucide-react';
 import type { WorkspaceSummary } from '@tallyroom/contracts';
 import { workspacePath } from '../../lib/paths.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
+import { useMessages } from '../../i18n/messages.ts';
 import { useDemoStatus, useSwitchIdentity } from './api.ts';
+import { demoMessages } from './messages.ts';
 
 /**
  * Die Demo ist als solche gekennzeichnet, überall und dauerhaft. Der
@@ -11,6 +13,7 @@ import { useDemoStatus, useSwitchIdentity } from './api.ts';
 export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
   const status = useDemoStatus(workspace.id, workspace.isDemo);
   const switchIdentity = useSwitchIdentity(workspace.id);
+  const m = useMessages(demoMessages);
 
   /**
    * Nach dem Wechsel wird die Seite vollständig neu geladen, nicht nur
@@ -40,20 +43,17 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
         <span className="font-condensed text-label inline-flex items-center gap-1.5 font-semibold tracking-[0.12em] uppercase">
           <FlaskConical size={14} strokeWidth={2} aria-hidden="true" />
-          Demo
+          {m.label}
         </span>
-        <span className="text-muted">
-          Alle Firmen, Personen und Zahlen sind erfunden. Diese Daten gehören nur Ihnen und werden
-          danach gelöscht.
-        </span>
+        <span className="text-muted">{m.notice}</span>
         <span className="inline-flex items-center gap-1.5 font-mono text-muted">
           <Clock size={12} strokeWidth={2} aria-hidden="true" />
-          noch {status.data.minutesLeft} Min.
+          {m.minutesLeft(status.data.minutesLeft)}
         </span>
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-medium text-muted">Ansicht:</span>
+        <span className="text-xs font-medium text-muted">{m.view}</span>
         {[...team, ...clients].map((identity) => (
           <button
             key={identity.userId}
@@ -74,7 +74,7 @@ export function DemoBanner({ workspace }: { workspace: WorkspaceSummary }) {
               <Users size={13} strokeWidth={2} aria-hidden="true" />
             )}
             {identity.role === 'client'
-              ? `Kunde: ${identity.customerName ?? identity.displayName}`
+              ? m.client(identity.customerName ?? identity.displayName)
               : identity.displayName}
           </button>
         ))}

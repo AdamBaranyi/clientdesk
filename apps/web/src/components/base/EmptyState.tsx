@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { useMessages } from '../../i18n/messages.ts';
+import { shellMessages } from '../messages.ts';
 
 /**
  * Jede Liste braucht einen echten Leerzustand. Er sagt, was fehlt und was zu
@@ -23,9 +25,11 @@ export function EmptyState({
 }
 
 export function ErrorState({ detail }: { detail: string }) {
+  const m = useMessages(shellMessages);
+
   return (
     <div role="alert" className="px-4 py-8 sm:px-5">
-      <p className="font-medium text-danger">Konnte nicht geladen werden</p>
+      <p className="font-medium text-danger">{m.loadFailed}</p>
       <p className="mt-1 max-w-[60ch] text-sm text-muted">{detail}</p>
     </div>
   );

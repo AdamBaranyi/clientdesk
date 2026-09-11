@@ -4,6 +4,7 @@ import { MAX_DOCUMENT_BYTES, type WorkspaceSummary } from '@tallyroom/contracts'
 import { Button } from '../../components/base/Button.tsx';
 import { Card } from '../../components/base/Card.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { formatDate } from '../../lib/format.ts';
 import { useCustomers } from '../customers/api.ts';
@@ -15,6 +16,7 @@ import {
   useSetDocumentVisibility,
   useUploadDocument,
 } from './api.ts';
+import { documentMessages } from './messages.ts';
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -32,9 +34,11 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
   const setVisibility = useSetDocumentVisibility(workspace.id);
   const remove = useDeleteDocument(workspace.id);
   const addSample = useAddSampleDocument(workspace.id);
+  const m = useMessages(documentMessages);
 
   const available = customers.data?.data ?? [];
-  const uploadTarget = customerId || available[0]?.id || '';
+  const firstCustomer = available[0];
+  const uploadTarget = customerId || firstCustomer?.id || '';
 
   function chooseFile() {
     upload.reset();
@@ -52,18 +56,16 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
     upload.error instanceof ApiRequestError
       ? upload.error.message
       : upload.error
-        ? 'Der Upload ist fehlgeschlagen. Bitte erneut versuchen.'
+        ? m.uploadFailed
         : null;
 
   return (
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Dokumente</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.title}</h1>
           <p className="mt-1 max-w-[62ch] text-sm text-muted">
-            {workspace.isDemo
-              ? 'In der Demo werden keine eigenen Dateien angenommen. Das enthaltene Beispieldokument zeigt den Ablauf.'
-              : `PDF bis ${MAX_DOCUMENT_BYTES / (1024 * 1024)} MiB. Neu hochgeladene Dateien sind intern, bis sie ausdrücklich freigegeben werden.`}
+            {workspace.isDemo ? m.leadDemo : m.lead(MAX_DOCUMENT_BYTES / (1024 * 1024))}
           </p>
         </div>
         {workspace.isDemo ? (
@@ -73,7 +75,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
             onClick={() => addSample.mutate(uploadTarget)}
           >
             <FilePlus2 size={16} strokeWidth={2} aria-hidden="true" />
-            {addSample.isPending ? 'Wird angelegt …' : 'Beispieldokument anlegen'}
+            {addSample.isPending ? m.creating : m.createSample}
           </Button>
         ) : (
           <Button
@@ -82,7 +84,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
             onClick={chooseFile}
           >
             <Upload size={16} strokeWidth={2} aria-hidden="true" />
-            {upload.isPending ? 'Wird hochgeladen …' : 'PDF hochladen'}
+            {upload.isPending ? m.uploading : m.upload}
           </Button>
         )}
         <input
@@ -91,7 +93,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
           accept="application/pdf"
           onChange={onFileChosen}
           className="sr-only"
-          aria-label="PDF-Datei auswählen"
+          aria-label={m.chooseFile}
         />
       </div>
 
@@ -106,7 +108,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
 
       <div className="flex flex-col gap-1.5 sm:max-w-xs">
         <label htmlFor="dokument-kunde" className="text-xs font-medium text-muted">
-          Kunde
+          {m.customer}
         </label>
         <select
           id="dokument-kunde"
@@ -114,34 +116,26 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
           onChange={(event) => setCustomerId(event.target.value)}
           className="text-dense min-h-11 rounded-sm border border-line bg-surface px-3 text-ink"
         >
-          <option value="">Alle Kunden</option>
+          <option value="">{m.allCustomers}</option>
           {available.map((customer) => (
             <option key={customer.id} value={customer.id}>
               {customer.name}
             </option>
           ))}
         </select>
-        {customerId === '' && available.length > 0 && (
-          <p className="text-xs text-muted">
-            Hochgeladen wird für {available[0]?.name}. Zum Wechseln zuerst den Kunden wählen.
-          </p>
+        {customerId === '' && firstCustomer && (
+          <p className="text-xs text-muted">{m.uploadTarget(firstCustomer.name)}</p>
         )}
       </div>
 
       <Card>
-        {documents.isPending && <LoadingState label="Dokumente werden geladen …" />}
-        {documents.isError && (
-          <ErrorState detail="Die Dokumentenliste konnte nicht geladen werden. Bitte Seite neu laden." />
-        )}
+        {documents.isPending && <LoadingState label={m.loading} />}
+        {documents.isError && <ErrorState detail={m.loadFailed} />}
 
         {documents.data && documents.data.length === 0 && (
           <EmptyState
-            title="Noch keine Dokumente"
-            detail={
-              available.length === 0
-                ? 'Ein Dokument gehört immer zu einem Kunden. Lege zuerst einen Kunden an.'
-                : 'Hochgeladene PDF liegen zuerst intern. Erst eine Freigabe zeigt sie im Kundenportal.'
-            }
+            title={m.empty}
+            detail={available.length === 0 ? m.emptyNoCustomers : m.emptyDetail}
           />
         )}
 
@@ -169,7 +163,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
                       ) : (
                         <EyeOff size={12} strokeWidth={2} aria-hidden="true" />
                       )}
-                      {document.clientVisible ? 'Im Portal sichtbar' : 'Nur intern'}
+                      {document.clientVisible ? m.visibleInPortal : m.internalOnly}
                     </span>
                   </span>
                 </div>
@@ -180,7 +174,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
                     className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
                   >
                     <Download size={15} strokeWidth={1.8} aria-hidden="true" />
-                    Öffnen
+                    {m.open}
                   </a>
                   <Button
                     onClick={() =>
@@ -191,7 +185,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
                     }
                     disabled={setVisibility.isPending}
                   >
-                    {document.clientVisible ? 'Freigabe zurücknehmen' : 'Für Kunden freigeben'}
+                    {document.clientVisible ? m.stopSharing : m.share}
                   </Button>
                   <Button
                     variant="danger"
@@ -199,7 +193,7 @@ export function DocumentListPage({ workspace }: { workspace: WorkspaceSummary })
                     onClick={() => remove.mutate(document.id)}
                   >
                     <Trash2 size={15} strokeWidth={1.8} aria-hidden="true" />
-                    <span className="sr-only">{document.originalName} löschen</span>
+                    <span className="sr-only">{m.delete(document.originalName)}</span>
                   </Button>
                 </div>
               </li>

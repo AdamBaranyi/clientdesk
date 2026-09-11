@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { formatAmountMinor, type WorkspaceSummary } from '@tallyroom/contracts';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { formatDate } from '../../lib/format.ts';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { ProjectProgress } from './ProjectProgress.tsx';
@@ -13,15 +14,15 @@ import {
   usePortalOverview,
   usePortalProjects,
 } from './api.ts';
+import { portalMessages } from './messages.ts';
 
 export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary }) {
   const query = usePortalOverview(workspace.id);
+  const m = useMessages(portalMessages);
 
-  if (query.isPending) return <LoadingState label="Übersicht wird geladen …" />;
+  if (query.isPending) return <LoadingState label={m.overview.loading} />;
   if (query.isError || !query.data) {
-    return (
-      <ErrorState detail="Die Übersicht konnte nicht geladen werden. Bitte Seite neu laden." />
-    );
+    return <ErrorState detail={m.overview.loadFailed} />;
   }
 
   const data = query.data;
@@ -30,15 +31,13 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div>
         <h1 className="text-xl font-semibold tracking-[-0.02em]">{data.customerName}</h1>
-        <p className="mt-1 text-sm text-muted">Betreut von {data.workspaceName}</p>
+        <p className="mt-1 text-sm text-muted">{m.overview.managedBy(data.workspaceName)}</p>
       </div>
 
       <Card>
-        <CardHeader title="Ihre Projekte" />
+        <CardHeader title={m.overview.yourProjects} />
         {data.projects.length === 0 ? (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">
-            Derzeit ist kein Projekt für Sie freigegeben.
-          </p>
+          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.overview.noProjects}</p>
         ) : (
           <ul className="flex flex-col">
             {data.projects.map((project) => (
@@ -55,18 +54,18 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
 
       <Card>
         <CardHeader
-          title="Ihre offenen Anfragen"
+          title={m.overview.yourOpenRequests}
           action={
             <Link
               to={portalPath(workspace.id, 'requests')}
               className="-my-2 inline-flex min-h-11 items-center px-1 text-xs font-medium"
             >
-              Alle Anfragen
+              {m.requests.all}
             </Link>
           }
         />
         {data.openRequests.length === 0 ? (
-          <p className="px-4 pb-5 text-sm text-muted sm:px-5">Keine offene Anfrage.</p>
+          <p className="px-4 pb-5 text-sm text-muted sm:px-5">{m.overview.noOpenRequests}</p>
         ) : (
           <ul className="flex flex-col">
             {data.openRequests.map((request) => (
@@ -88,21 +87,17 @@ export function PortalOverviewPage({ workspace }: { workspace: WorkspaceSummary 
 
 export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary }) {
   const query = usePortalProjects(workspace.id);
+  const m = useMessages(portalMessages).projects;
 
-  if (query.isPending) return <LoadingState label="Projekte werden geladen …" />;
-  if (query.isError) return <ErrorState detail="Die Projekte konnten nicht geladen werden." />;
+  if (query.isPending) return <LoadingState label={m.loading} />;
+  if (query.isError) return <ErrorState detail={m.loadFailed} />;
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">Projekte</h1>
+      <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
 
       <Card>
-        {query.data?.length === 0 && (
-          <EmptyState
-            title="Kein freigegebenes Projekt"
-            detail="Sobald ein Projekt für Sie freigegeben ist, erscheint es hier mit seinem Stand."
-          />
-        )}
+        {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
         <ul className="flex flex-col">
           {(query.data ?? []).map((project) => (
             <li
@@ -117,8 +112,10 @@ export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary 
                 <ProjectProgress project={project} />
               </div>
               <p className="mt-2 font-mono text-xs text-muted">
-                Start {formatDate(project.startDate)}
-                {project.targetDate ? ` · Ziel ${formatDate(project.targetDate)}` : ''}
+                {m.schedule(
+                  formatDate(project.startDate),
+                  project.targetDate ? formatDate(project.targetDate) : null,
+                )}
               </p>
             </li>
           ))}
@@ -130,21 +127,17 @@ export function PortalProjectsPage({ workspace }: { workspace: WorkspaceSummary 
 
 export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary }) {
   const query = usePortalContracts(workspace.id);
+  const m = useMessages(portalMessages).contracts;
 
-  if (query.isPending) return <LoadingState label="Verträge werden geladen …" />;
-  if (query.isError) return <ErrorState detail="Die Verträge konnten nicht geladen werden." />;
+  if (query.isPending) return <LoadingState label={m.loading} />;
+  if (query.isError) return <ErrorState detail={m.loadFailed} />;
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">Serviceverträge</h1>
+      <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
 
       <Card>
-        {query.data?.length === 0 && (
-          <EmptyState
-            title="Kein freigegebener Vertrag"
-            detail="Sobald ein Vertrag für Sie freigegeben ist, sehen Sie hier Leistung und Betrag."
-          />
-        )}
+        {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
         <ul className="flex flex-col">
           {(query.data ?? []).map((contract) => (
             <li
@@ -155,8 +148,8 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
                 <p className="font-medium">{contract.name}</p>
                 <p className="font-mono text-sm">
                   {contract.monthlyAmountMinor === null
-                    ? 'Gilt ab Vertragsbeginn'
-                    : `CHF ${formatAmountMinor(contract.monthlyAmountMinor)} pro Monat`}
+                    ? m.amountPending
+                    : m.perMonth(formatAmountMinor(contract.monthlyAmountMinor))}
                 </p>
               </div>
               {contract.publicDescription && (
@@ -165,9 +158,11 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
                 </p>
               )}
               <p className="mt-2 font-mono text-xs text-muted">
-                Ab {formatDate(contract.startDate)}
-                {contract.endDate ? ` bis ${formatDate(contract.endDate)}` : ' · unbefristet'}
-                {contract.active ? '' : ' · derzeit nicht aktiv'}
+                {m.term(
+                  formatDate(contract.startDate),
+                  contract.endDate ? formatDate(contract.endDate) : null,
+                )}
+                {contract.active ? '' : ` · ${m.inactive}`}
               </p>
             </li>
           ))}
@@ -179,21 +174,17 @@ export function PortalContractsPage({ workspace }: { workspace: WorkspaceSummary
 
 export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary }) {
   const query = usePortalDocuments(workspace.id);
+  const m = useMessages(portalMessages).documents;
 
-  if (query.isPending) return <LoadingState label="Dokumente werden geladen …" />;
-  if (query.isError) return <ErrorState detail="Die Dokumente konnten nicht geladen werden." />;
+  if (query.isPending) return <LoadingState label={m.loading} />;
+  if (query.isError) return <ErrorState detail={m.loadFailed} />;
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
-      <h1 className="text-xl font-semibold tracking-[-0.02em]">Dokumente</h1>
+      <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
 
       <Card>
-        {query.data?.length === 0 && (
-          <EmptyState
-            title="Keine freigegebenen Unterlagen"
-            detail="Hier erscheinen die Dateien, die für Sie freigegeben wurden."
-          />
-        )}
+        {query.data?.length === 0 && <EmptyState title={m.emptyTitle} detail={m.emptyDetail} />}
         <ul className="flex flex-col">
           {(query.data ?? []).map((document) => (
             <li
@@ -212,7 +203,7 @@ export function PortalDocumentsPage({ workspace }: { workspace: WorkspaceSummary
                 className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-sm border border-line px-3 text-sm font-medium text-muted no-underline hover:text-ink"
               >
                 <Download size={15} strokeWidth={1.8} aria-hidden="true" />
-                Herunterladen
+                {m.download}
               </a>
             </li>
           ))}

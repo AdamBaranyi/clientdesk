@@ -1,7 +1,9 @@
 import { Link } from 'react-router';
 import { DEMO_LIFETIME_MINUTES } from '@tallyroom/contracts';
+import { useMessages } from '../../i18n/messages.ts';
 import { LegalPage, LegalSection, OperatorAddress } from './LegalPage.tsx';
-import { OPERATOR, PRIVACY_NOTICE_DATE } from './operator.ts';
+import { OPERATOR } from './operator.ts';
+import { privacyMessages } from './privacy-messages.ts';
 
 /**
  * Ohne hinterlegte Adresse — lokal oder in der CI — verweist der Satz aufs
@@ -10,120 +12,78 @@ import { OPERATOR, PRIVACY_NOTICE_DATE } from './operator.ts';
  * keine. Im Produktions-Image ist die Adresse Pflicht.
  */
 function ContactSentence() {
+  const m = useMessages(privacyMessages);
+
   if (!OPERATOR.email) {
     return (
       <>
-        Eine Nachricht an die Adresse im{' '}
+        {m.contactByImprint}{' '}
         <Link to="/impressum" className="underline underline-offset-2">
-          Impressum
+          {m.contactByImprintLink}
         </Link>{' '}
-        genügt.
+        {m.contactByImprintEnd}
       </>
     );
   }
 
   return (
     <>
-      Eine E-Mail an{' '}
+      {m.contactByEmail}{' '}
       <a href={`mailto:${OPERATOR.email}`} className="underline underline-offset-2">
         {OPERATOR.email}
       </a>{' '}
-      genügt.
+      {m.contactByEmailEnd}
     </>
   );
 }
 
-/**
- * Jede Aussage hier ist am laufenden Aufbau geprüft, nicht angenommen: was im
- * Log steht, wann das Cookie entsteht, wie lange eine Adresse im Speicher
- * bleibt. Ändert sich eines davon im Code, muss es hier nachgezogen werden.
- */
 export function PrivacyPage() {
-  return (
-    <LegalPage title="Datenschutzerklärung" path="/datenschutz">
-      <p className="text-body text-muted">
-        Stand: {PRIVACY_NOTICE_DATE}. Diese Erklärung sagt, welche Personendaten beim Besuch und bei
-        der Nutzung anfallen, wozu und wie lange. Sie ist kurz, weil wenig anfällt.
-      </p>
+  const m = useMessages(privacyMessages);
 
-      <LegalSection title="Verantwortlich">
+  return (
+    <LegalPage title={m.title} path="/datenschutz">
+      <p className="text-body text-muted">{m.intro(m.date)}</p>
+
+      <LegalSection title={m.responsible}>
         <OperatorAddress />
       </LegalSection>
 
-      <LegalSection title="Wo die Daten liegen">
-        <p>
-          Die Seite läuft auf einem Server der FSIT AG in deren Rechenzentren in der Schweiz.
-          Webserver, Anwendung, Datenbank und Dateispeicher laufen alle auf diesem einen Server. Es
-          werden keine Daten ins Ausland übermittelt, und kein weiterer Dienst ist eingebunden.
-        </p>
+      <LegalSection title={m.whereTitle}>
+        <p>{m.where}</p>
       </LegalSection>
 
-      <LegalSection title="Beim Aufruf der Seite">
-        <p>
-          Ihr Browser übermittelt Ihre IP-Adresse, ohne sie kommt keine Verbindung zustande.
-          Gespeichert wird sie nicht: Weder der Webserver noch die Anwendung schreibt sie in ein
-          Protokoll. Um Anmeldeversuche und Demo-Starts zu begrenzen, hält die Anwendung sie im
-          Arbeitsspeicher, solange ein Zeitfenster von 15 Minuten läuft, und verwirft sie spätestens
-          eine Minute danach.
-        </p>
-        <p>
-          Protokolliert werden je Anfrage nur Zeitpunkt, Methode, Pfad, Status und Dauer, ohne
-          IP-Adresse, ohne Browserkennung und ohne Suchbegriffe. Die Protokolle haben eine feste
-          Höchstgrösse, ältere Einträge werden überschrieben.
-        </p>
+      <LegalSection title={m.visitTitle}>
+        <p>{m.visitAddress}</p>
+        <p>{m.visitLog}</p>
       </LegalSection>
 
-      <LegalSection title="Cookie und lokaler Speicher">
+      <LegalSection title={m.cookieTitle}>
         <p>
-          Es gibt ein einziges Cookie, <code className="font-mono">tallyroom.sid</code>. Es entsteht
-          erst, wenn Sie sich anmelden oder die Demo starten, und enthält nur eine zufällige Kennung
-          Ihrer Sitzung. Es ist technisch notwendig und wird nach zwei Stunden ohne Aktivität
-          ungültig, spätestens nach zwölf Stunden.
+          {m.cookieBefore} <code className="font-mono">tallyroom.sid</code>
+          {m.cookieAfter}
         </p>
-        <p>
-          Ihre Wahl des Erscheinungsbilds speichert der Browser lokal. Sie verlässt Ihr Gerät nicht.
-        </p>
+        <p>{m.localStorage}</p>
       </LegalSection>
 
-      <LegalSection title="Die Demo">
-        <p>
-          Beim Start entsteht ein eigener Arbeitsbereich mit erfundenen Firmen, Personen und Zahlen.
-          Nach {DEMO_LIFETIME_MINUTES} Minuten wird er gelöscht, samt allem, was Sie darin
-          eingegeben haben, Ihrer Sitzung und den Dateien. Eigene Dateien nimmt die Demo nicht an.
-          Bitte geben Sie in der Demo keine echten Personendaten ein.
-        </p>
+      <LegalSection title={m.demoTitle}>
+        <p>{m.demo(DEMO_LIFETIME_MINUTES)}</p>
       </LegalSection>
 
-      <LegalSection title="Konten">
-        <p>
-          Ausserhalb der Demo entstehen Konten nur auf Einladung. Gespeichert werden Name,
-          E-Mail-Adresse, das Passwort als nicht umkehrbarer Hash und die Zugehörigkeit zu
-          Arbeitsbereichen, dazu die Inhalte und Dokumente, die dort angelegt werden. Zweck ist
-          allein der Betrieb der Anwendung. Die Daten bleiben, bis das Konto gelöscht wird, und das
-          geschieht auf Anfrage.
-        </p>
+      <LegalSection title={m.accountsTitle}>
+        <p>{m.accounts}</p>
       </LegalSection>
 
-      <LegalSection title="Was es nicht gibt">
-        <p>
-          Keine Analyse- oder Statistikdienste, keine Werbung, keine eingebetteten Inhalte Dritter,
-          keine Schriften von fremden Servern und keine Weitergabe an Dritte.
-        </p>
+      <LegalSection title={m.notTitle}>
+        <p>{m.not}</p>
       </LegalSection>
 
-      <LegalSection title="Datensicherung">
-        <p>
-          Der Anbieter sichert den Server wöchentlich, nach seinen Angaben ebenfalls in der Schweiz.
-          Eine Sicherung enthält den Stand zum Zeitpunkt der Sicherung, also auch die Daten einer
-          gerade laufenden Demo.
-        </p>
+      <LegalSection title={m.backupTitle}>
+        <p>{m.backup}</p>
       </LegalSection>
 
-      <LegalSection title="Ihre Rechte">
+      <LegalSection title={m.rightsTitle}>
         <p>
-          Sie können Auskunft über Ihre Daten verlangen, ihre Berichtigung oder Löschung, und der
-          Bearbeitung widersprechen. <ContactSentence /> Beschwerden können Sie an den
-          Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) richten.
+          {m.rights} <ContactSentence /> {m.complaint}
         </p>
       </LegalSection>
     </LegalPage>

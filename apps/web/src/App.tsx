@@ -27,20 +27,20 @@ import { RequestListPage } from './features/requests/RequestListPage.tsx';
 import { SettingsPage } from './features/settings/SettingsPage.tsx';
 import { LoginPage } from './features/auth/LoginPage.tsx';
 import { useSession } from './features/auth/use-session.ts';
+import { shellMessages } from './components/messages.ts';
+import { useMessages } from './i18n/messages.ts';
 import { workspacePath } from './lib/paths.ts';
 import { portalPath } from './lib/portal-paths.ts';
 
 export function App() {
   const session = useSession();
+  const m = useMessages(shellMessages);
 
-  if (session.isPending) return <FullPageMessage title="Wird geladen …" />;
+  if (session.isPending) return <FullPageMessage title={m.loading} />;
 
   if (session.isError) {
     return (
-      <FullPageMessage
-        title="Server nicht erreichbar"
-        detail="Die Anwendung konnte den Anmeldestatus nicht laden. Bitte Seite neu laden."
-      />
+      <FullPageMessage title={m.serverUnreachable.title} detail={m.serverUnreachable.detail} />
     );
   }
 
@@ -141,16 +141,13 @@ function PortalRoutes({ user }: { user: SessionUser }) {
 }
 
 function FirstWorkspaceRedirect({ user }: { user: SessionUser | null }) {
+  const m = useMessages(shellMessages);
+
   if (!user) return <Navigate to="/login" replace />;
 
   const first = user.workspaces[0];
   if (!first) {
-    return (
-      <FullPageMessage
-        title="Kein Workspace zugeordnet"
-        detail="Dieses Konto gehört zu keinem Workspace. Ein Owner muss eine Mitgliedschaft vergeben."
-      />
-    );
+    return <FullPageMessage title={m.noWorkspace.title} detail={m.noWorkspace.detail} />;
   }
   // Kundenzugänge landen im Portal, interne Rollen in der Teamansicht.
   return first.role === 'client' ? (

@@ -1,4 +1,10 @@
-import { apiErrorSchema, type ApiError, type ErrorCode } from '@tallyroom/contracts';
+import {
+  apiErrorSchema,
+  currentLocale,
+  inCurrentLocale,
+  type ApiError,
+  type ErrorCode,
+} from '@tallyroom/contracts';
 
 const BASE = '/api/v1';
 
@@ -28,10 +34,24 @@ let csrfToken: string | null = null;
 async function getCsrfToken(): Promise<string> {
   if (csrfToken) return csrfToken;
   const response = await fetch(`${BASE}/auth/csrf`, { credentials: 'same-origin' });
-  if (!response.ok) throw new Error('CSRF-Token konnte nicht geladen werden.');
+  if (!response.ok) {
+    throw new Error(
+      inCurrentLocale({
+        de: 'CSRF-Token konnte nicht geladen werden.',
+        en: 'The CSRF token could not be loaded.',
+      }),
+    );
+  }
   const body: unknown = await response.json();
   const token = (body as { csrfToken?: unknown }).csrfToken;
-  if (typeof token !== 'string') throw new Error('CSRF-Antwort hat ein unerwartetes Format.');
+  if (typeof token !== 'string') {
+    throw new Error(
+      inCurrentLocale({
+        de: 'CSRF-Antwort hat ein unerwartetes Format.',
+        en: 'The CSRF response has an unexpected format.',
+      }),
+    );
+  }
   csrfToken = token;
   return token;
 }
@@ -62,14 +82,19 @@ async function toError(response: Response): Promise<ApiRequestError> {
   if (parsed.success) return new ApiRequestError(response.status, parsed.data.error);
   return new ApiRequestError(response.status, {
     code: 'INTERNAL',
-    message: 'Unerwartete Antwort vom Server.',
-    requestId: response.headers.get('X-Request-Id') ?? 'unbekannt',
+    message: inCurrentLocale({
+      de: 'Unerwartete Antwort vom Server.',
+      en: 'Unexpected response from the server.',
+    }),
+    requestId: response.headers.get('X-Request-Id') ?? 'unknown',
   });
 }
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const method = options.method ?? 'GET';
-  const headers: Record<string, string> = {};
+  // Die gewählte Sprache, nicht die des Browsers: Meldungen der API sollen zur
+  // Oberfläche passen, auch wenn beide auseinanderliegen.
+  const headers: Record<string, string> = { 'Accept-Language': currentLocale() };
 
   if (options.body !== undefined) headers['Content-Type'] = 'application/json';
   if (options.contentType) headers['Content-Type'] = options.contentType;

@@ -9,8 +9,11 @@ import {
 } from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { TextAreaField, TextField } from '../../components/base/Field.tsx';
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { useProjects } from '../projects/api.ts';
+import { requestMessages } from './messages.ts';
 
 interface Props {
   customers: Customer[];
@@ -25,6 +28,9 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
   const [customerId, setCustomerId] = useState(customers[0]?.id ?? '');
   // Nur Projekte des gewählten Kunden — der Server prüft die Zuordnung erneut.
   const projects = useProjects(workspaceId, { customerId, pageSize: 100 });
+  const texts = useMessages(requestMessages);
+  const m = texts.form;
+  const priorityLabels = useMessages(domainMessages).requestPriority;
 
   const form = useForm<RequestFormValues, unknown, RequestInput>({
     resolver: zodResolver(requestInputSchema),
@@ -32,12 +38,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
   });
 
   const errors = form.formState.errors;
-  const message =
-    error instanceof ApiRequestError
-      ? error.message
-      : error
-        ? 'Speichern derzeit nicht möglich. Bitte später erneut versuchen.'
-        : null;
+  const message = error instanceof ApiRequestError ? error.message : error ? m.saveFailed : null;
 
   return (
     <form
@@ -58,7 +59,7 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="anfrage-kunde" className="text-sm font-medium">
-          Kunde
+          {m.customer}
         </label>
         <select
           id="anfrage-kunde"
@@ -81,14 +82,14 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="anfrage-projekt" className="text-sm font-medium">
-          Projekt
+          {m.project}
         </label>
         <select
           id="anfrage-projekt"
           {...form.register('projectId')}
           className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
-          <option value="">Ohne Projekt</option>
+          <option value="">{m.noProject}</option>
           {(projects.data?.data ?? []).map((project) => (
             <option key={project.id} value={project.id}>
               {project.name}
@@ -99,13 +100,13 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
 
       <TextField
         id="anfrage-betreff"
-        label="Betreff"
+        label={m.subject}
         error={errors.subject?.message}
         {...form.register('subject')}
       />
       <TextAreaField
         id="anfrage-text"
-        label="Nachricht"
+        label={m.message}
         rows={5}
         error={errors.body?.message}
         {...form.register('body')}
@@ -113,24 +114,24 @@ export function RequestForm({ customers, workspaceId, pending, error, onSubmit, 
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="anfrage-prio" className="text-sm font-medium">
-          Priorität
+          {m.priority}
         </label>
         <select
           id="anfrage-prio"
           {...form.register('priority')}
           className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
         >
-          <option value="normal">Normal</option>
-          <option value="high">Hoch</option>
+          <option value="normal">{priorityLabels.normal}</option>
+          <option value="high">{priorityLabels.high}</option>
         </select>
       </div>
 
       <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button type="button" variant="ghost" onClick={onCancel}>
-          Abbrechen
+          {m.cancel}
         </Button>
         <Button type="submit" variant="primary" disabled={pending}>
-          {pending ? 'Wird angelegt …' : 'Anfrage anlegen'}
+          {pending ? m.creating : texts.create}
         </Button>
       </div>
     </form>

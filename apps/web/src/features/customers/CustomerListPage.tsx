@@ -1,28 +1,29 @@
 import { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useSearchParams } from 'react-router';
-import type { CustomerStatusFilter, WorkspaceSummary } from '@tallyroom/contracts';
+import {
+  CUSTOMER_STATUS_FILTERS,
+  type CustomerStatusFilter,
+  type WorkspaceSummary,
+} from '@tallyroom/contracts';
 import { Button } from '../../components/base/Button.tsx';
 import { workspacePath } from '../../lib/paths.ts';
 import { Card } from '../../components/base/Card.tsx';
 import { Dialog } from '../../components/base/Dialog.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
 import { Pagination } from '../../components/base/Pagination.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { useCreateCustomer, useCustomers } from './api.ts';
 import { CustomerForm } from './CustomerForm.tsx';
 import { CustomerRows } from './CustomerRows.tsx';
+import { customerMessages } from './messages.ts';
 import { FilterGroup, SearchField } from '../../components/base/Controls.tsx';
-
-const STATUS_LABELS: Record<CustomerStatusFilter, string> = {
-  active: 'Aktiv',
-  archived: 'Archiviert',
-  all: 'Alle',
-};
 
 /** Suche, Filter und Seite stehen in der URL — ein Link bleibt teilbar. */
 export function CustomerListPage({ workspace }: { workspace: WorkspaceSummary }) {
   const [params, setParams] = useSearchParams();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const m = useMessages(customerMessages);
 
   const search = params.get('search') ?? '';
   const status = (params.get('status') as CustomerStatusFilter | null) ?? 'active';
@@ -46,12 +47,12 @@ export function CustomerListPage({ workspace }: { workspace: WorkspaceSummary })
     <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.02em]">Kunden</h1>
-          <p className="mt-1 text-sm text-muted">Alle Kunden dieser Agentur.</p>
+          <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.list.title}</h1>
+          <p className="mt-1 text-sm text-muted">{m.list.lead}</p>
         </div>
         <Button variant="primary" onClick={() => setDialogOpen(true)}>
           <Plus size={16} strokeWidth={2} aria-hidden="true" />
-          Kunde anlegen
+          {m.createCustomer}
         </Button>
       </div>
 
@@ -59,41 +60,35 @@ export function CustomerListPage({ workspace }: { workspace: WorkspaceSummary })
         <SearchField
           value={search}
           onChange={(wert) => patchParams({ search: wert })}
-          placeholder="Name, Kontakt oder E-Mail"
-          label="Kunden durchsuchen"
+          placeholder={m.list.searchPlaceholder}
+          label={m.list.searchLabel}
         />
 
         <FilterGroup
-          label="Status"
+          label={m.fields.status}
           active={status}
-          options={(Object.keys(STATUS_LABELS) as CustomerStatusFilter[]).map((option) => ({
+          options={CUSTOMER_STATUS_FILTERS.map((option) => ({
             value: option,
-            label: STATUS_LABELS[option],
+            label: m.status[option],
           }))}
           onSelect={(option) => patchParams({ status: option === 'active' ? null : option })}
         />
       </div>
 
       <Card>
-        {query.isPending && <LoadingState label="Kunden werden geladen …" />}
+        {query.isPending && <LoadingState label={m.list.loading} />}
 
-        {query.isError && (
-          <ErrorState detail="Die Kundenliste konnte nicht geladen werden. Bitte Seite neu laden." />
-        )}
+        {query.isError && <ErrorState detail={m.list.loadFailed} />}
 
         {query.data && query.data.data.length === 0 && (
           <EmptyState
-            title={search ? 'Kein Treffer' : 'Noch keine Kunden'}
-            detail={
-              search
-                ? `Zu „${search}" gibt es in dieser Ansicht keinen Kunden. Suchbegriff ändern oder den Statusfilter erweitern.`
-                : 'Sobald der erste Kunde angelegt ist, erscheint er hier mit seinen laufenden Projekten.'
-            }
+            title={search ? m.list.noMatch : m.list.empty}
+            detail={search ? m.list.noMatchDetail(search) : m.list.emptyDetail}
             action={
               !search ? (
                 <Button variant="primary" onClick={() => setDialogOpen(true)}>
                   <Plus size={16} strokeWidth={2} aria-hidden="true" />
-                  Kunde anlegen
+                  {m.createCustomer}
                 </Button>
               ) : undefined
             }
@@ -116,7 +111,7 @@ export function CustomerListPage({ workspace }: { workspace: WorkspaceSummary })
         )}
       </Card>
 
-      <Dialog open={dialogOpen} title="Kunde anlegen" onClose={() => setDialogOpen(false)}>
+      <Dialog open={dialogOpen} title={m.createCustomer} onClose={() => setDialogOpen(false)}>
         <CustomerForm
           pending={create.isPending}
           error={create.error}

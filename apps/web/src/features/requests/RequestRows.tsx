@@ -10,7 +10,9 @@ import {
   Th,
 } from '../../components/base/DataTable.tsx';
 import { RecordLink } from '../../components/base/RecordLink.tsx';
+import { useMessages } from '../../i18n/messages.ts';
 import { PriorityBadge, RequestStatusBadge } from './labels.tsx';
+import { requestMessages } from './messages.ts';
 
 interface Props {
   requests: ServiceRequest[];
@@ -18,17 +20,19 @@ interface Props {
   showCustomer?: boolean;
 }
 
-function relativeTime(iso: string): string {
+type RowMessages = (typeof requestMessages)['de']['rows'];
+
+function relativeTime(iso: string, m: RowMessages): string {
   const diffMs = Date.now() - new Date(iso).getTime();
   const minutes = Math.round(diffMs / 60_000);
-  if (minutes < 60) return `vor ${Math.max(1, minutes)} Min.`;
+  if (minutes < 60) return m.minutesAgo(Math.max(1, minutes));
   const hours = Math.round(minutes / 60);
-  if (hours < 24) return `vor ${hours} Std.`;
-  const days = Math.round(hours / 24);
-  return days === 1 ? 'gestern' : `vor ${days} Tagen`;
+  if (hours < 24) return m.hoursAgo(hours);
+  return m.daysAgo(Math.round(hours / 24));
 }
 
 export function RequestRows({ requests, basePath, showCustomer = true }: Props) {
+  const m = useMessages(requestMessages).rows;
   return (
     <>
       <CardList>
@@ -47,7 +51,7 @@ export function RequestRows({ requests, basePath, showCustomer = true }: Props) 
               )}
               <span className="flex flex-wrap items-center gap-3">
                 <RequestStatusBadge status={request.status} />
-                <span className="text-micro text-muted">{relativeTime(request.updatedAt)}</span>
+                <span className="text-micro text-muted">{relativeTime(request.updatedAt, m)}</span>
               </span>
             </Link>
           </CardItem>
@@ -56,11 +60,11 @@ export function RequestRows({ requests, basePath, showCustomer = true }: Props) 
 
       <DataTable>
         <TableHead>
-          <Th>Betreff</Th>
-          {showCustomer && <Th>Kunde</Th>}
-          <Th>Status</Th>
-          <Th>Zuständig</Th>
-          <Th right>Aktualisiert</Th>
+          <Th>{m.subject}</Th>
+          {showCustomer && <Th>{m.customer}</Th>}
+          <Th>{m.status}</Th>
+          <Th>{m.assignee}</Th>
+          <Th right>{m.updated}</Th>
         </TableHead>
         <tbody>
           {requests.map((request) => (
@@ -75,8 +79,8 @@ export function RequestRows({ requests, basePath, showCustomer = true }: Props) 
               <Cell>
                 <RequestStatusBadge status={request.status} />
               </Cell>
-              <Cell>{request.assignedToName ?? '— nicht zugewiesen'}</Cell>
-              <Cell right>{relativeTime(request.updatedAt)}</Cell>
+              <Cell>{request.assignedToName ?? m.unassigned}</Cell>
+              <Cell right>{relativeTime(request.updatedAt, m)}</Cell>
             </Row>
           ))}
         </tbody>

@@ -10,18 +10,17 @@ import { Button } from '../../components/base/Button.tsx';
 import { Card, CardHeader } from '../../components/base/Card.tsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/base/EmptyState.tsx';
 import { TextField } from '../../components/base/Field.tsx';
+import { domainMessages } from '../../i18n/domain-messages.ts';
+import { useMessages } from '../../i18n/messages.ts';
 import { ApiRequestError } from '../../lib/api.ts';
 import { formatDate } from '../../lib/format.ts';
 import { useCustomers } from '../customers/api.ts';
 import { useCreateInvitation, useInvitations, useRevokeInvitation } from './api.ts';
-
-const ROLE_LABELS: Record<MembershipRole, string> = {
-  owner: 'Owner — verwaltet Workspace und Mitgliedschaften',
-  member: 'Mitglied — arbeitet an Kunden, Projekten und Anfragen',
-  client: 'Kundenzugang — sieht nur freigegebene Inhalte eines Kunden',
-};
+import { settingsMessages } from './messages.ts';
 
 export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
+  const m = useMessages(settingsMessages);
+  const roleName = useMessages(domainMessages).role;
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<MembershipRole>('member');
   const [customerId, setCustomerId] = useState('');
@@ -63,24 +62,22 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
     create.error instanceof ApiRequestError
       ? create.error.message
       : create.error
-        ? 'Die Einladung konnte nicht erstellt werden.'
+        ? m.invite.createFailed
         : null;
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-8">
       <div>
-        <h1 className="text-xl font-semibold tracking-[-0.02em]">Einstellungen</h1>
+        <h1 className="text-xl font-semibold tracking-[-0.02em]">{m.heading}</h1>
         <p className="mt-1 text-sm text-muted">
-          {workspace.name} · Zeitzone {workspace.timezone} · Währung {workspace.currency}
+          {m.workspaceFacts(workspace.name, workspace.timezone, workspace.currency)}
         </p>
       </div>
 
       <Card>
         <CardHeader
-          title="Einladen"
-          action={
-            <span className="text-xs text-muted">Der Link gilt sieben Tage und genau einmal</span>
-          }
+          title={m.invite.title}
+          action={<span className="text-xs text-muted">{m.invite.validity}</span>}
         />
         <form onSubmit={submit} className="flex flex-col gap-4 px-4 pb-5 sm:px-5">
           {message && (
@@ -94,7 +91,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
 
           <TextField
             id="einladung-email"
-            label="E-Mail"
+            label={m.invite.email}
             type="email"
             autoComplete="off"
             value={email}
@@ -103,7 +100,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="einladung-rolle" className="text-sm font-medium">
-              Rolle
+              {m.invite.role}
             </label>
             <select
               id="einladung-rolle"
@@ -113,7 +110,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
             >
               {MEMBERSHIP_ROLES.map((option) => (
                 <option key={option} value={option}>
-                  {ROLE_LABELS[option]}
+                  {`${roleName[option]} — ${m.roleDescription[option]}`}
                 </option>
               ))}
             </select>
@@ -122,7 +119,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
           {role === 'client' && (
             <div className="flex flex-col gap-1.5">
               <label htmlFor="einladung-kunde" className="text-sm font-medium">
-                Zugeordneter Kunde
+                {m.invite.customer}
               </label>
               <select
                 id="einladung-kunde"
@@ -130,16 +127,14 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
                 onChange={(event) => setCustomerId(event.target.value)}
                 className="text-body min-h-11 w-full rounded-sm border border-line bg-surface px-3 text-ink"
               >
-                <option value="">Bitte wählen</option>
+                <option value="">{m.invite.chooseCustomer}</option>
                 {available.map((customer) => (
                   <option key={customer.id} value={customer.id}>
                     {customer.name}
                   </option>
                 ))}
               </select>
-              <p className="text-xs text-muted">
-                Ein Kundenzugang sieht ausschliesslich freigegebene Inhalte dieses einen Kunden.
-              </p>
+              <p className="text-xs text-muted">{m.invite.clientHint}</p>
             </div>
           )}
 
@@ -150,25 +145,22 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
               disabled={create.isPending || email.trim() === ''}
             >
               <Plus size={16} strokeWidth={2} aria-hidden="true" />
-              {create.isPending ? 'Wird erstellt …' : 'Einladung erstellen'}
+              {create.isPending ? m.invite.creating : m.invite.submit}
             </Button>
           </div>
         </form>
 
         {created && (
           <div className="border-t border-line-soft bg-raised px-4 py-4 sm:px-5">
-            <p className="text-sm font-medium">Link für {created.email}</p>
-            <p className="mt-1 text-xs text-muted">
-              Dieser Link wird nur jetzt angezeigt. Gespeichert ist nur sein Hash — er lässt sich
-              später nicht erneut aufrufen.
-            </p>
+            <p className="text-sm font-medium">{m.created.linkFor(created.email)}</p>
+            <p className="mt-1 text-xs text-muted">{m.created.shownOnce}</p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
               <code className="min-w-0 flex-1 overflow-x-auto rounded-sm border border-line bg-surface px-3 py-2.5 font-mono text-xs">
                 {created.inviteUrl}
               </code>
               <Button onClick={() => void copyLink(created.inviteUrl)}>
                 <Copy size={15} strokeWidth={1.8} aria-hidden="true" />
-                {copied ? 'Kopiert' : 'Kopieren'}
+                {copied ? m.created.copied : m.created.copy}
               </Button>
             </div>
           </div>
@@ -176,16 +168,11 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
       </Card>
 
       <Card>
-        <CardHeader title="Offene Einladungen" />
-        {invitations.isPending && <LoadingState label="Einladungen werden geladen …" />}
-        {invitations.isError && (
-          <ErrorState detail="Die Einladungen konnten nicht geladen werden." />
-        )}
+        <CardHeader title={m.list.title} />
+        {invitations.isPending && <LoadingState label={m.list.loading} />}
+        {invitations.isError && <ErrorState detail={m.list.loadFailed} />}
         {invitations.data?.length === 0 && (
-          <EmptyState
-            title="Keine Einladungen"
-            detail="Erstellte Einladungen erscheinen hier, bis sie angenommen werden oder ablaufen."
-          />
+          <EmptyState title={m.list.emptyTitle} detail={m.list.emptyDetail} />
         )}
 
         <ul className="flex flex-col">
@@ -197,15 +184,14 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
               <div className="min-w-0 flex-1">
                 <p className="font-medium break-words">{invitation.email}</p>
                 <p className="mt-1 text-xs text-muted">
+                  {roleName[invitation.role]}
                   {invitation.role === 'client'
-                    ? `Kundenzugang · ${invitation.customerName ?? 'unbekannt'}`
-                    : invitation.role === 'owner'
-                      ? 'Owner'
-                      : 'Mitglied'}
+                    ? ` · ${invitation.customerName ?? m.list.unknownCustomer}`
+                    : ''}
                   {' · '}
                   {invitation.acceptedAt
-                    ? `angenommen am ${formatDate(invitation.acceptedAt.slice(0, 10))}`
-                    : `gültig bis ${formatDate(invitation.expiresAt.slice(0, 10))}`}
+                    ? m.list.acceptedOn(formatDate(invitation.acceptedAt.slice(0, 10)))
+                    : m.list.validUntil(formatDate(invitation.expiresAt.slice(0, 10)))}
                 </p>
               </div>
               {!invitation.acceptedAt && (
@@ -215,7 +201,7 @@ export function SettingsPage({ workspace }: { workspace: WorkspaceSummary }) {
                   onClick={() => revoke.mutate(invitation.id)}
                 >
                   <Trash2 size={15} strokeWidth={1.8} aria-hidden="true" />
-                  <span className="sr-only">Einladung für {invitation.email} zurückziehen</span>
+                  <span className="sr-only">{m.list.revoke(invitation.email)}</span>
                 </Button>
               )}
             </li>
