@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Eine .env für alles, im Wurzelverzeichnis. Vite reicht davon nur Werte mit
+  // VITE_-Präfix an die Oberfläche weiter, die Geheimnisse der API bleiben draussen.
+  envDir: '../..',
   server: {
     port: 5173,
     strictPort: true,

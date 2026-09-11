@@ -46,7 +46,7 @@ bun run test:e2e        # alle sechs Breiten
 bun run test:e2e:ui     # zum Nachsehen, wenn etwas rot ist
 ```
 
-**147 Prüfungen im Lauf, rund 50 Sekunden** (11.09.2026). Dazu kommen 15 übersprungene: Die drei
+**177 Prüfungen im Lauf, rund 55 Sekunden** (11.09.2026). Dazu kommen 15 übersprungene: Die drei
 Messungen gegen Lastdaten laufen nur bei 1440 Pixeln, sechsmal dieselbe Zahl wäre keine
 zusätzliche Erkenntnis.
 
@@ -56,7 +56,8 @@ noch ein `ResizeObserver`, und Bauteile, die sich selbst messen, bleiben auf der
 stehen. Genau das hat am 10.09.2026 zu einer Fehldiagnose an einem Diagramm geführt. Wer zieht
 statt neu zu laden, prüft ein Artefakt.
 
-Geprüft wird je Breite: kein waagerechter Überlauf auf Startseite, Dashboard und Kundenliste — die
+Geprüft wird je Breite: kein waagerechter Überlauf auf Startseite, Impressum, Datenschutz, Dashboard
+und Kundenliste — die
 Zusicherung nennt beim Scheitern das schuldige Element; der Wechsel zwischen Tabelle und Karten bei
 640 Pixeln; die Seitenleiste fest ab 1024 und darunter hinter dem Hamburger, samt Escape; und dass
 der Fliesstext bei 16 Pixeln bleibt.
@@ -76,7 +77,8 @@ mehr als die Grenze, und die Grenze ist richtig. Eine noch gültige Sitzung wird
 weiterverwendet, sonst verbraucht jeder Entwicklungslauf eine Demo. Das geht nur, weil diese Tests
 ausschliesslich lesen — **ein Test, der schreibt, darf diese Sitzung nicht benutzen.**
 
-**Barrierefreiheit mit axe** (`e2e/a11y.spec.ts`) seit Meilenstein 6a: fünf Seiten in beiden
+**Barrierefreiheit mit axe** (`e2e/a11y.spec.ts`) seit Meilenstein 6a: sieben Seiten, samt Impressum
+und Datenschutz, in beiden
 Erscheinungsbildern, dazu der offene Dialog und die Kommandopalette mit Treffern. Null Verstösse.
 
 ### Gegen den Produktionsaufbau
@@ -94,7 +96,10 @@ Seitenübergang, die Kommandopalette mit Treffern, ein Dokument über die API (P
 `sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Jeder Konsolenfehler lässt den
 Test scheitern, auch jeder CSP-Verstoss.
 
-Ergebnis vom 11.09.2026: **2 von 2 grün, null Verstösse.** Die Null ist gegengeprüft: Ein
+Dazu prüft ein eigener Test, dass das Impressum Anschrift und E-Mail nennt. Die Angaben kommen
+erst beim Bauen dazu, und ohne diesen Test fiele ein leeres Impressum niemandem auf.
+
+Ergebnis vom 11.09.2026: **3 von 3 grün, null Verstösse.** Die Null ist gegengeprüft: Ein
 absichtlich eingeschleustes Inline-Skript, ein Inline-Style und ein fremdes Bild wurden alle drei
 als Verstoss erkannt. Ein Test, der nie scheitern kann, wäre sonst keiner.
 

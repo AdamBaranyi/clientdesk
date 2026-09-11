@@ -30,6 +30,12 @@ services:
     build:
       context: ..
       target: web
+      # Impressum-Angaben, nur auf dem Server hinterlegt. Siehe Dockerfile.
+      args:
+        VITE_OPERATOR_STREET: ${OPERATOR_STREET:?OPERATOR_STREET fehlt}
+        VITE_OPERATOR_CITY: ${OPERATOR_CITY:?OPERATOR_CITY fehlt}
+        VITE_OPERATOR_EMAIL: ${OPERATOR_EMAIL:?OPERATOR_EMAIL fehlt}
+        VITE_OPERATOR_PHONE: ${OPERATOR_PHONE:-}
     image: tallyroom-web:${TALLYROOM_VERSION:-local}
     restart: unless-stopped
     <<: *hardening

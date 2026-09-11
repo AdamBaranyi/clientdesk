@@ -7,6 +7,7 @@ import { TextField } from '../../components/base/Field.tsx';
 import { ApiRequestError, apiRequest } from '../../lib/api.ts';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
+import { SiteFooter } from '../legal/SiteFooter.tsx';
 
 const ROLE_TEXT: Record<string, string> = {
   owner: 'als Owner',
@@ -134,6 +135,8 @@ export function JoinPage() {
           )}
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

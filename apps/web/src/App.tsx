@@ -3,6 +3,8 @@ import type { SessionUser } from '@tallyroom/contracts';
 import { AppShell } from './components/AppShell.tsx';
 import { JoinPage } from './features/auth/JoinPage.tsx';
 import { LandingPage } from './features/landing/LandingPage.tsx';
+import { ImprintPage } from './features/legal/ImprintPage.tsx';
+import { PrivacyPage } from './features/legal/PrivacyPage.tsx';
 import { ContractDetailPage } from './features/contracts/ContractDetailPage.tsx';
 import { ContractListPage } from './features/contracts/ContractListPage.tsx';
 import { CustomerDetailPage } from './features/customers/CustomerDetailPage.tsx';
@@ -49,6 +51,8 @@ export function App() {
       <Route path="/" element={user ? <FirstWorkspaceRedirect user={user} /> : <LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/join/:token" element={<JoinPage />} />
+      <Route path="/impressum" element={<ImprintPage />} />
+      <Route path="/datenschutz" element={<PrivacyPage />} />
       <Route
         path="/app/:workspaceId/*"
         element={user ? <WorkspaceRoutes user={user} /> : <Navigate to="/login" replace />}

@@ -65,6 +65,12 @@ Vorher wurde erst ab 5'000 Einträgen aufgeräumt, auf einer ruhigen Seite also 
 
 **Geheimnisse.** Nur Platzhalter in `.env.example`, `.env` ist ignoriert.
 
+**Personendaten des Betreibers.** Anschrift und Kontakt für das Impressum stehen nicht im
+Repository. Es ist öffentlich, und seine Historie bliebe auch nach einem Umzug. Die Werte liegen
+auf dem Server in `infra/.env.production` und kommen erst beim Bauen des Web-Images dazu. Fehlen
+sie, bricht der Build ab, statt eine öffentliche Seite mit leerem Impressum zu erzeugen. Gegengeprüft
+mit einem Build ohne Angaben.
+
 **Kundenansicht.** Das Portal hat eine eigene Zugriffsschicht. Jede Abfrage dort ist fest auf
 einen Workspace und einen Kunden eingeschränkt und liefert nur freigegebene Inhalte — die
 Einschränkung ist kein Parameter, den ein Aufrufer mitgibt. Client-DTOs blenden interne Felder

@@ -3,7 +3,7 @@
 Stand: 11.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · Server eingerichtet · Meilenstein 6 in
 Arbeit
 
-166 Unit- und Integrationstests · 147 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
+170 Unit- und Integrationstests · 177 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
 und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
 
 ## Erledigt — Meilenstein 1: Fundament und Pipeline
@@ -240,17 +240,17 @@ Die einzelnen Schritte kommen mit D8 in die README.
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
 
-| Etappe | Inhalt                                                                                   | Stand     |
-| ------ | ---------------------------------------------------------------------------------------- | --------- |
-| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt  |
-| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt  |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt  |
-| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt  |
-| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | in Arbeit |
-| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt  |
-| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | offen     |
-| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen     |
-| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen     |
+| Etappe | Inhalt                                                                                   | Stand        |
+| ------ | ---------------------------------------------------------------------------------------- | ------------ |
+| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt     |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt     |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt     |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt     |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt     |
+| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt     |
+| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | als Nächstes |
+| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen        |
 
 **Entscheide**
 
@@ -312,12 +312,15 @@ laufende Domain prüfen und läuft deshalb in D6.
   bereits gut. **WebMCP bewusst nicht** — die Anwendung liegt hinter einer Anmeldung, und einem
   Agenten Werkzeuge auf fremde Kundendaten zu geben wäre keine Verbesserung.
 
-**D4, Stand.** Erledigt und committet: das Request-Log ohne Adresse, Browserkennung und Query, das
-Rate-Limit verwirft Adressen spätestens eine Minute nach ihrem Zeitfenster (beides gefunden beim
-Prüfen dessen, was die Datenschutzerklärung behaupten soll), `LICENSE`, Vorschaubild und
-Meta-Angaben. Gebaut und geprüft, aber noch nicht committet: Impressum, Datenschutzerklärung,
-Links darauf von jeder Seite, `robots.txt`, `sitemap.xml`, `llms.txt`. Es fehlen die
-Kontaktangaben für das Impressum, die nur der Betreiber festlegen kann.
+**D4, Ergebnis.** Impressum und Datenschutzerklärung, von jeder Seite aus verlinkt: öffentliche
+Seiten in der Fusszeile, Team- und Kundenansicht unten in der Seitenleiste. Jede Aussage der
+Datenschutzerklärung ist am laufenden Aufbau geprüft. Zwei davon stimmten vorher nicht und wurden
+im Code korrigiert: das Request-Log schrieb Adresse, Browserkennung und Query mit, und das
+Rate-Limit behielt Adressen beliebig lange. Anschrift und Kontakt stehen nicht im öffentlichen
+Repository, sie kommen auf dem Server beim Bauen dazu, und ohne sie bricht der Build ab. Dazu
+`LICENSE`, Vorschaubild, Meta-Angaben, `robots.txt`, `sitemap.xml` und `llms.txt`. Geprüft: axe
+auf beiden Rechtsseiten in hell und dunkel, alle sechs Breiten ohne Überlauf, 177 von 177
+End-to-End-Prüfungen, gegen den Produktionsaufbau 3 von 3.
 
 **D5 im Einzelnen.** Sechs Jobs, alle grün im ersten Lauf nach dem Push:
 [Lauf 34608472477](https://github.com/AdamBaranyi/tallyroom/actions/runs/34608472477). Werkzeuge,

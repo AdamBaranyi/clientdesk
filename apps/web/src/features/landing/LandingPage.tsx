@@ -3,7 +3,9 @@ import { Button } from '../../components/base/Button.tsx';
 import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
 import { ApiRequestError } from '../../lib/api.ts';
+import { SITE_URL } from '../../lib/site.ts';
 import { useStartDemo } from '../demo/api.ts';
+import { SiteFooter } from '../legal/SiteFooter.tsx';
 import { LandingFeatures } from './LandingFeatures.tsx';
 
 /** Kenndaten der Demo. Nachprüfbar, nichts davon behauptet. */
@@ -27,6 +29,7 @@ export function LandingPage() {
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <link rel="canonical" href={`${SITE_URL}/`} />
       <header className="flex items-end justify-between gap-3 border-b border-line px-3 sm:px-6">
         <Wordmark name="Tallyroom" />
         <div className="flex items-center gap-2 pb-4">
@@ -109,9 +112,7 @@ export function LandingPage() {
         </div>
       </main>
 
-      <footer className="text-micro border-t border-line px-4 py-6 text-muted sm:px-6">
-        Portfolio-Projekt von Ádám Baranyi. Keine echten Kundendaten.
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

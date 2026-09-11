@@ -8,6 +8,7 @@ import { useLogin, useSession } from './use-session.ts';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
 import { Button } from '../../components/base/Button.tsx';
 import { CONTROL_BASE } from '../../components/base/control-style.ts';
+import { SiteFooter } from '../legal/SiteFooter.tsx';
 
 export function LoginPage() {
   const session = useSession();
@@ -79,6 +80,8 @@ export function LoginPage() {
           </form>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

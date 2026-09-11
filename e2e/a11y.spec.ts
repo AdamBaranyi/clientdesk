@@ -70,6 +70,9 @@ const SEITEN = [
   { name: 'Kundenliste', pfad: (id: string) => `/app/${id}/customers` },
   { name: 'Projektliste', pfad: (id: string) => `/app/${id}/projects` },
   { name: 'Vertragsliste', pfad: (id: string) => `/app/${id}/contracts` },
+  // Die Rechtsseiten stehen auch mit Sitzung, es gibt keine Weiterleitung.
+  { name: 'Impressum', pfad: () => '/impressum' },
+  { name: 'Datenschutz', pfad: () => '/datenschutz' },
 ];
 
 test.describe('Barrierefreiheit', () => {

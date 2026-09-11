@@ -9,6 +9,15 @@ test.describe('Prüfbreiten', () => {
     await expectNoHorizontalOverflow(page);
   });
 
+  test('Rechtsseiten laufen nicht seitlich', async ({ page }) => {
+    for (const pfad of ['/impressum', '/datenschutz']) {
+      await page.goto(pfad);
+      await warteAufSchriften(page);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expectNoHorizontalOverflow(page);
+    }
+  });
+
   test('Dashboard läuft nicht seitlich', async ({ page }) => {
     const workspaceId = demoWorkspaceId();
     await page.goto(`/app/${workspaceId}/dashboard`);

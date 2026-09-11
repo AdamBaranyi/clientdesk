@@ -60,6 +60,19 @@ test('die Oberfläche trägt die Sicherheitsheader', async ({ request }) => {
   expect(headers['server']).toBeUndefined();
 });
 
+/*
+ * Die Angaben kommen erst beim Bauen dazu und stehen nicht im Repository.
+ * Fehlen sie im Image, fiele das sonst niemandem auf.
+ */
+test('das Impressum nennt Anschrift und E-Mail', async ({ page }) => {
+  await page.goto('/impressum');
+  const address = page.locator('address');
+  // innerText, weil textContent die Zeilen ohne Trenner aneinanderhängt:
+  // aus "141G" und "6014 Luzern" würde "141G6014 Luzern".
+  await expect(address).toContainText(/\b\d{4} \S/, { useInnerText: true });
+  await expect(address.getByRole('link', { name: /@/ })).toHaveAttribute('href', /^mailto:.+@.+/);
+});
+
 test('ein Demo-Durchgang ohne CSP-Verstoss und ohne Konsolenfehler', async ({ page }) => {
   const problems = collectProblems(page);
 

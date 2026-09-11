@@ -47,6 +47,29 @@ EOF
   echo "== Geheimnisse erzeugt in $ENV_FILE, nur für root lesbar"
 fi
 
+# Impressum-Angaben. Nicht geheim, aber auch nicht im öffentlichen Repository.
+# Einmal mitgeben, danach stehen sie in der Datei; neu mitgegebene ersetzen alte:
+#   sudo OPERATOR_STREET="…" OPERATOR_CITY="…" OPERATOR_EMAIL="…" infra/deploy.sh
+set_value() {
+  tmp="$(mktemp)"
+  grep -v "^$1=" "$ENV_FILE" >"$tmp" || true
+  printf '%s="%s"\n' "$1" "$2" >>"$tmp"
+  cat "$tmp" >"$ENV_FILE"
+  rm -f "$tmp"
+}
+for key in OPERATOR_STREET OPERATOR_CITY OPERATOR_EMAIL OPERATOR_PHONE; do
+  value="$(printenv "$key" || true)"
+  if [ -n "$value" ]; then
+    set_value "$key" "$value"
+  fi
+done
+for key in OPERATOR_STREET OPERATOR_CITY OPERATOR_EMAIL; do
+  if ! grep -q "^$key=" "$ENV_FILE"; then
+    echo "Impressum-Angabe $key fehlt. Einmal mitgeben: sudo $key=\"…\" $0" >&2
+    exit 1
+  fi
+done
+
 compose() {
   docker compose -f infra/compose.prod.yml --env-file "$ENV_FILE" "$@"
 }

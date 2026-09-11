@@ -42,6 +42,15 @@ RUN bun install --frozen-lockfile
 COPY tsconfig.base.json ./
 COPY packages/contracts packages/contracts
 COPY apps/web apps/web
+# Kontaktangaben für das Impressum. Sie stehen nicht im Repository, der
+# Aufruf gibt sie mit (infra/compose.prod.yml). Ohne sie gäbe es eine
+# öffentliche Seite mit leerem Impressum — deshalb bricht der Build ab.
+ARG VITE_OPERATOR_STREET
+ARG VITE_OPERATOR_CITY
+ARG VITE_OPERATOR_EMAIL
+ARG VITE_OPERATOR_PHONE=
+RUN test -n "$VITE_OPERATOR_STREET" && test -n "$VITE_OPERATOR_CITY" && test -n "$VITE_OPERATOR_EMAIL" \
+  || { echo "Impressum-Angaben fehlen: VITE_OPERATOR_STREET, _CITY und _EMAIL setzen." >&2; exit 1; }
 RUN bun run --filter '@tallyroom/web' build
 
 # Caddy mit der fertigen Oberfläche. Kein Bun, kein Node, kein Quelltext.

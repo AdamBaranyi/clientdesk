@@ -10,6 +10,7 @@ import {
 import type { WorkspaceSummary } from '@tallyroom/contracts';
 import { NavItem } from './base/NavItem.tsx';
 import { Wordmark } from './base/Wordmark.tsx';
+import { LegalLinks } from '../features/legal/LegalLinks.tsx';
 import { workspacePath } from '../lib/paths.ts';
 
 /**
@@ -63,6 +64,8 @@ export function Sidebar({ workspace, onNavigate }: SidebarProps) {
           />
         ))}
       </nav>
+
+      <LegalLinks className="mt-auto px-2.5 pt-4" />
     </div>
   );
 }

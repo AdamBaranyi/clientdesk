@@ -15,6 +15,7 @@ import { ThemeToggle } from '../../components/base/ThemeToggle.tsx';
 import { portalPath } from '../../lib/portal-paths.ts';
 import { useLogout } from '../auth/use-session.ts';
 import { DemoBanner } from '../demo/DemoBanner.tsx';
+import { LegalLinks } from '../legal/LegalLinks.tsx';
 import { NavItem } from '../../components/base/NavItem.tsx';
 import { Wordmark } from '../../components/base/Wordmark.tsx';
 
@@ -70,7 +71,7 @@ export function PortalShell({ user, workspace }: Props) {
         Zum Inhalt springen
       </a>
 
-      <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line bg-[var(--sidebar-bg)] p-3 lg:block">
+      <aside className="hidden w-[var(--sidebar-width)] shrink-0 border-r border-line bg-[var(--sidebar-bg)] p-3 lg:flex lg:flex-col">
         <Wordmark name="Kundenportal" />
         <div className="mb-4 border border-line bg-surface px-2.5 py-2.5">
           <p className="text-dense truncate font-medium">{workspace.name}</p>
@@ -79,6 +80,7 @@ export function PortalShell({ user, workspace }: Props) {
           </p>
         </div>
         {navigation}
+        <LegalLinks className="mt-auto px-2.5 pt-4" />
       </aside>
 
       {navOpen && (
@@ -100,6 +102,7 @@ export function PortalShell({ user, workspace }: Props) {
             </button>
             <Wordmark name="Kundenportal" />
             {navigation}
+            <LegalLinks className="mt-auto px-2.5 pt-4" />
           </div>
         </div>
       )}
