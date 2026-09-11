@@ -142,6 +142,12 @@ allein über die Migrationen startet. Drizzle löscht dort nur Zeilen, beim Aufr
 Demos und nach einem Passwortwechsel. Angelegt und geändert werden sie ausschliesslich von
 connect-pg-simple.
 
+**Nachladen nach Bereich.** Die Startseite lädt nur Startseite, Anmeldung und Einladung.
+Teamansicht, Kundenportal und Rechtsseiten sind eigene Bündel und kommen beim ersten Aufruf, das
+Diagramm innerhalb der Teamansicht noch einmal getrennt. Ein Besucher der Startseite braucht keine
+Vertragsformulare, ein Kunde im Portal keine Teamansicht. Die Grenze für die Erstlast steht in
+`scripts/check-bundle-size.mjs`, die CI hält sie.
+
 **Rate-Limit im Prozessspeicher.** Reicht bei einer API-Instanz. Bei mehreren Instanzen gehört der
 Zähler in einen gemeinsamen Speicher.
 

@@ -1,37 +1,33 @@
-import { Navigate, Route, Routes, useParams } from 'react-router';
+import { Suspense, lazy } from 'react';
+import { Navigate, Route, Routes } from 'react-router';
 import type { SessionUser } from '@tallyroom/contracts';
-import { AppShell } from './components/AppShell.tsx';
 import { JoinPage } from './features/auth/JoinPage.tsx';
 import { LandingPage } from './features/landing/LandingPage.tsx';
-import { ImprintPage } from './features/legal/ImprintPage.tsx';
-import { PrivacyPage } from './features/legal/PrivacyPage.tsx';
-import { ContractDetailPage } from './features/contracts/ContractDetailPage.tsx';
-import { ContractListPage } from './features/contracts/ContractListPage.tsx';
-import { CustomerDetailPage } from './features/customers/CustomerDetailPage.tsx';
-import { CustomerListPage } from './features/customers/CustomerListPage.tsx';
-import { DashboardPage } from './features/dashboard/DashboardPage.tsx';
-import { ProjectDetailPage } from './features/projects/ProjectDetailPage.tsx';
-import { DocumentListPage } from './features/documents/DocumentListPage.tsx';
-import { PortalAccountPage } from './features/portal/PortalAccountPage.tsx';
-import { PortalShell } from './features/portal/PortalShell.tsx';
-import {
-  PortalContractsPage,
-  PortalDocumentsPage,
-  PortalOverviewPage,
-  PortalProjectsPage,
-} from './features/portal/PortalPages.tsx';
-import { PortalRequestDetailPage } from './features/portal/PortalRequestDetailPage.tsx';
-import { PortalRequestsPage } from './features/portal/PortalRequestsPage.tsx';
-import { ProjectListPage } from './features/projects/ProjectListPage.tsx';
-import { RequestDetailPage } from './features/requests/RequestDetailPage.tsx';
-import { RequestListPage } from './features/requests/RequestListPage.tsx';
-import { SettingsPage } from './features/settings/SettingsPage.tsx';
 import { LoginPage } from './features/auth/LoginPage.tsx';
 import { useSession } from './features/auth/use-session.ts';
 import { shellMessages } from './components/messages.ts';
 import { useMessages } from './i18n/messages.ts';
 import { workspacePath } from './lib/paths.ts';
 import { portalPath } from './lib/portal-paths.ts';
+
+/*
+ * Wer die Startseite öffnet, braucht weder die Teamansicht noch das Portal
+ * noch die Rechtstexte in vier Sprachen. Diese Bereiche kommen erst, wenn
+ * sie aufgerufen werden. Vorher lud jeder Besucher die ganze Anwendung,
+ * und mit Französisch und Italienisch lag die Erstlast über ihrem Budget.
+ */
+const WorkspaceRoutes = lazy(() =>
+  import('./routes/WorkspaceRoutes.tsx').then((modul) => ({ default: modul.WorkspaceRoutes })),
+);
+const PortalRoutes = lazy(() =>
+  import('./routes/PortalRoutes.tsx').then((modul) => ({ default: modul.PortalRoutes })),
+);
+const ImprintPage = lazy(() =>
+  import('./features/legal/ImprintPage.tsx').then((modul) => ({ default: modul.ImprintPage })),
+);
+const PrivacyPage = lazy(() =>
+  import('./features/legal/PrivacyPage.tsx').then((modul) => ({ default: modul.PrivacyPage })),
+);
 
 export function App() {
   const session = useSession();
@@ -48,97 +44,26 @@ export function App() {
   const user = session.data;
 
   return (
-    <Routes>
-      <Route path="/" element={user ? <FirstWorkspaceRedirect user={user} /> : <LandingPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/join/:token" element={<JoinPage />} />
-      <Route path="/impressum" element={<ImprintPage />} />
-      <Route path="/datenschutz" element={<PrivacyPage />} />
-      <Route
-        path="/app/:workspaceId/*"
-        element={user ? <WorkspaceRoutes user={user} /> : <Navigate to="/login" replace />}
-      />
-      <Route
-        path="/portal/:workspaceId/*"
-        element={user ? <PortalRoutes user={user} /> : <Navigate to="/login" replace />}
-      />
-      <Route path="/portal" element={<FirstWorkspaceRedirect user={user} />} />
-      <Route path="/app" element={<FirstWorkspaceRedirect user={user} />} />
-      <Route path="*" element={<Navigate to={user ? '/app' : '/'} replace />} />
-    </Routes>
-  );
-}
-
-/**
- * Die workspaceId aus der URL ist nur eine Auswahl. Gehört sie nicht zu den
- * Mitgliedschaften des Kontos, wird umgeleitet — die Berechtigung selbst prüft
- * ohnehin der Server bei jedem Request.
- */
-function WorkspaceRoutes({ user }: { user: SessionUser }) {
-  const { workspaceId } = useParams();
-  const workspace = user.workspaces.find((entry) => entry.id === workspaceId);
-
-  if (!workspace) return <Navigate to="/app" replace />;
-
-  return (
-    <Routes>
-      <Route element={<AppShell user={user} workspace={workspace} />}>
-        <Route path="dashboard" element={<DashboardPage workspace={workspace} />} />
-        <Route path="customers" element={<CustomerListPage workspace={workspace} />} />
+    <Suspense fallback={<FullPageMessage title={m.loading} />}>
+      <Routes>
+        <Route path="/" element={user ? <FirstWorkspaceRedirect user={user} /> : <LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/join/:token" element={<JoinPage />} />
+        <Route path="/impressum" element={<ImprintPage />} />
+        <Route path="/datenschutz" element={<PrivacyPage />} />
         <Route
-          path="customers/:customerId"
-          element={<CustomerDetailPage workspace={workspace} />}
+          path="/app/:workspaceId/*"
+          element={user ? <WorkspaceRoutes user={user} /> : <Navigate to="/login" replace />}
         />
-        <Route path="projects" element={<ProjectListPage workspace={workspace} />} />
-        <Route path="projects/:projectId" element={<ProjectDetailPage workspace={workspace} />} />
-        <Route path="contracts" element={<ContractListPage workspace={workspace} />} />
         <Route
-          path="contracts/:contractId"
-          element={<ContractDetailPage workspace={workspace} />}
+          path="/portal/:workspaceId/*"
+          element={user ? <PortalRoutes user={user} /> : <Navigate to="/login" replace />}
         />
-        <Route path="requests" element={<RequestListPage workspace={workspace} />} />
-        <Route path="requests/:requestId" element={<RequestDetailPage workspace={workspace} />} />
-        <Route path="documents" element={<DocumentListPage workspace={workspace} />} />
-        <Route path="settings" element={<SettingsPage workspace={workspace} />} />
-        <Route
-          path="*"
-          element={<Navigate to={workspacePath(workspace.id, 'dashboard')} replace />}
-        />
-      </Route>
-    </Routes>
-  );
-}
-
-/**
- * Die Rolle entscheidet über das Ziel: ein Kundenzugang gehört ins Portal,
- * nicht in die Teamansicht. Der Server würde die Teamansicht ohnehin
- * verweigern — hier wird nur nicht erst hingeschickt.
- */
-function PortalRoutes({ user }: { user: SessionUser }) {
-  const { workspaceId } = useParams();
-  const workspace = user.workspaces.find((entry) => entry.id === workspaceId);
-
-  if (!workspace) return <Navigate to="/portal" replace />;
-  if (workspace.role !== 'client') {
-    return <Navigate to={workspacePath(workspace.id, 'dashboard')} replace />;
-  }
-
-  return (
-    <Routes>
-      <Route element={<PortalShell user={user} workspace={workspace} />}>
-        <Route path="overview" element={<PortalOverviewPage workspace={workspace} />} />
-        <Route path="projects" element={<PortalProjectsPage workspace={workspace} />} />
-        <Route path="contracts" element={<PortalContractsPage workspace={workspace} />} />
-        <Route path="requests" element={<PortalRequestsPage workspace={workspace} />} />
-        <Route
-          path="requests/:requestId"
-          element={<PortalRequestDetailPage workspace={workspace} />}
-        />
-        <Route path="documents" element={<PortalDocumentsPage workspace={workspace} />} />
-        <Route path="account" element={<PortalAccountPage workspace={workspace} />} />
-        <Route path="*" element={<Navigate to={portalPath(workspace.id, 'overview')} replace />} />
-      </Route>
-    </Routes>
+        <Route path="/portal" element={<FirstWorkspaceRedirect user={user} />} />
+        <Route path="/app" element={<FirstWorkspaceRedirect user={user} />} />
+        <Route path="*" element={<Navigate to={user ? '/app' : '/'} replace />} />
+      </Routes>
+    </Suspense>
   );
 }
 
