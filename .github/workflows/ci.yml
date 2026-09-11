@@ -96,5 +96,132 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      - name: Weboberfläche bauen
-        run: bun run --filter '@tallyroom/web' build
+      # Baut die Oberfläche und misst sie gegen das Budget in
+      # scripts/check-bundle-size.mjs. Über der Grenze ist der Build rot.
+      - name: Weboberfläche bauen, Auslieferungsgrösse prüfen
+        run: bun run check:bundle-size
+
+  sicherheit:
+    name: Secret-Scan und Abhängigkeiten
+    runs-on: ubuntu-24.04
+    steps:
+      # Die ganze Historie, nicht nur der letzte Stand: ein Geheimnis, das in
+      # einem alten Commit steht, ist im öffentlichen Repository weiter lesbar.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Binärdatei statt Action, mit geprüfter Prüfsumme aus dem Release.
+      - name: gitleaks 8.30.1 holen
+        run: |
+          curl -sSfL -o gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  gitleaks.tar.gz" | sha256sum --check
+          tar -xzf gitleaks.tar.gz gitleaks
+
+      # Ausnahmen stehen einzeln in .gitleaksignore, begründet in docs/SECURITY.md.
+      - name: Secret-Scan über alle Commits
+        run: ./gitleaks git . --no-banner --redact --gitleaks-ignore-path .gitleaksignore
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      # Blockiert ab "hoch". Ein Netzwerk- oder Scannerfehler endet ebenfalls
+      # rot und zählt nicht als bestanden.
+      - name: Bekannte Schwachstellen, blockierend ab hoch
+        run: bun audit --audit-level=high
+
+      # Zeigt auch moderate Befunde, damit sie im Protokoll stehen. Bewertet
+      # sind sie einzeln in docs/SECURITY.md.
+      - name: Alle Befunde zur Ansicht
+        run: bun audit
+        continue-on-error: true
+
+  e2e:
+    name: Playwright über sechs Breiten
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - name: Datenbanken und Objektspeicher starten
+        run: docker compose -f infra/docker-compose.yml up -d --wait
+
+      # Die Vorlage mit einem eigenen Sitzungsschlüssel für diesen Lauf. Den
+      # Platzhalter würde die API beim Start ablehnen.
+      - name: Umgebung für den Lauf
+        run: |
+          cp .env.example .env
+          sed -i "s|^SESSION_SECRET=.*|SESSION_SECRET=$(openssl rand -base64 48)|" .env
+
+      - name: Migrationen
+        run: bun run db:migrate
+
+      - name: Chromium installieren
+        run: bunx playwright install --with-deps chromium
+
+      - name: Playwright
+        run: bun run test:e2e
+
+      - name: Spuren bei Fehlschlag
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-spuren
+          path: test-results/
+          retention-days: 7
+
+  produktion:
+    name: Produktionsaufbau von aussen
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      # Erzeugt nur für diesen Lauf und nie gespeichert. Die echten Werte
+      # stehen ausschliesslich auf dem Server.
+      - name: Geheimnisse für diesen Lauf
+        run: |
+          cat > "$RUNNER_TEMP/prod.env" <<EOF
+          SITE_ADDRESS=localhost
+          APP_ORIGIN=https://localhost:8443
+          HTTP_PORT=8080
+          HTTPS_PORT=8443
+          SESSION_SECRET=$(openssl rand -base64 48)
+          POSTGRES_PASSWORD=$(openssl rand -hex 24)
+          GARAGE_RPC_SECRET=$(openssl rand -hex 32)
+          S3_ACCESS_KEY_ID=GK$(openssl rand -hex 12)
+          S3_SECRET_ACCESS_KEY=$(openssl rand -hex 32)
+          TALLYROOM_VERSION=ci
+          EOF
+
+      # Dieselbe Reihenfolge wie auf dem Server: Daten, Migration, Anwendung.
+      - name: Images bauen und starten
+        run: |
+          compose="docker compose -f infra/compose.prod.yml --env-file $RUNNER_TEMP/prod.env"
+          $compose build
+          $compose up -d --wait postgres garage
+          $compose --profile tools run --rm migrate
+          $compose up -d --wait
+
+      - name: Chromium installieren
+        run: bunx playwright install --with-deps chromium
+
+      - name: Header, CSP und Demo-Durchgang
+        run: bunx playwright test -c playwright.production.config.ts
+
+      - name: Protokolle bei Fehlschlag
+        if: failure()
+        run: docker compose -f infra/compose.prod.yml --env-file "$RUNNER_TEMP/prod.env" logs --no-color --tail 200

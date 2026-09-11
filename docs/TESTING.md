@@ -5,6 +5,20 @@ mit Messung, Ursache und Korrektur, einschliesslich der drei Fehldiagnosen.
 
 Stand: 11.09.2026, nach dem Wechsel auf Garage und dem ersten Produktionsaufbau.
 
+## In der CI
+
+Jeder Push auf `main` startet `.github/workflows/ci.yml` mit sechs Jobs. Eine grüne Pipeline
+deployt nichts, der Deploy wird bewusst ausgelöst.
+
+| Job                            | Was er prüft                                                                |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| Format, Dateilänge, Lint       | Prettier, 400-Zeilen-Grenze, ESLint samt `jsx-a11y`, Typen in allen Paketen |
+| Tests gegen echte Datenbank    | alle Unit- und Integrationstests gegen PostgreSQL 18                        |
+| Build                          | Build der Oberfläche und die Auslieferungsgrösse gegen ihr Budget           |
+| Secret-Scan und Abhängigkeiten | gitleaks über jeden Commit, `bun audit` blockierend ab „hoch"               |
+| Playwright über sechs Breiten  | die End-to-End-Prüfungen samt axe, gegen Entwicklungsserver und Garage      |
+| Produktionsaufbau von aussen   | Images bauen, Aufbau starten wie auf dem Server, `e2e/production.spec.ts`   |
+
 ## Ausgeführt
 
 ```bash
@@ -12,8 +26,8 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 11.09.2026: **166 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
-allen vier Paketen sauber, 233 Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
+Ergebnis vom 11.09.2026: **170 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+allen vier Paketen sauber, alle Code-Dateien unter der 400-Zeilen-Grenze (längste: 317 Zeilen).
 
 Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
 

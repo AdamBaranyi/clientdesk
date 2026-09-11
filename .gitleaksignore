@@ -1,0 +1,18 @@
+# Einzeln geprüfte Falschmeldungen des Secret-Scans, keine Sammelausnahme.
+# Jede Zeile nennt genau einen Fund in genau einem Commit. Begründung, Nachweis
+# und Prüftermin stehen in docs/SECURITY.md unter "Secret-Scan".
+# Ein neuer Fund an derselben Stelle hat einen anderen Fingerabdruck und schlägt an.
+
+# Platzhalter, mit dem die API nicht startet (Zod lehnt "bitte-ersetzen" ab).
+ddcdbb1e01c78f7187d7e1fed1c98dc206b4a901:.env.example:generic-api-key:12
+ac4e1dee1d7d629f251613a315a11828dd15f6e9:infra/.env.production.example:generic-api-key:11
+
+# Testpasswörter für Konten, die nur in der flüchtigen Testdatenbank entstehen.
+483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/invitations.test.ts:generic-api-key:90
+483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/invitations.test.ts:generic-api-key:105
+483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/invitations.test.ts:generic-api-key:113
+483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/invitations.test.ts:generic-api-key:133
+483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/invitations.test.ts:generic-api-key:180
+
+# Idempotency-Key eines Tests. Er schützt nichts, er erkennt einen Doppelklick.
+483fbe2deab2c2c1d7bea062f6e423bf90c9d79a:tests/integration/requests.test.ts:generic-api-key:40

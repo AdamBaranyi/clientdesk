@@ -1,6 +1,6 @@
 # Sicherheit
 
-Stand: Meilenstein 4. Was hier steht, ist implementiert und geprüft. Was fehlt, steht unter
+Stand: 11.09.2026, Meilenstein 6. Was hier steht, ist implementiert und geprüft. Was fehlt, steht unter
 "Offene Grenzen" — nicht als stillschweigende Lücke.
 
 Keine Aussage in diesem Dokument bedeutet "vollständig sicher", "OWASP-zertifiziert" oder
@@ -106,12 +106,57 @@ des Servers. Die API läuft als Benutzer `bun` statt root, mit schreibgeschützt
 einzige Capability das Binden an Port 80 und 443. Jeder Dienst hat eine Speichergrenze, jedes Log
 eine Grössengrenze.
 
+## Automatische Prüfungen in der CI
+
+Beide laufen bei jedem Push im Job `sicherheit`. Ein Fehler des Scanners oder ein fehlendes Netz
+endet rot und zählt nicht als bestanden.
+
+### Secret-Scan
+
+| Punkt         | Stand                                                                                |
+| ------------- | ------------------------------------------------------------------------------------ |
+| Werkzeug      | gitleaks 8.30.1, Binärdatei aus dem Release, Prüfsumme im Workflow festgehalten      |
+| Umfang        | jeder Commit der Historie (`fetch-depth: 0`), nicht nur der letzte Stand             |
+| Konfiguration | Standardregeln, keine eigenen Abschwächungen; Ausnahmen einzeln in `.gitleaksignore` |
+| Ergebnis      | 11.09.2026, 63 Commits: 8 Funde, alle 8 einzeln geprüft und falsch                   |
+| Gegenprobe    | ein erfundener Schlüssel in einer Wegwerfkopie wird gefunden, der Lauf endet rot     |
+
+Die acht Funde, jeder mit eigenem Fingerabdruck. Ein neuer Fund an derselben Stelle hätte einen
+anderen und schlüge an:
+
+| Fundstelle                                  | Was dort steht                             | Warum kein Geheimnis                                                  |
+| ------------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------- |
+| `.env.example:12`                           | `SESSION_SECRET=bitte-ersetzen-…`          | Platzhalter. Die API startet damit nicht, Zod lehnt das Präfix ab     |
+| `infra/.env.production.example:11`          | derselbe Platzhalter                       | wie oben                                                              |
+| `tests/integration/invitations.test.ts` (5) | Passwörter wie `Ein-langes-Passwort-2026`  | Konten, die nur in der flüchtigen Testdatenbank eines Laufs entstehen |
+| `tests/integration/requests.test.ts:40`     | Idempotency-Key `doppelklick-schluessel-1` | schützt nichts, er erkennt einen Doppelklick                          |
+
+Nächste Prüfung dieser Ausnahmen: mit dem nächsten Meilenstein, spätestens am 11.12.2026.
+
+### Abhängigkeitsscan
+
+| Punkt       | Stand                                                                     |
+| ----------- | ------------------------------------------------------------------------- |
+| Werkzeug    | `bun audit` aus Bun 1.3.14, gegen die Advisory-Datenbank der npm-Registry |
+| Umfang      | alle Pakete aus `bun.lock`, auch reine Entwicklungswerkzeuge              |
+| Blockierend | ab „hoch" (`--audit-level=high`); ein zweiter Schritt zeigt alle Befunde  |
+| Ergebnis    | 11.09.2026: kein hoher und kein kritischer Befund, ein moderater          |
+
+Der moderate Befund, einzeln bewertet:
+
+- **GHSA-67mh-4wv8-2f99, esbuild ≤ 0.24.2.** Betrifft den eingebauten Entwicklungsserver von
+  esbuild (`serve`), über den fremde Seiten Anfragen stellen und Antworten lesen können. Die
+  betroffene Fassung 0.18.20 kommt nur über `drizzle-kit` herein, das Werkzeug zum Erzeugen von
+  Migrationen, und nutzt dort keinen `serve`-Aufruf. **Nicht anwendbar.** Nachweis: Im API-Image
+  liegen weder esbuild noch drizzle-kit (`ls node_modules/.bun` im Container, 0 Treffer), das
+  Web-Image enthält nur die 15 statischen Dateien des Builds. Keine erzwungene Aktualisierung: das
+  wäre ein Eingriff in eine fremde Abhängigkeitskette ohne Nutzen. Nächste Prüfung mit dem nächsten
+  `drizzle-kit`-Update, spätestens am 11.12.2026.
+
 ## Offene Grenzen
 
 Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 
-- **Secret-Scan und Abhängigkeitsscan** laufen noch nicht in der CI. Vorgesehen für Meilenstein 6,
-  Etappe D5.
 - **Rate-Limit** liegt im Prozessspeicher und trägt nur eine API-Instanz.
 - **Mehrfaktor-Authentisierung** ist bewusst nicht Teil des Umfangs.
 - **Wiederholungslauf für fehlgeschlagene Speicherlöschungen** ist nicht gebaut. Betroffene
@@ -126,6 +171,7 @@ Ehrlich benannt, weil sie zu späteren Meilensteinen gehören:
 | 09.09.2026 | Meilenstein 1: Mandantentrennung, Sitzung, CSRF, Fehlerantworten, Rate-Limit | 28 Tests grün  |
 | 09.09.2026 | Meilenstein 4: Kundenansicht, Uploads, Einladungen, Idempotenz               | 141 Tests grün |
 | 11.09.2026 | Produktionsaufbau lokal: Header, CSP, Demo-Durchgang, Download, Garage       | 2 von 2 grün   |
+| 11.09.2026 | Secret-Scan über 63 Commits, Abhängigkeitsscan über `bun.lock`               | siehe oben     |
 
 Drei Befunde aus Meilenstein 4, alle behoben:
 
