@@ -42,6 +42,12 @@ export const shellMessages = defineMessages({
       detail:
         'Dieses Konto gehört zu keinem Workspace. Ein Owner muss eine Mitgliedschaft vergeben.',
     },
+    crash: {
+      title: 'Hier ist etwas schiefgegangen',
+      detail:
+        'Die Seite konnte nicht angezeigt werden. Ihre Daten sind davon nicht betroffen. Neu laden hilft meistens.',
+      reload: 'Seite neu laden',
+    },
   },
   en: {
     skipToContent: 'Skip to content',
@@ -81,6 +87,12 @@ export const shellMessages = defineMessages({
     noWorkspace: {
       title: 'No workspace assigned',
       detail: 'This account does not belong to any workspace. An owner has to add a membership.',
+    },
+    crash: {
+      title: 'Something went wrong here',
+      detail:
+        'The page could not be displayed. Your data is not affected. Reloading usually helps.',
+      reload: 'Reload page',
     },
   },
 });

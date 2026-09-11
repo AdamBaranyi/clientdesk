@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { sessionUserSchema, type LoginInput, type SessionUser } from '@tallyroom/contracts';
 import { apiRequest, ApiRequestError, resetCsrfToken } from '../../lib/api.ts';
 
@@ -22,6 +22,22 @@ export function useSession() {
       }
     },
   });
+}
+
+/**
+ * Läuft eine Sitzung ab, während jemand arbeitet, antwortet die nächste
+ * Anfrage mit 401. Ohne diese Stelle stünde dann auf der Seite nur
+ * „Konnte nicht geladen werden", obwohl schlicht die Anmeldung fehlt. So wird
+ * die Sitzung als beendet markiert, und die Routen schicken zur Anmeldung.
+ *
+ * Nur wenn vorher jemand angemeldet war: ein 401 bei einem falschen Passwort
+ * ist keine abgelaufene Sitzung.
+ */
+export function endSessionOnUnauthenticated(queryClient: QueryClient, error: unknown): void {
+  if (!(error instanceof ApiRequestError) || error.code !== 'UNAUTHENTICATED') return;
+  if (!queryClient.getQueryData<SessionUser | null>(SESSION_KEY)) return;
+  resetCsrfToken();
+  queryClient.setQueryData(SESSION_KEY, null);
 }
 
 export function useLogin() {
