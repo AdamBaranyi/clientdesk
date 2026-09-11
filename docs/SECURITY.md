@@ -114,7 +114,9 @@ einem bestehenden Konto muss die angemeldete Identität zur eingeladenen Adresse
 `unsafe-inline`, `object-src 'none'`, `frame-ancestors 'none'`, dazu HSTS, `nosniff`, eine
 Referrer-Policy, eine Permissions-Policy ohne Kamera, Mikrofon, Standort und Zahlung, und
 `Cross-Origin-Opener-Policy: same-origin`. Möglich ist die strenge Fassung, weil die Schriften vom
-eigenen Server kommen und der Build kein Inline-Skript erzeugt. Die API setzt ihre Header selbst
+eigenen Server kommen und der Build kein Inline-Skript erzeugt. Auch kein `unsafe-eval`: Zod läuft
+in der Oberfläche ohne JIT, sonst meldet der Browser bei jedem Laden einen Verstoss
+(`public/zod-jitless.js`, DIAGNOSTICS Nummer 17). Die API setzt ihre Header selbst
 (helmet), Downloads tragen `default-src 'none'; sandbox`, und Caddy überschreibt dort nichts.
 `Server` und `Via` werden entfernt.
 

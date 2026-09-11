@@ -284,18 +284,18 @@ es 149 KB. Die Messung zählt jetzt, was `index.html` anfordert, nicht eine einz
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
 
-| Etappe | Inhalt                                                                                   | Stand        |
-| ------ | ---------------------------------------------------------------------------------------- | ------------ |
-| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt     |
-| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt     |
-| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt     |
-| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt     |
-| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt     |
-| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt     |
-| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | als Nächstes |
-| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt     |
-| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen        |
-| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen        |
+| Etappe | Inhalt                                                                                   | Stand     |
+| ------ | ---------------------------------------------------------------------------------------- | --------- |
+| D0     | Statusdatei und Diagnosen nachgeführt                                                    | erledigt  |
+| D1     | Objektspeicher von MinIO auf Garage, zuerst lokal                                        | erledigt  |
+| D2     | Produktions-Images: API ohne Root-Rechte und mit geordnetem Herunterfahren, Web statisch | erledigt  |
+| D3     | Produktions-Compose mit Caddy, Speichergrenzen, CSP; lokal geprüft, null CSP-Verstösse   | erledigt  |
+| D4     | Pflichtseiten und SEO-Grundlage (6b), vor dem Livegang                                   | erledigt  |
+| D5     | CI: Secret-Scan samt Git-Historie, Abhängigkeitsscan, Playwright, axe, Bundle-Budget     | erledigt  |
+| D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | in Arbeit |
+| D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt  |
+| D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | offen     |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen     |
 
 **Entscheide**
 
@@ -371,10 +371,31 @@ End-to-End-Prüfungen, gegen den Produktionsaufbau 3 von 3.
 [Lauf 34608472477](https://github.com/AdamBaranyi/tallyroom/actions/runs/34608472477). Werkzeuge,
 Funde und die einzeln begründeten Ausnahmen stehen in `docs/SECURITY.md`.
 
-**D6 im Einzelnen.** `infra/deploy.sh` ist fertig: Checkout eines Commits, Geheimnisse beim ersten
-Lauf auf dem Server erzeugt, Datenbanksicherung vor jeder Migration, Rollback über einen älteren
-Commit. Dazu auf dem Server `443/udp` in der Firewall freigeben. Caddy bietet HTTP/3 an, bisher ist
-dafür nur TCP offen, und Browser fallen dann still auf HTTP/2 zurück.
+**D6 im Einzelnen.** Erster Deploy am 11.09.2026 um 20:11, Stand `f66e086`, vom Betreiber
+selbst ausgelöst (`infra/deploy.sh`, sudo auf dem Server). Bauen auf dem Server rund 42 Sekunden,
+alle vier Dienste gesund, Sicherung vor der Migration angelegt, `443/udp` für HTTP/3 freigegeben.
+
+Gegen `https://tallyroom.adambaranyi.xyz` geprüft:
+
+- HTTP leitet mit 308 auf HTTPS; HTTP/2, HTTP/3 wird angeboten
+- Zertifikat von Let's Encrypt bis 10.12.2026, Caddy erneuert selbst; TLS 1.2 und 1.3
+- Alle Sicherheitsheader samt CSP wie im lokalen Aufbau
+- `e2e/production.spec.ts`: 3 von 3 in der alten Fassung, samt Rundgang und Rollenwechsel
+- Lighthouse, je zwei Läufe: mobil Leistung 98 bis 99, Barrierefreiheit 100, Best
+  Practices 93, SEO 100; Desktop 100, 100, 93, 100. LCP mobil 2.0 bis 2.1 s, TBT 0 ms, CLS 0
+
+Die 93 hatte zwei Ursachen, beide behoben und noch nicht auf dem Server: ein 401 von `/auth/me`
+bei jedem anonymen Besuch, rot in der Konsole, und die stille `eval`-Probe von Zod
+(DIAGNOSTICS Nummer 17). Offen für D6: zweiter Deploy, dann dieselben Prüfungen noch einmal.
+
+Bewusst so gelassen, weil der Nutzen den Eingriff nicht trägt:
+
+- Die Weiterleitung von HTTP auf HTTPS nennt `Server: Caddy`. Die Seiten selbst nicht.
+- Unbekannte Pfade antworten mit 200 und der Oberfläche, die dann zur Startseite führt. Ein
+  echter 404 hiesse, jede Route der Oberfläche auch in Caddy zu pflegen.
+- Schriften liegen 30 Tage im Cache, nicht ein Jahr: ihre Dateinamen tragen keinen Hash.
+- Lighthouse zählt rund 75 KB JavaScript, die beim ersten Bild noch nicht laufen, vor allem aus
+  React und Zod.
 
 **D6b im Einzelnen: Rundgang durch die Demo.** Wunsch des Betreibers vom 11.09.2026, erledigt am
 selben Tag; was gebaut ist, steht oben unter „Vier Sprachen und geschlossene Lücken". Anders als

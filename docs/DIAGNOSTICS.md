@@ -352,12 +352,81 @@ eigene `.env` ist nur einer davon.
 
 ---
 
+## 17 · Ein CSP-Verstoss, den der eigene Test nicht sah
+
+**Symptom.** Lighthouse gegen den Server, am Tag des ersten Deploys: „Best Practices" 93 statt 100,
+mit einem Eintrag „Content security policy" ohne Einzelheiten. Die Produktionsprüfung derselben
+Seite war grün, „null Verstösse".
+
+**Messung.** Die Startseite in Playwright geladen, mit einem Listener auf
+`securitypolicyviolation` und den DevTools-Issues über CDP: `script-src`, Typ `eval`, im Bündel
+mit Zod. In der Konsole stand dazu nichts.
+
+**Ursache.** Zod prüft beim ersten Objektschema mit `new Function`, ob es schnelleren Prüfcode
+erzeugen darf. Die CSP verbietet das, Zod fängt den Fehler ab und prüft ohne. Funktional
+folgenlos — aber der Browser meldet den Versuch als Verstoss. Die Produktionsprüfung zählte nur
+Konsolenfehler, und dieser Verstoss erscheint dort nicht. Ihre eigene Gegenprobe hatte ein
+Inline-Skript, einen Inline-Style und ein fremdes Bild eingeschleust; alle drei landen in der
+Konsole. Der stille Fall kam darin nicht vor.
+
+**Korrektur.** Zod läuft in der Oberfläche ohne JIT (`jitless`), dann entfällt die Probe. Die
+Einstellung musste vor Zod gesetzt werden, und das war der zweite Teil der Arbeit:
+`z.config()` im Einstieg kam zu spät, weil Zod mit den Schemas in einem gemeinsamen Bündel liegt,
+das vor dem Code des Einstiegs ausgewertet wird. Ein zweites Modulskript in `index.html` legte
+Vite mit dem Einstieg zusammen, mit demselben Ergebnis. Geholfen hat eine ungebündelte Datei,
+`public/zod-jitless.js`, als erstes Skript mit `defer`. Sie setzt `globalThis.__zod_globalConfig`,
+das Zod beim Laden übernimmt.
+
+Die Produktionsprüfung hört jetzt im Dokument auf `securitypolicyviolation`, auf jeder Seite neu.
+Gegenprobe: gegen den Server mit dem alten Stand wird sie rot und nennt den Verstoss, gegen den
+neuen Stand ist sie grün.
+
+**Regel.** Eine Gegenprobe beweist nur die Fälle, die sie enthält. „Null Verstösse" hiess „null
+Verstösse, die in der Konsole erscheinen".
+
+---
+
+## 18 · Lokal gemessen war eine Entwicklungsfassung von React
+
+**Symptom.** Der Budgetcheck meldete lokal 254 KB Erstlast, in der CI 191 KB. Dieselbe Quelle.
+
+**Messung.** Die Quellkarte des Bündels nach Herkunft aufgeschlüsselt: `react-dom` allein 343 KB
+ungepackt. So gross ist nur die Entwicklungsfassung.
+
+**Ursache.** Bun lädt die `.env` im Projekt automatisch, dort steht `NODE_ENV=development` für die
+API. Vite übernimmt eine gesetzte Umgebungsvariable und baut dann für die Entwicklung. Die CI hat
+keine `.env` und baute richtig.
+
+**Korrektur.** Das Bauskript der Oberfläche setzt `NODE_ENV=production`. Lokal und in der CI misst
+der Check jetzt dieselben 135.7 KB.
+
+**Regel.** Eine Messung, die lokal und in der CI verschieden ausfällt, misst zuerst die Umgebung.
+
+---
+
+## 19 · Gepusht trotz Fund im Secret-Scan
+
+**Symptom.** Nach dem Push meldete der Scan in der CI einen Fund, den der lokale Lauf davor
+angeblich nicht hatte.
+
+**Ursache.** Der lokale Aufruf war `gitleaks … | tail -2 && git push`. Der Exit-Code einer Pipe
+ist der des letzten Glieds, also von `tail`, und der ist immer 0. Die Warnung stand in der
+Ausgabe, der Push lief trotzdem. Der Fund selbst war harmlos: die eigene Tabelle in
+`docs/SECURITY.md` zitierte das Testpasswort als Zuweisung.
+
+**Korrektur.** Eintrag in `.gitleaksignore` mit Begründung, die Tabellenzeile umformuliert. Der
+Scan läuft vor einem Push jetzt ohne Pipe, und der Exit-Code wird ausdrücklich geprüft.
+
+**Regel.** Ein Prüfschritt vor einer nicht umkehrbaren Aktion gehört nie in eine Pipe.
+
+---
+
 ## Was daraus als Werkzeug geblieben ist
 
-| Werkzeug                    | Hält fest                                                   |
-| --------------------------- | ----------------------------------------------------------- |
-| `bun run verify`            | Format, Dateilänge, Lint samt `jsx-a11y`, Typen             |
-| `bun run test`              | 166 Unit- und Integrationstests                             |
-| `bun run test:e2e`          | 147 Prüfungen über sechs Breiten, davon 72 mit axe          |
-| `bun run check:bundle-size` | Erstlast 170 KB, CSS 8 KB, Diagramm 115 KB, je gzip         |
-| `e2e/production.spec.ts`    | Header, CSP ohne Verstoss, Demo gegen den Produktionsaufbau |
+| Werkzeug                    | Hält fest                                                    |
+| --------------------------- | ------------------------------------------------------------ |
+| `bun run verify`            | Format, Dateilänge, Lint samt `jsx-a11y`, Typen              |
+| `bun run test`              | 196 Unit- und Integrationstests                              |
+| `bun run test:e2e`          | 210 Prüfungen über sechs Breiten, samt axe und vier Sprachen |
+| `bun run check:bundle-size` | Erstlast 142 KB, CSS 8 KB, Diagramm 115 KB, je gzip          |
+| `e2e/production.spec.ts`    | Header, CSP ohne Verstoss auch ohne Konsoleneintrag, Demo    |

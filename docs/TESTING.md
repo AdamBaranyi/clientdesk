@@ -26,7 +26,7 @@ bun run verify   # Format, Dateilänge, Lint, Typen
 bun run test     # Unit- und Integrationstests
 ```
 
-Ergebnis vom 11.09.2026: **195 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
+Ergebnis vom 11.09.2026: **196 Tests grün**, Lint ohne Fehler und ohne Warnungen, Typecheck in
 allen vier Paketen sauber, alle Code-Dateien unter der 400-Zeilen-Grenze (längste: 378 Zeilen).
 
 Die Integrationstests brauchen die Testdatenbank und die Umgebungsdatei:
@@ -109,14 +109,18 @@ PostgreSQL und Garage aus `infra/compose.prod.yml`, lokal auf `https://localhost
 Seitenübergang, die Kommandopalette mit Treffern, ein Dokument über die API (PDF, Anhang,
 `sandbox`) und jede Seite der Kundenansicht nach dem Rollenwechsel. Vorher einmal der ganze
 Rundgang, mit dem jede neue Demo beginnt. Jeder Konsolenfehler lässt den
-Test scheitern, auch jeder CSP-Verstoss.
+Test scheitern, auch jeder CSP-Verstoss — und weil nicht jeder Verstoss in der Konsole erscheint,
+hört zusätzlich ein Skript im Dokument auf `securitypolicyviolation`, auf jeder Seite neu. Wie es
+dazu kam, steht in [DIAGNOSTICS.md](DIAGNOSTICS.md), Nummer 17.
 
 Dazu prüft ein eigener Test, dass das Impressum Anschrift und E-Mail nennt. Die Angaben kommen
 erst beim Bauen dazu, und ohne diesen Test fiele ein leeres Impressum niemandem auf.
 
-Ergebnis vom 11.09.2026: **3 von 3 grün, null Verstösse.** Die Null ist gegengeprüft: Ein
-absichtlich eingeschleustes Inline-Skript, ein Inline-Style und ein fremdes Bild wurden alle drei
-als Verstoss erkannt. Ein Test, der nie scheitern kann, wäre sonst keiner.
+Ergebnis vom 11.09.2026, lokal: **3 von 3 grün, null Verstösse, null Konsolenfehler.** Die Null
+ist gegengeprüft: Ein absichtlich eingeschleustes Inline-Skript, ein Inline-Style und ein fremdes
+Bild wurden alle drei als Verstoss erkannt, und der stille Verstoss von Zod lässt die geschärfte
+Fassung gegen den alten Stand auf dem Server scheitern. Ein Test, der nie scheitern kann, wäre
+sonst keiner.
 
 ### Was geprüft wird
 
@@ -130,7 +134,7 @@ PostgreSQL-Testdatenbank, mit zwei Workspaces und zwei Ownern:
 - Der eigene Workspace ist lesbar, ein fremder liefert **404 statt 403**.
 - Die Workspace-Liste enthält nur eigene Mitgliedschaften.
 - Erfundene und syntaktisch ungültige Workspace-IDs werden abgewiesen.
-- `/auth/me` ohne Anmeldung liefert 401.
+- `/auth/me` ohne Anmeldung nennt niemanden (`null`, kein Fehler); geschützte Routen liefern 401.
 - Falsches Passwort und unbekannte E-Mail liefern dieselbe Meldung.
 - Die Sitzungs-ID wechselt nach der Anmeldung.
 - Nach dem Abmelden wird das alte Cookie serverseitig abgewiesen.
