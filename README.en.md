@@ -16,9 +16,9 @@ A portfolio project by Adam Baranyi. All data in the application is made up.
 > Docker Compose and Let's Encrypt.
 >
 > **Status: milestone 6 of 6.** All required features are in place, including an isolated visitor
-> demo with role switching and a command palette. Deployment stages D0 to D7 are done, including
-> nightly backups and a passed restore drill on the server; D8 (server guide, rollback, case study)
-> is still open. The detailed
+> demo with role switching and a command palette. Deployment is complete, D0 to D8: nightly
+> backups, a passed restore drill on the server, the server guide below and a
+> [case study](docs/FALLSTUDIE.md) (German). The detailed
 > status is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) (German).
 
 ## Tech stack
@@ -144,6 +144,65 @@ each for accessibility, best practices and SEO; on desktop, 100 in all four cate
 The start page loads 135.7 KB of JavaScript (gzip). The team view, client portal and legal pages
 are loaded on demand.
 
+## On your own server
+
+The live instance runs on a KVM server (8 vCPU, 16 GB RAM, 150 GB SSD, Ubuntu 24.04 LTS). The
+images are built on the server itself, from a checkout of this public repository — no registry, no
+access token.
+
+### One-time setup
+
+1. **Access and firewall.** Key-based login only, no direct root; a separate user whose `sudo` asks
+   for a password. `ufw` allows only 22, 80, 443 inbound and `443/udp` for HTTP/3.
+2. **Automatic security updates** via `unattended-upgrades`, rebooting when required at 03:30. Plus
+   4 GB of swap with `vm.swappiness=10`.
+3. **Docker Engine and Compose** from the official repository. Check the signing key against the
+   published fingerprint and abort if it differs. Cap container logs at 3 × 10 MB and enable
+   `live-restore`, so a Docker update does not take running containers down with it.
+4. **DNS.** An A record pointing at the server. No AAAA record while the provider's IPv6 route is
+   broken ([finding 13](docs/DIAGNOSTICS.md), German) — an AAAA record without a working route makes
+   the site unreachable for IPv6 visitors.
+5. **Check out where the deploy expects it.** The checkout belongs to root; Git refuses every
+   command there for other users.
+
+   ```bash
+   sudo git clone https://github.com/AdamBaranyi/tallyroom /opt/tallyroom
+   ```
+
+6. **First deploy, with the imprint details.** They are not in the public repository and are passed
+   once; after that they live in `infra/.env.production`.
+
+   ```bash
+   ssh -t vps1 'sudo OPERATOR_STREET="…" OPERATOR_CITY="…" OPERATOR_EMAIL="…" /opt/tallyroom/infra/deploy.sh'
+   ```
+
+   On the first run the script generates every secret itself — session key, database and storage
+   passwords — and stores them readable by root only. They never leave the server.
+
+### Deploy
+
+```bash
+ssh -t vps1 'sudo /opt/tallyroom/infra/deploy.sh'
+```
+
+In order: fetch `origin/main`, build the images, start database and storage, **back up the
+database**, apply migrations, start API and Caddy, prune build leftovers, print the status. The
+backup before the migration is the way back, because migrations only run forwards. Building takes
+about 42 seconds on this server.
+
+A green pipeline deploys nothing — the deploy is triggered by hand, on purpose.
+
+### Rollback
+
+```bash
+ssh -t vps1 'sudo /opt/tallyroom/infra/deploy.sh 1a2b3c4'
+```
+
+Puts the code back on that commit; the tagged images of previous builds stay on the server for it.
+That is enough as long as no migration sits in between. If the database is affected, restore it
+first: the steps, the commands and the restore drill to run beforehand with the same backup are in
+[docs/BETRIEB.md](docs/BETRIEB.md) (German).
+
 ## The demo
 
 On the start page, "Start demo" creates a workspace just for that visitor, with a full set of
@@ -172,6 +231,8 @@ off, and the demo area then does not exist.
 
 ## Documentation
 
+- [docs/FALLSTUDIE.md](docs/FALLSTUDIE.md) (German) — decisions traced back to user tasks, with
+  evidence
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (German) — structure, data model, decisions, code
   quality
 - [docs/SECURITY.md](docs/SECURITY.md) (German) — threat overview, safeguards, tested cases

@@ -16,9 +16,9 @@ Portfolio-Projekt von Adam Baranyi. Alle Daten in der Anwendung sind erfunden.
 > mit Caddy, Docker Compose und Let's Encrypt.
 >
 > **Stand: Meilenstein 6 von 6.** Alle Pflichtfunktionen stehen, samt isolierter Besucher-Demo mit
-> Rollenwechsel und Kommandopalette. Vom Deployment sind die Etappen D0 bis D7 erledigt, samt
-> nächtlicher Sicherung und bestandener Probe-Wiederherstellung auf dem Server; offen ist D8
-> (Server-Anleitung, Rollback, Fallstudie). Der genaue Stand steht in
+> Rollenwechsel und Kommandopalette. Das Deployment ist vollständig: D0 bis D8, samt
+> nächtlicher Sicherung, bestandener Probe-Wiederherstellung auf dem Server, der Server-Anleitung
+> unten und einer [Fallstudie](docs/FALLSTUDIE.md). Der genaue Stand steht in
 > [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
 ## Technischer Aufbau
@@ -144,6 +144,67 @@ Best Practices und SEO je 100; Desktop in allen vier Kategorien 100.
 Die Startseite lädt 135.7 KB JavaScript (gzip). Teamansicht, Kundenportal und Rechtsseiten werden
 erst beim Aufruf nachgeladen.
 
+## Auf einem eigenen Server
+
+Die Live-Instanz läuft auf einem KVM-Server (8 vCPU, 16 GB RAM, 150 GB SSD, Ubuntu 24.04 LTS). Die
+Images entstehen auf dem Server selbst, aus einem Checkout dieses öffentlichen Repositorys — keine
+Registry, kein Zugangstoken.
+
+### Einmalig einrichten
+
+1. **Zugang und Firewall.** Anmeldung nur mit Schlüssel, root nicht direkt; ein eigener Benutzer,
+   dessen `sudo` ein Passwort verlangt. `ufw` lässt eingehend nur 22, 80, 443 und `443/udp` für
+   HTTP/3 zu.
+2. **Automatische Sicherheitsupdates** mit `unattended-upgrades`, Neustart bei Bedarf nachts um
+   03:30. Dazu 4 GB Swap mit `vm.swappiness=10`.
+3. **Docker Engine und Compose** aus dem offiziellen Repository. Den Signaturschlüssel gegen den
+   veröffentlichten Fingerabdruck prüfen und bei Abweichung abbrechen. Container-Logs auf 3 × 10 MB
+   begrenzen und `live-restore` einschalten, damit ein Docker-Update laufende Container nicht
+   mitreisst.
+4. **DNS.** Ein A-Eintrag auf die Server-IP. Kein AAAA-Eintrag, solange die IPv6-Route des Anbieters
+   fehlerhaft ist ([Diagnose 13](docs/DIAGNOSTICS.md)) — ein AAAA-Eintrag ohne funktionierende Route
+   macht die Seite für IPv6-Besucher unerreichbar.
+5. **Checkout dorthin, wo der Deploy ihn erwartet.** Er gehört root; Git verweigert anderen
+   Benutzern dort jeden Befehl.
+
+   ```bash
+   sudo git clone https://github.com/AdamBaranyi/tallyroom /opt/tallyroom
+   ```
+
+6. **Erster Deploy, mit den Impressum-Angaben.** Sie stehen nicht im öffentlichen Repository und
+   werden einmal mitgegeben; danach liegen sie in `infra/.env.production`.
+
+   ```bash
+   ssh -t vps1 'sudo OPERATOR_STREET="…" OPERATOR_CITY="…" OPERATOR_EMAIL="…" /opt/tallyroom/infra/deploy.sh'
+   ```
+
+   Beim ersten Lauf erzeugt das Skript alle Geheimnisse selbst — Sitzungsschlüssel, Datenbank- und
+   Speicherpasswörter — und legt sie nur für root lesbar ab. Sie verlassen den Server nie.
+
+### Deploy
+
+```bash
+ssh -t vps1 'sudo /opt/tallyroom/infra/deploy.sh'
+```
+
+Der Reihe nach: Stand von `origin/main` holen, Images bauen, Datenbank und Speicher starten,
+**Datenbank sichern**, Migrationen anwenden, API und Caddy starten, Build-Reste aufräumen, Status
+ausgeben. Die Sicherung vor der Migration ist der Rückweg, denn Migrationen laufen nur vorwärts.
+Das Bauen dauert auf diesem Server rund 42 Sekunden.
+
+Eine grüne Pipeline deployt nichts — der Deploy wird bewusst von Hand ausgelöst.
+
+### Rollback
+
+```bash
+ssh -t vps1 'sudo /opt/tallyroom/infra/deploy.sh 1a2b3c4'
+```
+
+Setzt den Stand auf diesen Commit zurück. Die getaggten Images der vorherigen Stände bleiben dafür
+auf dem Server. Das genügt, solange keine Migration dazwischen liegt. Ist die Datenbank betroffen,
+gehört sie zuerst zurückgespielt: Weg, Befehle und die Probe-Wiederherstellung, die vorher mit
+derselben Sicherung laufen soll, stehen in [docs/BETRIEB.md](docs/BETRIEB.md).
+
 ## Die Demo
 
 Auf der Startseite legt „Demo starten" einen eigenen Workspace nur für diesen Besucher an — mit
@@ -173,6 +234,7 @@ sich das Ganze über `DEMO_ENABLED=false`; dann existiert der Bereich nicht.
 
 ## Dokumentation
 
+- [docs/FALLSTUDIE.md](docs/FALLSTUDIE.md) — Entscheidungen aus Nutzeraufgaben, mit Belegen
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — Aufbau, Datenmodell, Entscheidungen, Codequalität
 - [docs/SECURITY.md](docs/SECURITY.md) — Bedrohungsübersicht, Schutzmassnahmen, geprüfte Fälle
 - [docs/TESTING.md](docs/TESTING.md) — ausgeführte Tests, Prüfbreiten, bekannte Lücken

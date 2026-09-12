@@ -1,7 +1,7 @@
 # Umsetzungsstand
 
 Stand: 12.09.2026 · Meilensteine 1–5 und 6a abgeschlossen · live unter
-<https://tallyroom.adambaranyi.xyz> · Meilenstein 6: D0 bis D7 erledigt, D8 in Arbeit
+<https://tallyroom.adambaranyi.xyz> · Meilenstein 6: D0 bis D8 erledigt
 
 214 Unit- und Integrationstests · 292 End-to-End-Prüfungen über sechs Breiten · Lint ohne Fehler
 und ohne Warnungen · Typecheck in allen vier Paketen sauber · keine Anfrage an Dritte.
@@ -234,7 +234,7 @@ den Anbieter.
 - DNS: A-Eintrag `tallyroom.adambaranyi.xyz`, kein AAAA-Eintrag, weil die IPv6-Route des Anbieters
   fehlerhaft ist (Diagnose 13)
 
-Die einzelnen Schritte kommen mit D8 in die README.
+Die einzelnen Schritte stehen in der README, Abschnitt «Auf einem eigenen Server».
 
 ## Erledigt — Vier Sprachen und geschlossene Lücken (11.09.2026)
 
@@ -337,7 +337,7 @@ Fusszeile ausdrücklich eingeschlossen. Das alte Arbeitsband von 11 bis 14 px is
 - Nebenbei erledigt: die drei Formularfelder ohne id und name, die Chrome in den DevTools gemeldet
   hat (Eingabe der Kommandopalette, Dateiauswahl der Dokumente, Sprachwahl).
 
-## Offen — Meilenstein 6: Deployment
+## Erledigt — Meilenstein 6: Deployment
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
 
@@ -352,7 +352,7 @@ Plan vom 11.09.2026, in dieser Reihenfolge:
 | D6     | Erster Deploy, Prüfungen gegen die Live-URL, Lighthouse, gemessene Ladezeiten            | erledigt |
 | D6b    | Geführter Rundgang durch die Demo, in allen vier Sprachen                                | erledigt |
 | D7     | Sicherung von Datenbank und Dateien, tatsächlich durchgeführter Restore-Test             | erledigt |
-| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | offen    |
+| D8     | README mit Server-Einrichtung, Deploy und Rollback; Fallstudie                           | erledigt |
 
 **Entscheide**
 
@@ -486,8 +486,9 @@ geplant erklärt ein einziger Schritt alle Bereiche der Navigation, statt je Ber
 Schritte statt acht, und jeder Bereich trotzdem mit einem eigenen Satz. Keine Bibliothek: ein
 fremdes Skript bräuchte eine Ausnahme in der CSP und brächte mehr, als der Rundgang braucht.
 
-**D8 im Einzelnen: Fallstudie.** Sie erklärt Designentscheidungen aus Nutzeraufgaben, nicht aus
-Geschmack.
+**D8 im Einzelnen.** Erledigt am 12.09.2026. Beide READMEs beschreiben jetzt Server-Einrichtung,
+Deploy und Rollback; `docs/FALLSTUDIE.md` erklärt die Entscheidungen aus Nutzeraufgaben, nicht aus
+Geschmack, und nennt zu jeder den Beleg.
 
 ## Bewusst zurückgestellt
 
