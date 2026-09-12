@@ -151,6 +151,13 @@ Gegen den Server (`PRODUCTION_URL=https://tallyroom.adambaranyi.xyz`) am 11.09.2
 zweiten Deploy: **3 von 3 grün.** Lighthouse gegen dieselbe Adresse, je zwei Läufe: mobil
 Leistung 98 bis 99, die übrigen drei Kategorien 100; Desktop viermal 100.
 
+Nach dem Deploy der 16-px-Regel am 12.09.2026, gegen dieselbe Adresse: **3 von 3 grün**.
+Lighthouse mobil in drei von vier Läufen 99, der erste Lauf 86 — dort fiel die Übersetzung des
+Nebel-Shaders in das Messfenster (TBT 510 ms gegen sonst 0; FCP 1,5 s und LCP 2,0 s in allen vier
+Läufen gleich). Desktop 100 in allen vier Kategorien. Dazu die öffentlichen Seiten live in WebKit
+(iPhone SE, iPhone 15, Safari 1440) und Firefox 390: kleinste Schrift 16 px, kein waagerechter
+Überlauf, kein Wort mitten im Wort gebrochen.
+
 ### In Safari und Firefox
 
 ```bash

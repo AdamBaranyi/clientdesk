@@ -326,6 +326,8 @@ Fusszeile ausdrücklich eingeschlossen. Das alte Arbeitsband von 11 bis 14 px is
 - Diagrammachsen und Tooltip 11 und 12 → 16 px, Fusszeile mit Impressum und Datenschutz 11 → 16 px.
 - Urheberzeile und Rechtslinks stehen mittig statt links und rechts, auf jeder Breite — Wunsch
   des Betreibers.
+- Live nach dem Deploy geprüft: Produktionsprüfung 3 von 3, Lighthouse mobil 99 und Desktop 100,
+  die öffentlichen Seiten in WebKit und Firefox ohne Befund.
 - Folge der grösseren Schrift: die Grenze zwischen Tabelle und Karten liegt bei 1024 statt 640
   Pixeln, und die Grundregel für Umbrüche heisst `break-word` statt `anywhere`
   (DIAGNOSTICS Nummer 24).
