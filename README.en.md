@@ -21,6 +21,9 @@ A portfolio project by Adam Baranyi. All data in the application is made up.
 > [case study](docs/FALLSTUDIE.md) (German). The detailed
 > status is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) (German).
 
+![Tallyroom's dashboard in dark mode: sidebar, metric band with the monthly contract value and a
+six-month chart](docs/screenshots/dashboard-dunkel.png)
+
 ## Tech stack
 
 | Area                        | Technology                                                                    |

@@ -488,7 +488,10 @@ fremdes Skript bräuchte eine Ausnahme in der CSP und brächte mehr, als der Run
 
 **D8 im Einzelnen.** Erledigt am 12.09.2026. Beide READMEs beschreiben jetzt Server-Einrichtung,
 Deploy und Rollback; `docs/FALLSTUDIE.md` erklärt die Entscheidungen aus Nutzeraufgaben, nicht aus
-Geschmack, und nennt zu jeder den Beleg.
+Geschmack, und nennt zu jeder den Beleg. Dazu verweist die Fusszeile der öffentlichen Seiten auf
+Quelltext und Fallstudie — der einzige Link ins Repository stand bis dahin im Impressum, wo ihn
+niemand sucht —, und beide READMEs öffnen mit einem Bild des Dashboards in Dunkel, aufgenommen im
+heutigen Stand.
 
 ## Bewusst zurückgestellt
 

@@ -2,7 +2,8 @@ import { Link } from 'react-router';
 import { useMessages } from '../../i18n/messages.ts';
 import { legalMessages } from './legal-messages.ts';
 
-const LINK_CLASS = 'inline-flex min-h-11 items-center hover:text-ink';
+/** Auch die Fusszeile setzt ihn für die Verweise auf Quelltext und Fallstudie. */
+export const LINK_CLASS = 'inline-flex min-h-11 items-center hover:text-ink';
 
 /**
  * Impressum und Datenschutz, von jeder Seite aus erreichbar: auf den

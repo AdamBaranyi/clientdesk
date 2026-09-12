@@ -21,6 +21,9 @@ Portfolio-Projekt von Adam Baranyi. Alle Daten in der Anwendung sind erfunden.
 > unten und einer [Fallstudie](docs/FALLSTUDIE.md). Der genaue Stand steht in
 > [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
+![Dashboard von Tallyroom in der dunklen Fassung: Seitenleiste, Kennzahlband mit monatlichem
+Vertragswert, Diagramm der letzten sechs Monate](docs/screenshots/dashboard-dunkel.png)
+
 ## Technischer Aufbau
 
 | Bereich                      | Eingesetzt                                                                    |
