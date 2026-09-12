@@ -69,7 +69,7 @@ export function LandingPage() {
           ohne Text darauf. Nur so darf er seine volle Farbe zeigen, ohne dass
           grauer Fliesstext unleserlich wird.
         */}
-        <section className="relative isolate overflow-hidden border-b border-line px-4 pt-12 pb-40 sm:px-6 sm:pt-20 sm:pb-36 lg:pb-32">
+        <section className="relative isolate overflow-hidden border-b border-line px-4 pt-12 pb-24 sm:px-6 sm:pt-16 sm:pb-24 lg:pb-20">
           <Suspense fallback={null}>
             <HeroFog />
           </Suspense>
@@ -113,7 +113,7 @@ export function LandingPage() {
               )}
 
               {/* Statt eines Werbebildes: was die Demo tatsächlich tut. */}
-              <dl className="mt-10 grid border-t border-line sm:grid-cols-2 sm:gap-x-8">
+              <dl className="mt-8 grid border-t border-line sm:grid-cols-2 sm:gap-x-8">
                 {demoFacts.map((fact) => (
                   <div
                     key={fact.label}
@@ -130,7 +130,7 @@ export function LandingPage() {
           </div>
         </section>
 
-        <div className="px-4 pb-12 sm:px-6 sm:pb-20">
+        <div className="px-4 pb-10 sm:px-6 sm:pb-12">
           <div className="mx-auto w-full max-w-[1180px]">
             <LandingFeatures />
           </div>

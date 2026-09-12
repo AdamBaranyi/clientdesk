@@ -17,11 +17,11 @@ export function LandingFeatures() {
   const features = Object.values(useMessages(landingMessages).features);
 
   return (
-    <ol className="mt-20 flex flex-col border-t border-line">
+    <ol className="mt-12 flex flex-col border-t border-line">
       {features.map((feature) => (
         <li
           key={feature.title}
-          className="grid gap-x-8 gap-y-2 border-b border-line py-6 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]"
+          className="grid gap-x-8 gap-y-2 border-b border-line py-5 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]"
         >
           <h2 className="text-section leading-snug font-medium tracking-[-0.01em]">
             {feature.title}
