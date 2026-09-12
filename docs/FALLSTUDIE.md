@@ -81,8 +81,8 @@ Der erste Entwurf war Violett auf Fastschwarz. Ein Audit gegen die verbreiteten 
 das benannt, was er war: der KI-Standard in besserer Kleidung. Er ist ersetzt worden, nicht
 verteidigt.
 
-![Dashboard vorher](screenshots/vorher-dashboard.png)
-![Dashboard nachher](screenshots/nachher-dashboard.png)
+![Das Dashboard im heutigen Stand, dunkel: Seitenleiste, Kennzahlband mit monatlichem
+Vertragswert, Diagramm der letzten sechs Monate](screenshots/dashboard-dunkel.png)
 
 ### Lesbarkeit schlägt Dichte
 
