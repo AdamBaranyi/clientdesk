@@ -40,8 +40,24 @@ ssh -t vps1 'sudo systemctl list-timers --no-pager tallyroom-backup.timer; sudo 
 
 Die erste Zeile zeigt den nächsten und den letzten Lauf, die zweite das Ergebnis. `--no-pager`
 gehört dazu: über `ssh -t` öffnet systemd sonst eine Blätteransicht, und alles Folgende wartet,
-bis jemand `q` drückt. Eine
-gescheiterte Sicherung meldet heute niemand von selbst — siehe «Offen» unten.
+bis jemand `q` drückt.
+
+### Meldung beim Anmelden
+
+Damit ein Fehlschlag nicht nur im Journal steht, sagt es der Server bei jeder Anmeldung:
+
+```bash
+ssh -t vps1 'sudo install -m 755 /opt/tallyroom/infra/motd/99-tallyroom-backup /etc/update-motd.d/'
+```
+
+Danach steht bei jedem `ssh vps1` eine Zeile im Begrüssungstext — «Sicherung: 12.09.2026 02:30 in
+Ordnung», «SICHERUNG FEHLGESCHLAGEN …» samt Befehl zum Nachsehen, oder ein Hinweis, wenn der
+letzte Lauf über 26 Stunden her ist und damit einer fehlt. Die Auskunft kommt von systemd selbst,
+ohne fremden Dienst und ohne Geheimnis auf dem Server.
+
+Das ersetzt keine Meldung aufs Telefon: Wer sich zwei Wochen nicht anmeldet, erfährt zwei Wochen
+nichts. Für echte Kundendaten wäre eine Benachrichtigung nach aussen fällig — dann mit dem
+Aufwand, den ein weiterer Dienst und sein Geheimnis mit sich bringen.
 
 ## Probe-Wiederherstellung
 
@@ -105,4 +121,7 @@ admin:reset-password -- --email <adresse>`.
 - **Kopie ausser Haus.** Die Sicherungen liegen auf demselben Server wie die Anwendung. Fällt
   der Server aus, sind beide weg. Entscheid folgt nach der Antwort des Hosters, wie und wie lange
   er selbst sichert. Eine Kopie ausser Haus wird verschlüsselt, bevor sie den Server verlässt.
-- **Meldung bei einer gescheiterten Sicherung.** Heute steht sie nur im Journal.
+- **Meldung nach aussen bei einer gescheiterten Sicherung.** Seit dem 12.09.2026 sagt es der
+  Server beim Anmelden (siehe oben); wer sich nicht anmeldet, erfährt es weiterhin nicht. Eine
+  Meldung aufs Telefon kommt, sobald hier echte Kundendaten liegen — Entscheid des Betreibers.
+  Sie kostet einen weiteren Dienst und ein Geheimnis auf dem Server.

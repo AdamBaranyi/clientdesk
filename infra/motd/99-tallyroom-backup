@@ -1,0 +1,41 @@
+#!/bin/sh
+# Sagt beim Anmelden, wie die letzte nächtliche Sicherung ausgegangen ist.
+#
+# Ohne diese Zeile steht ein Fehlschlag nur im Journal: niemand erfährt davon,
+# und im schlechtesten Fall merkt man es erst, wenn man die Sicherung braucht.
+# Bewusst ohne fremden Dienst und ohne Geheimnis — die Auskunft kommt von
+# systemd selbst, also aus derselben Quelle, die den Lauf gestartet hat.
+#
+# Installieren (einmalig, als root):
+#   install -m 755 /opt/tallyroom/infra/motd/99-tallyroom-backup /etc/update-motd.d/
+set -eu
+
+EINHEIT=tallyroom-backup.service
+
+# Gibt es den Timer nicht, schweigt die Zeile. Ein Server ohne Sicherung soll
+# hier keine Fehlermeldung erzeugen, sondern gar nichts sagen.
+systemctl list-unit-files "$EINHEIT" >/dev/null 2>&1 || exit 0
+
+ergebnis=$(systemctl show "$EINHEIT" -p Result --value 2>/dev/null || echo unbekannt)
+zeitstempel=$(systemctl show "$EINHEIT" -p ExecMainExitTimestamp --value 2>/dev/null || true)
+
+if [ -z "$zeitstempel" ]; then
+  printf '\nSicherung: noch nie gelaufen.\n'
+  exit 0
+fi
+
+sekunden=$(date -d "$zeitstempel" +%s 2>/dev/null || echo 0)
+jetzt=$(date +%s)
+stunden=$(( (jetzt - sekunden) / 3600 ))
+wann=$(date -d "$zeitstempel" '+%d.%m.%Y %H:%M' 2>/dev/null || echo "$zeitstempel")
+
+if [ "$ergebnis" != "success" ]; then
+  printf '\nSICHERUNG FEHLGESCHLAGEN am %s (%s). Siehe: journalctl -u %s -n 50\n' \
+    "$wann" "$ergebnis" "$EINHEIT"
+elif [ "$stunden" -gt 26 ]; then
+  # Der Timer läuft täglich um 02:30. Mehr als 26 Stunden heisst: ein Lauf fehlt.
+  printf '\nSicherung: letzter Lauf %s, also vor %s Stunden — ein Lauf fehlt.\n' \
+    "$wann" "$stunden"
+else
+  printf '\nSicherung: %s in Ordnung.\n' "$wann"
+fi

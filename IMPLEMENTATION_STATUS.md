@@ -337,6 +337,20 @@ Fusszeile ausdrücklich eingeschlossen. Das alte Arbeitsband von 11 bis 14 px is
 - Nebenbei erledigt: die drei Formularfelder ohne id und name, die Chrome in den DevTools gemeldet
   hat (Eingabe der Kommandopalette, Dateiauswahl der Dokumente, Sprachwahl).
 
+## Erledigt — Nachschliff nach dem Livegang (12.09.2026)
+
+- Die Aufnahmen des verworfenen Entwurfs sind aus dem Repository verschwunden, ebenso die vier
+  Bilder vom 10.09. Die Fallstudie zeigt ein Bild: den heutigen Stand.
+- Die Startseite trägt weniger Polster, **1396 → 1236 Pixel Höhe**. Weggenommen wurde nur Luft:
+  unter dem Hero 128 → 80, über der Merkmalliste 80 → 48, darunter 80 → 48, Innenabstand der
+  Zeilen 24 → 20, Abstand der Kennzahlen 40 → 32. Schrift und Zeilenabstände bleiben unberührt.
+  Ein kurzer Scroll bleibt: alles auf einen Bildschirm zu zwingen hiesse, die Schlagzeile zu
+  verkleinern — und genau das verbietet Regel 8 aus gutem Grund.
+- Eine gescheiterte nächtliche Sicherung meldet sich jetzt beim Anmelden am Server
+  (`infra/motd/99-tallyroom-backup`, Einbau in `docs/BETRIEB.md`). Die Auskunft kommt von systemd
+  selbst — kein weiterer Dienst, kein Geheimnis. Eine Meldung nach aussen bleibt bewusst offen, bis
+  echte Kundendaten im Spiel sind.
+
 ## Erledigt — Meilenstein 6: Deployment
 
 Plan vom 11.09.2026, in dieser Reihenfolge:
