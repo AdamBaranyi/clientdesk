@@ -168,23 +168,30 @@ Nächste Prüfung dieser Ausnahmen: mit dem nächsten Meilenstein, spätestens a
 
 ### Abhängigkeitsscan
 
-| Punkt       | Stand                                                                     |
-| ----------- | ------------------------------------------------------------------------- |
-| Werkzeug    | `bun audit` aus Bun 1.3.14, gegen die Advisory-Datenbank der npm-Registry |
-| Umfang      | alle Pakete aus `bun.lock`, auch reine Entwicklungswerkzeuge              |
-| Blockierend | ab „hoch" (`--audit-level=high`); ein zweiter Schritt zeigt alle Befunde  |
-| Ergebnis    | 11.09.2026: kein hoher und kein kritischer Befund, ein moderater          |
+| Punkt       | Stand                                                                                                                           |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Werkzeug    | `bun audit` aus Bun 1.3.14, gegen die Advisory-Datenbank der npm-Registry                                                       |
+| Umfang      | alle Pakete aus `bun.lock`, auch reine Entwicklungswerkzeuge                                                                    |
+| Blockierend | ab „hoch" (`--audit-level=high`); ein zweiter Schritt schreibt alle Befunde in die Laufzusammenfassung, ohne den Lauf zu färben |
+| Ergebnis    | 12.09.2026 erneut geprüft: kein hoher und kein kritischer Befund, ein moderater                                                 |
 
 Der moderate Befund, einzeln bewertet:
 
 - **GHSA-67mh-4wv8-2f99, esbuild ≤ 0.24.2.** Betrifft den eingebauten Entwicklungsserver von
   esbuild (`serve`), über den fremde Seiten Anfragen stellen und Antworten lesen können. Die
-  betroffene Fassung 0.18.20 kommt nur über `drizzle-kit` herein, das Werkzeug zum Erzeugen von
-  Migrationen, und nutzt dort keinen `serve`-Aufruf. **Nicht anwendbar.** Nachweis: Im API-Image
-  liegen weder esbuild noch drizzle-kit (`ls node_modules/.bun` im Container, 0 Treffer), das
-  Web-Image enthält nur die 15 statischen Dateien des Builds. Keine erzwungene Aktualisierung: das
-  wäre ein Eingriff in eine fremde Abhängigkeitskette ohne Nutzen. Nächste Prüfung mit dem nächsten
-  `drizzle-kit`-Update, spätestens am 11.12.2026.
+  betroffene Fassung 0.18.20 kommt über eine einzige Kette herein: `drizzle-kit` →
+  `@esbuild-kit/esm-loader` → `@esbuild-kit/core-utils`, ein 2023 eingestelltes Paket. Es lädt dort
+  die TypeScript-Konfiguration und ruft kein `serve` auf. **Nicht anwendbar.** Nachweis: Im
+  API-Image liegen weder esbuild noch drizzle-kit (`ls node_modules/.bun` im Container, 0 Treffer),
+  das Web-Image enthält nur die 15 statischen Dateien des Builds. Vite bringt eigenes esbuild in
+  Fassung 0.28 mit und ist nicht betroffen.
+
+  Keine erzwungene Aktualisierung, und zwar mangels Alternative: Ein Update gibt es nicht — die
+  neuste Fassung von `drizzle-kit` ist mit 0.31.10 genau die eingesetzte und hängt weiterhin an
+  demselben eingestellten Paket (geprüft am 12.09.2026). Eine Überschreibung würde totes Paket auf
+  ein sieben Hauptversionen neueres esbuild zwingen, ohne dass hier je ein `serve` startet. Der
+  Befund fällt von selbst weg, sobald `drizzle-kit` das Paket loswird; bis dahin Neubewertung mit
+  jedem `drizzle-kit`-Update, spätestens am 11.12.2026.
 
 ## Offene Grenzen
 

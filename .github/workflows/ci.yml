@@ -145,11 +145,24 @@ jobs:
       - name: Bekannte Schwachstellen, blockierend ab hoch
         run: bun audit --audit-level=high
 
-      # Zeigt auch moderate Befunde, damit sie im Protokoll stehen. Bewertet
-      # sind sie einzeln in docs/SECURITY.md.
+      # Zeigt auch moderate und niedrige Befunde, damit sie im Protokoll und in
+      # der Laufzusammenfassung stehen. Bewertet sind sie einzeln in
+      # docs/SECURITY.md.
+      #
+      # Der Exit-Code fällt hier bewusst weg. Vorher trug dieser Schritt
+      # `continue-on-error`, und ein grüner Lauf zeigte trotzdem eine rote
+      # Fehlermarkierung — wer die gewöhnt ist, übersieht irgendwann die echte.
+      # Geurteilt wird im Schritt darüber. Bei gitleaks wäre dasselbe ein
+      # Fehler: dort gibt es keinen zweiten Schritt, der blockiert.
       - name: Alle Befunde zur Ansicht
-        run: bun audit
-        continue-on-error: true
+        run: |
+          {
+            echo '### bun audit, alle Stufen'
+            echo ''
+            echo '```'
+            bun audit 2>&1 || true
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
   e2e:
     name: Playwright über sechs Breiten
